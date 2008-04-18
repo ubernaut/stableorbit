@@ -2,12 +2,20 @@
 
 import dircache
 
-import psyco
+import os
+
+#import psyco
 
 import random
 
-psyco.full()
+import dircache
 
+#psyco.full()
+
+import direct.directbase.DirectStart
+from direct.showbase.DirectObject import DirectObject
+from pandac.PandaModules import PointLight,Vec4
+from direct.task.Task import Task
 
 bodies={}
 
@@ -19,7 +27,6 @@ class Body(object):
 		self.position=Position(body_data[2:5])
 		self.velocity=Velocity(body_data[5:8])
 		self.acceleration=Acceleration()
-		self.data_file=open('./data/' + self.name + '.txt', 'w')
 	
 	def __del__(self):
 		del self.position
@@ -44,56 +51,54 @@ class Acceleration(object):
 		self.x=0
 		self.y=0
 		self.z=0
-
-
-class Control:
-	def __init__(self,dt):
-		self.max_distance=0.0
-		self.set_max()
-		self.start_leap_frog(dt)
-		self.step(dt)
 		
+	def reset(self):
+		self.x=0
+		self.y=0
+		self.z=0
+
+
+class Universe(DirectObject):
+	def __init__(self,dt=0.1):
+		self.loadPlanets()
+		self.dt=dt
+		self.starting=True
+		taskMgr.add(self.accelerate,"accelerate")
+		taskMgr.add(self.move,"move")
 	
-	def start_leap_frog(self,dt):
-		self.accelerate()
+	def loadPlanets(self):
 		for body in bodies.values():
-			body.velocity.x+=dt/2.0*body.acceleration.x
-			body.velocity.y+=dt/2.0*body.acceleration.y
-			body.velocity.z+=dt/2.0*body.acceleration.z
+			body.node = render.attachNewNode(body.name)
+			body.sphere = loader.loadModelCopy("models/planet_sphere")			
+			
+			body.sphere.reparentTo(body.node)
+			
+			body.sphere.setScale(0.5)
+			body.texture = loader.loadTexture("models/neptune.jpg")
+
+			body.sphere.setTexture(body.texture,1)
+			body.node.setPos(body.position.x,body.position.y,body.position.z)
 		
-			body.acceleration.x=0.0
-			body.acceleration.y=0.0
-			body.acceleration.z=0.0
 
-			body.position.x+=dt*body.velocity.x
-			body.position.y+=dt*body.velocity.y
-			body.position.z+=dt*body.velocity.z
+		
+		self.sky = loader.loadModel("models/solar_sky_sphere")
+		self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
+		self.sky.setTexture(self.sky_tex, 1)
+		self.sky.reparentTo(render)
+		self.sky.setScale(200)
 
-
-	def step(self,dt):
-		t=0
-		t_max=100.0
-		write=0
-
-		while t<t_max:
-			if not len(bodies):
-				exit()
-			
-			self.accelerate()
-			self.update(dt)
-			#if write >10:
-			#	write=0
-			self.write_data()
-			print t/t_max
-
-			t+=dt
-			write+=1
-			
+	def move(self,task):
+		dt = self.dt
+		if self.starting: 
+			dt=dt/2.0
+			self.starting=False
 
 		for body in bodies.values():
-			body.data_file.close()
+			self.move_body(body,dt)
+
+		return Task.cont
 			
-	def accelerate(self):
+	def accelerate(self,task):
 		accel=bodies.values()
 		G=2.93558*10**-4
 		for i in range(0,len(accel)):
@@ -108,8 +113,6 @@ class Control:
 				d_z=(other_position.z-current_position.z)
 			
 				radius = d_x**2 + d_y**2 + d_z**2
-				
-				print radius
 				
 				grav_mag = G/(radius**(3.0/2.0))
 				
@@ -126,94 +129,52 @@ class Control:
 				current_body.acceleration.z += grav_z*other_body.mass
 				other_body.acceleration.z -= grav_z*current_body.mass
 
-
-				
-	def set_max(self):
-		for body in bodies.values():
-			dist = (body.position.x**2 + body.position.y**2 + body.position.z**2)
-			if dist > self.max_distance:
-				self.max_distance = dist
-
 			
-	def update(self,dt):
-		for body in bodies.values():
-			dist = (body.position.x**2 + body.position.y**2 + body.position.z**2)
-			
-			body.velocity.x+=dt*body.acceleration.x
-			body.velocity.y+=dt*body.acceleration.y
-			body.velocity.z+=dt*body.acceleration.z
-		
-			body.acceleration.x=0.0
-			body.acceleration.y=0.0
-			body.acceleration.z=0.0
+	def move_body(self,body,dt):
+		self.calculate_velocity(body,dt)
+		body.acceleration.reset()
+		self.calculate_position(body,dt)
+		self.set_body_position(body,body.position.x,body.position.y,body.position.z)
 
-			body.position.x+=dt*body.velocity.x
-			body.position.y+=dt*body.velocity.y
-			body.position.z+=dt*body.velocity.z
-			
-			if dist > 50000:
-				print body.name + " blew up"
-				del bodies[body.name]
-				del body
-				print bodies.keys()
+	def calculate_velocity(self,body,dt):
+		body.velocity.x += dt*body.acceleration.x
+		body.velocity.y += dt*body.acceleration.y
+		body.velocity.z += dt*body.acceleration.z
+
+	def calculate_position(self,body,dt):
+		body.position.x += dt*body.velocity.x
+		body.position.y += dt*body.velocity.y
+		body.position.z += dt*body.velocity.z
+
+	def set_body_position(self,body,x,y,z):
+		body.node.setPos(x,y,z)
+
 
 
 
 	
-	def write_data(self):
-		for body in bodies.values():
-			body.data_file.write(str(body.position.x) + '\t' + str(body.position.y) + '\t' + str(body.position.z) + '\n')
 
-	
-			
-			
-class SolarConstructor:
-	def __init__(self):
-		self.build()
-	
-	def build(self):
-		N=random.randint(55,125)
-		bodies["MASSIVE"]=Body(["MASSIVE",100,0,0,0,0,0,0])
-		for i in range(0,N):
-			body_data=[]
-			body_data.append("body_" + str(i))
-			body_data.append(random.uniform(.1,10))
-			for j in range(0,3):
-				body_data.append(random.uniform(-150,150))
-			for j in range(0,3):
-				body_data.append(random.uniform(-0.051,0.051))
-			
-			body=Body(body_data)
-			bodies[body.name]=body
-		print len(bodies)
-		
-
-def light_sim():
-	bodies["MASSIVE"]=Body(["MASSIVE",100,0,0,0,0,0,0])
+def set_conditions(data_folder):
+	a=dircache.listdir(data_folder)
+	try:
+		a.remove('.svn')
+		a.remove('evolotion')
+	except:
+		print "svn wasnt there"
 	body_data=[]
-	body_data.append("body_" + str(1))
-	body_data.append(0.0)
-	body_data.append(50)
-	body_data.append(3)
-	body_data.append(0)
-	body_data.append(-172)
-	body_data.append(0)
-	body_data.append(0)
-	body=Body(body_data)
-	bodies[body.name]=body
-	
+	for f in a:
+		values = open(data_folder+f).readlines()
+		v = values[0]
+		body_data = v.split()
+		body_data.insert(0,f)
+		body=Body(body_data)
+		bodies[body.name]=body
 
-#def set_conditions():
-	#file = open('./initial_conditions/conditions.txt').readlines()
-	#for line in file:
-	#	body_data = line.split()
-	#	body=Body(body_data)
-	#	bodies[body.name]=body
 	
-#set_conditions()				
-#C = SolarConstructor()
-light_sim()
-s=Control(0.00010)
+set_conditions('data/system_4/')	
+U=Universe()			
+run()
+
 
 
 
