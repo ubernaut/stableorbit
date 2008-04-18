@@ -1,7 +1,7 @@
 #! /usr/bin/python
 import dircache
-import psyco
-psyco.full()
+#import psyco
+#psyco.full()
 
 import direct.directbase.DirectStart
 from direct.showbase.DirectObject import DirectObject
