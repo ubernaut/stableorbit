@@ -20,7 +20,7 @@ class Body(object):
 		del self.position
 		del self.velocity
 
-	     
+             
 		
 
 class Position(object):
@@ -58,35 +58,7 @@ class System(object):
 			body=Body(body_data)
 			bodies.append(body)
 
-	def mutate(self, alphaMass, alphaPosition, alphaVelocity):
-		
-		whichBody=random.randint(0,len(self.bodies)-1)
-		self.bodies[whichBody].mass += alphaMass * random.uniform(-5,5)
 
-		oldSelf = self
-		
-		self.bodies[whichBody].position.x+= alphaPosition * (random.uniform(-15,15))
-		self.bodies[whichBody].velocity.x+= alphaVelocity * (random.uniform(-0.05,0.05))
-
-		self.bodies[whichBody].position.y+= alphaPosition * (random.uniform(-15,15))
-		self.bodies[whichBody].velocity.y+= alphaVelocity * (random.uniform(-0.05,0.05))
-
-		self.bodies[whichBody].position.z+= alphaPosition * (random.uniform(-15,15))
-		self.bodies[whichBody].velocity.z+= alphaVelocity * (random.uniform(-0.05,0.05))
-		
-		self.stability = 0.5 - self.evaluate(self.bodies)
-		
-
-
-		if self.stability < oldSelf.stability :
-                        self = oldself
-                #else :
-                   #     print("w00t! successful mutation")
-                   #     print("system pre Mutation: ")
-                   #     print(oldSelf.stability)
-                   #     print("system post Mutation: ")
-                   #     print(self.stability)
-							     
 	def evaluate(self,bodies):
 		kinetic=0.0
 		potential=0.0
@@ -121,10 +93,9 @@ class System(object):
 
 
 class GeneticAlgorithm:
-	def __init__(self,populationSize,maxGeneration):
+	def __init__(self,populationSize):
 		systems=[]
-		self.maxGen = maxGeneration
-		for i in range(0,populationSize):
+		for i in range(0,populationSize-1):
 			systems.append(System())
 
 		systems = self.selection(systems)
@@ -132,9 +103,7 @@ class GeneticAlgorithm:
 		
 		self.genetitize(populationSize,systems)
 
-	def mutateAll(self):
-		for system in systems:
-			system.mutate(system,.1,.1,.1)
+            
 	def selection(self,systems):
 
 		val_checker=[]
@@ -143,14 +112,16 @@ class GeneticAlgorithm:
 		val_checker=sorted(val_checker)
 		for system in systems:
 			if system.stability < val_checker[-1]:
-				system.mutate(1,1,1)
+				systems.remove(system)
+		for system in systems:
 			if system.stability > -0.001 and not system.printed:
 				self.write_conditions(system)
 				exit()
+
 		return systems
 		
 	def genetitize(self,populationSize,systems):
-		for i in range(0,self.maxGen):
+		while 1:
 			for i in range(len(systems),populationSize):
 				systems.append(System())
 			self.selection(systems)
@@ -165,4 +136,4 @@ class GeneticAlgorithm:
 			data_file = open(body.name,"w+")
 			data_file.write(str(body.mass)+"\t"+str(pos.x)+"\t"+str(pos.y)+"\t"+str(pos.z)+"\t"+str(vel.x)+"\t"+str(vel.y)+"\t"+str(vel.z) +"\n")
 
-GeneticAlgorithm(10,5000000)
+GeneticAlgorithm(10)

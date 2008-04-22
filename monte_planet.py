@@ -171,7 +171,7 @@ def set_conditions(data_folder):
 		bodies[body.name]=body
 
 	
-set_conditions('data/system_4/')	
+set_conditions('data/system_64/')	
 U=Universe()			
 run()
 
