@@ -7,7 +7,6 @@ import os
 import copy
 #import psyco
 #psyco.full()
-	
 class Body(object):
 	def __init__ (self,body_data):
 		self.name=body_data[0]
@@ -20,33 +19,26 @@ class Body(object):
 		del self.position
 		del self.velocity
 		del self.acceleration
-		
-
 class Position(object):
 	def __init__ (self,position_data):
 		self.x=float(position_data[0])
 		self.y=float(position_data[1])
 		self.z=float(position_data[2])
-
 class Velocity(object):
 	def __init__ (self,velocity_data):
 		self.x=float(velocity_data[0])
 		self.y=float(velocity_data[1])
-		self.z=float(velocity_data[2])	
-
+		self.z=float(velocity_data[2])
 class Acceleration(object):
 	def __init__(self):
 		self.x=0
 		self.y=0
-		self.z=0
-		
+		self.z=0		
 	def reset(self):
 		self.x=0
 		self.y=0
 		self.z=0
-
 class System(object):
-
 	def __init__(self, seed):
                 random.seed = seed
                 self.seed = seed
@@ -57,7 +49,6 @@ class System(object):
 		self.stability = 0.5 - self.evaluate(self.bodies)
 		self.printed=False
 		self.avgStability=0.5 - self.evaluate(self.bodies)
-
 	def build(self):
 		bodies=self.bodies
 		N=random.randint(2,15)
@@ -78,17 +69,15 @@ class System(object):
 					body_data.append(random.uniform(-0.5,0.5))
 			body=Body(body_data)
 			bodies.append(body)
-			
-	def buildPrime(self, seed):
-
+	def buildPrime(self):
 		bodies=self.bodies
-		random.seed = seed
+		random.seed = self.seed
 ##		N=random.randint(1,1)
 ##       
 ##		for i in range(1,N):
                 body_data=[]
                 body_data.append("star_" + "0")
-                body_data.append(random.uniform(.8,10))
+                body_data.append(random.uniform(.8,5))
                 for j in range(0,3):
                         body_data.append(random.uniform(-3,3))
                 for j in range(0,3):
@@ -96,7 +85,7 @@ class System(object):
                 body=Body(body_data)
                 self.bodies.append(body)
 		planet_n=random.randint(20,40)
-		for i in range(1,planet_n):
+		for i in range(0,planet_n):
 			body_data.append("body_" + str(i))
 			body_data.append(random.uniform(.02,0.5))
 			for j in range(0,3):
@@ -105,46 +94,34 @@ class System(object):
 				body_data.append(random.uniform(-1,1))
 			body=Body(body_data)
 			self.bodies.append(body)
-			
 	def mutate(self, alphaMass, alphaPosition, alphaVelocity):
-
 		whichBody=random.randint(0,len(self.bodies)-1)
 		oldPosition =copy.deepcopy(self.bodies[whichBody].position)
-		
 		if whichBody < self.starCount:
 			self.bodies[whichBody].mass += alphaMass * random.uniform(-self.bodies[whichBody].mass/2,5)
-
 			self.bodies[whichBody].position.x+= alphaPosition * (random.uniform(-.000001,.000001))
 			self.bodies[whichBody].velocity.x+= alphaVelocity * (random.uniform(-.000001,.000001))
-
 			self.bodies[whichBody].position.y+= alphaPosition * (random.uniform(-.000001,.000001))
 			self.bodies[whichBody].velocity.y+= alphaVelocity * (random.uniform(-.000001,.000001))
-
 			self.bodies[whichBody].position.z+= alphaPosition * (random.uniform(-.000001,.000001))
 			self.bodies[whichBody].velocity.z+= alphaVelocity * (random.uniform(-.000001,.000001))
 		else:
 			self.bodies[whichBody].mass += alphaMass * random.uniform(-self.bodies[whichBody].mass,1)
-
 		if self.bodies[whichBody].mass >=15:
 			self.bodies[whichBody].mass=14.99
 
 		if self.bodies[whichBody].mass <= 0:
 			self.bodies[whichBody].mass=0.1
 			print "negetive mass"
-
 		self.bodies[whichBody].position.x+= alphaPosition * (random.uniform(-5,5))
 		self.bodies[whichBody].velocity.x+= alphaVelocity * (random.uniform(-1,1))
-
 		self.bodies[whichBody].position.y+= alphaPosition * (random.uniform(-5,5))
 		self.bodies[whichBody].velocity.y+= alphaVelocity * (random.uniform(-1,1))
-
 		self.bodies[whichBody].position.z+= alphaPosition * (random.uniform(-5,5))
 		self.bodies[whichBody].velocity.z+= alphaVelocity * (random.uniform(-1,1))
-
 		if self.bodies[whichBody].position.z>=30 or self.bodies[whichBody].position.z<=-30 or self.bodies[whichBody].position.x>=30 or self.bodies[whichBody].position.x<=-30 or self.bodies[whichBody].position.x>=30 or self.bodies[whichBody].position.x<=-30:
 			self.bodies[whichBody].position=oldPosition
 		self.stability = self.evaluate(self.bodies)
-							     
 	def evaluate(self,bodies):
 		kinetic=0.0
 		potential=0.0
@@ -153,20 +130,16 @@ class System(object):
 			vel = body.velocity
 			vel_sq = (vel.x**2 + vel.y**2 + vel.z**2)
 			kinetic += 0.5*body.mass*vel_sq
-		
 		for i in range(0,len(bodies)):
 			current_body=bodies[i]
 			current_position=current_body.position
-		
 			for j in range(0,i):
 				other_body=bodies[j]
 				other_position=other_body.position
 				d_x=(other_position.x-current_position.x)
 				d_y=(other_position.y-current_position.y)
 				d_z=(other_position.z-current_position.z)
-			
 				radius = (d_x**2 + d_y**2 + d_z**2)**(0.5)
-				
 				if radius >0 :
 					potential -= G*current_body.mass*other_body.mass/radius
 		try:	
@@ -174,8 +147,4 @@ class System(object):
 		except:
 			return 100.0
 	def bodies(self):
-                return self.bodies
-        
-
-
-    
+                return self.bodies  

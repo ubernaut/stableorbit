@@ -17,7 +17,8 @@ goalFitness = server.getGoalFitness()
 print "seed recieved: "
 print seedNumber
 aSolarSystem = System(seedNumber)
-aSolarSystem.buildPrime(seedNumber)
+
+aSolarSystem.buildPrime()
 Evaluator = Eval(aSolarSystem, timeStepCount)
 print "Current system fitness:"
 systemFitness = Evaluator.evaluate()

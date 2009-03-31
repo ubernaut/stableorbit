@@ -6,7 +6,6 @@ import math
 import sys
 import os
 import copy
-
 class Eval:
 	def __init__(self,aSystem, maxMark):
 		self.dt=.2
@@ -14,7 +13,6 @@ class Eval:
 		self.maxMark=maxMark
 		self.fitness1=self.system.evaluate(self.system.bodies)
 		self.sumFit=self.system.evaluate(self.system.bodies)
-					       
 	def evaluate(self):
 		t=0
 		count=1
@@ -32,7 +30,6 @@ class Eval:
 		fitness2 = self.system.evaluate(self.system.bodies)
 		self.avgStability = sumFit/count
 		return self.avgStability
-	
 	def accelerate(self,system):
 		bodies = system.bodies
 		G=2.93558*10**-4
@@ -61,12 +58,10 @@ class Eval:
 				
 				current_body.acceleration.z += grav_z*other_body.mass
 				other_body.acceleration.z -= grav_z*current_body.mass
-
 	def calculate_velocity(self,body,dt):
 		body.velocity.x += dt*body.acceleration.x
 		body.velocity.y += dt*body.acceleration.y
 		body.velocity.z += dt*body.acceleration.z
-
 	def calculate_position(self,body,dt):
 		body.position.x += dt*body.velocity.x
 		body.position.y += dt*body.velocity.y

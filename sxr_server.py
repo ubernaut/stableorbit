@@ -14,7 +14,7 @@ class StringFunctions(object):
     def getGoalFitness(self):
         return -0.3
     def getInstructions(self, fitness):
-        if ((fitness<20)&(fitness>-10)):
+        if ((fitness<100)&(fitness>-10)):
             return "mutate"
         elif((fitness<2)&(fitness>-2)):
             return "goal"            
