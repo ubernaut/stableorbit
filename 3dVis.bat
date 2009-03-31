@@ -1,1 +1,0 @@
-C:\Panda3D-1.4.2\python\ppython.exe planetarium.py
