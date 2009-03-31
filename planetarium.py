@@ -1,57 +1,59 @@
- #! /usr/bin/python
+#! /usr/bin/python
 import dircache
 import os
-#import psyco
+import psyco
 import random
 import dircache
-
-#psyco.full()
+import orbitSystem
+psyco.full()
 
 import direct.directbase.DirectStart
+from orbitSystem import Body
+
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
 #theFolder = args[0]
 bodies={}
 
-	
-class Body(object):
-	def __init__ (self,body_data):
-		self.name=body_data[0]
-		self.mass=float(body_data[1])
-		self.position=Position(body_data[2:5])
-		self.velocity=Velocity(body_data[5:8])
-		self.acceleration=Acceleration()
-	
-	def __del__(self):
-		del self.position
-		del self.velocity
-		del self.acceleration
-		
-
-class Position(object):
-	def __init__ (self,position_data):
-		self.x=float(position_data[0])
-		self.y=float(position_data[1])
-		self.z=float(position_data[2])
-
-class Velocity(object):
-	def __init__ (self,velocity_data):
-		self.x=float(velocity_data[0])
-		self.y=float(velocity_data[1])
-		self.z=float(velocity_data[2])	
-
-class Acceleration(object):
-	def __init__(self):
-		self.x=0
-		self.y=0
-		self.z=0
-		
-	def reset(self):
-		self.x=0
-		self.y=0
-		self.z=0
-
+##	
+##class Body(object):
+##	def __init__ (self,body_data):
+##		self.name=body_data[0]
+##		self.mass=float(body_data[1])
+##		self.position=Position(body_data[2:5])
+##		self.velocity=Velocity(body_data[5:8])
+##		self.acceleration=Acceleration()
+##	
+##	def __del__(self):
+##		del self.position
+##		del self.velocity
+##		del self.acceleration
+##		
+##
+##class Position(object):
+##	def __init__ (self,position_data):
+##		self.x=float(position_data[0])
+##		self.y=float(position_data[1])
+##		self.z=float(position_data[2])
+##
+##class Velocity(object):
+##	def __init__ (self,velocity_data):
+##		self.x=float(velocity_data[0])
+##		self.y=float(velocity_data[1])
+##		self.z=float(velocity_data[2])	
+##
+##class Acceleration(object):
+##	def __init__(self):
+##		self.x=0
+##		self.y=0
+##		self.z=0
+##		
+##	def reset(self):
+##		self.x=0
+##		self.y=0
+##		self.z=0
+##
 
 class Universe(DirectObject):
 	def __init__(self,dt= .02):
@@ -181,7 +183,7 @@ def set_conditions(data_folder):
 		bodies[body.name]=body
 
 	
-set_conditions('data/mark-99000sys-2dt\\')
+set_conditions('data/system_5/')
 U=Universe()			
 run()
 
