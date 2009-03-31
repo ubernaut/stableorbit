@@ -1,71 +1,31 @@
 #! /usr/bin/python
 import dircache
 import os
-import psyco
 import random
 import dircache
 import orbitSystem
-psyco.full()
-
 import direct.directbase.DirectStart
 from orbitSystem import Body
-
+from orbitSystem import System
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
-#theFolder = args[0]
-bodies={}
 
-##	
-##class Body(object):
-##	def __init__ (self,body_data):
-##		self.name=body_data[0]
-##		self.mass=float(body_data[1])
-##		self.position=Position(body_data[2:5])
-##		self.velocity=Velocity(body_data[5:8])
-##		self.acceleration=Acceleration()
-##	
-##	def __del__(self):
-##		del self.position
-##		del self.velocity
-##		del self.acceleration
-##		
-##
-##class Position(object):
-##	def __init__ (self,position_data):
-##		self.x=float(position_data[0])
-##		self.y=float(position_data[1])
-##		self.z=float(position_data[2])
-##
-##class Velocity(object):
-##	def __init__ (self,velocity_data):
-##		self.x=float(velocity_data[0])
-##		self.y=float(velocity_data[1])
-##		self.z=float(velocity_data[2])	
-##
-##class Acceleration(object):
-##	def __init__(self):
-##		self.x=0
-##		self.y=0
-##		self.z=0
-##		
-##	def reset(self):
-##		self.x=0
-##		self.y=0
-##		self.z=0
-##
+
 
 class Universe(DirectObject):
-	def __init__(self,dt= .02):
-		self.loadPlanets()
+	def __init__(self, dt= .02):
+		#self.loadPlanets()
 		self.dt=dt
 		self.starting=True
+		self.bodies = {}
 		taskMgr.add(self.accelerate,"accelerate")
 		base.camLens.setFar(100000000)
 		taskMgr.add(self.move,"move")
 	
 	def loadPlanets(self):
-		for body in bodies.values():
+                for body in self.bodies:
+                        
 			body.node = render.attachNewNode(body.name)
 			body.sphere = loader.loadModelCopy("models/planet_sphere")			
 			body.sphere.reparentTo(body.node)
@@ -111,13 +71,16 @@ class Universe(DirectObject):
 			dt=dt/2.0
 			self.starting=False
 
-		for body in bodies.values():
+		for body in self.bodies:
 			self.move_body(body,dt)
 
 		return Task.cont
 			
 	def accelerate(self,task):
-		accel=bodies.values()
+                print"lenth of bodies"
+                print len(self.bodies)
+
+		accel=self.bodies
 		G=2.93558*10**-4
 		for i in range(0,len(accel)):
 			current_body=accel[i]
@@ -129,9 +92,12 @@ class Universe(DirectObject):
 				d_x=(other_position.x-current_position.x)
 				d_y=(other_position.y-current_position.y)
 				d_z=(other_position.z-current_position.z)
+				
 			
 				radius = d_x**2 + d_y**2 + d_z**2
-				grav_mag = G/(radius**(3.0/2.0))
+				
+				if radius > 0:
+                                        grav_mag = G/(radius**(3.0/2.0))
 				
 				grav_x=grav_mag*d_x
 				grav_y=grav_mag*d_y
@@ -166,26 +132,30 @@ class Universe(DirectObject):
 		body.node.setPos(x,y,z)
 
 
-def set_conditions(data_folder):
-	a=dircache.listdir(data_folder)
-	try:
-		a.remove('.svn')
-		a.remove('evolotion')
-	except:
-		print "svn wasnt there"
-	body_data=[]
-	for f in a:
-		values = open(data_folder+f).readlines()
-		v = values[0]
-		body_data = v.split()
-		body_data.insert(0,f)
-		body=Body(body_data)
-		bodies[body.name]=body
+        def set_conditions(data_folder):
+        	a=dircache.listdir(data_folder)
+                try:
+                	a.remove('.svn')
+                        a.remove('evolotion')
+        	except:
+                	print "svn wasnt there"
+                body_data=[]
+                for f in a:
+                        values = open(data_folder+f).readlines()
+                        v = values[0]
+                        body_data = v.split()
+                        body_data.insert(0,f)
+                        body=Body(body_data)
+                        bodies[body.name]=body
 
-	
-set_conditions('data/system_5/')
-U=Universe()			
-run()
+        def importSystem(self, solarSystem):
+                self.bodies = solarSystem.bodies
+
+
+        
+##set_conditions('data/system_5/')
+##U=Universe()			
+#run()
 
 
 
