@@ -6,6 +6,8 @@ import math
 import sys
 import os
 import copy
+import psyco
+psyco.full()
 class Eval:
 	def __init__(self,aSystem, maxMark):
 		self.dt=.2
@@ -17,34 +19,32 @@ class Eval:
 		self.count=1
 		
 	def evaluateStep(self):
-                self.accelerate(self.system)
+                self.accelerate()
                 for body in self.system.bodies:
                         self.calculate_velocity(body,self.dt)
                         self.calculate_position(body,self.dt)
                         body.acceleration.reset()
 			self.sumFit+=self.system.evaluate(self.system.bodies)
 			self.t+=self.dt
-		self.count+=1
-		
+		self.count+=1	
 
 	def evaluate(self):
 		self.t=0
 		self.count=1
-		self.accelerate(self.system)
+		self.accelerate()
 		self.sumFit=0
 		while self.count<self.maxMark:
                         self.evaluateStep()			
 		self.fitness = self.system.evaluate(self.system.bodies)
 		self.avgStability = self.sumFit/self.count
 		return self.avgStability
-	def accelerate(self,system):
-		bodies = system.bodies
+	def accelerate(self):		
 		G=2.93558*10**-4
-		for i in range(0,len(bodies)):
-			current_body=bodies[i]
+		for i in range(0,len(self.system.bodies)):
+			current_body=self.system.bodies[i]
 			current_position=current_body.position
-			for j in range(0,i):
-				other_body=bodies[j]
+			for j in range(0,len(self.system.bodies)):
+				other_body=self.system.bodies[j]
 				other_position=other_body.position
 				d_x=(other_position.x-current_position.x)
 				d_y=(other_position.y-current_position.y)

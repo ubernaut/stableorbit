@@ -1,6 +1,7 @@
 #Server code sxr_server.py
 import SimpleXMLRPCServer
 import orbitSystem
+
 #import GeneticAlgorithm
 class StringFunctions(object):
     def __init__(self):

@@ -3,6 +3,8 @@ import Eval
 import sxr_server
 import random
 import os
+import psyco
+psyco.full()
 from Eval import Eval
 from orbitSystem import System
 
@@ -40,7 +42,8 @@ class GeneticAlgorithm:
 		#self.initFirstGen
 		for mark in range (0,self.maxMark):
 			self.alphaRate= 0.2/(mark**(9/10))
-			print "compute viral fitness for "+`mark`+" dt iterations"
+			if mark%100 == 0:
+                                print "compute viral fitness for "+`mark`+" dt iterations"
 			sysVar =0
 			for aSystem in self.population:
 				folder ="mark-"+`mark`+"sys-"+`sysVar`
@@ -48,7 +51,7 @@ class GeneticAlgorithm:
 				fitness=clientProc.evaluate()
 				if fitness > -.3 :
 					self.nextGen.append(aSystem)
-					if mark%25 == 0:
+					if mark%1000 == 0:
 						
 						self.write_conditions( aSystem,folder)
 						sysVar+=1
@@ -83,3 +86,4 @@ def runGA():
         GA = GeneticAlgorithm()
         GA.initFirstGen()
         GA.markN()
+runGA()

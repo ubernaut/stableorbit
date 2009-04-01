@@ -6,6 +6,8 @@ import Eval
 from planetarium import Universe
 from orbitSystem import Body
 from orbitSystem import System
+import psyco
+psyco.full()
 from Eval import Eval
 
 server = xmlrpclib.Server('http://localhost:8000')

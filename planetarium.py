@@ -6,6 +6,7 @@ import dircache
 import orbitSystem
 import Eval
 import direct.directbase.DirectStart
+
 from orbitSystem import Body
 from orbitSystem import System
 from direct.showbase.DirectObject import DirectObject
