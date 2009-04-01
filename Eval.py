@@ -11,24 +11,31 @@ class Eval:
 		self.dt=.2
 		self.system = aSystem
 		self.maxMark=maxMark
-		self.fitness1=self.system.evaluate(self.system.bodies)
+		self.fitness=self.system.evaluate(self.system.bodies)
 		self.sumFit=self.system.evaluate(self.system.bodies)
+		self.t=0
+		self.count=1
+		
+	def evaluateStep(self):
+                self.accelerate(self.system)
+                for body in self.system.bodies:
+                        self.calculate_velocity(body,self.dt)
+                        self.calculate_position(body,self.dt)
+                        body.acceleration.reset()
+			self.sumFit+=self.system.evaluate(self.system.bodies)
+			self.t+=self.dt
+		self.count+=1
+		
+
 	def evaluate(self):
-		t=0
-		count=1
+		self.t=0
+		self.count=1
 		self.accelerate(self.system)
-		sumFit=0
-		while count<self.maxMark:
-			self.accelerate(self.system)
-			for body in self.system.bodies:
-				self.calculate_velocity(body,self.dt)
-				self.calculate_position(body,self.dt)
-				body.acceleration.reset()
-			sumFit+=self.system.evaluate(self.system.bodies)
-			t+=self.dt
-			count+=1
-		fitness2 = self.system.evaluate(self.system.bodies)
-		self.avgStability = sumFit/count
+		self.sumFit=0
+		while self.count<self.maxMark:
+                        self.evaluateStep()			
+		self.fitness = self.system.evaluate(self.system.bodies)
+		self.avgStability = self.sumFit/self.count
 		return self.avgStability
 	def accelerate(self,system):
 		bodies = system.bodies

@@ -21,26 +21,7 @@ aSolarSystem = System(seedNumber)
 aSolarSystem.buildPrime()
 Evaluator = Eval(aSolarSystem, timeStepCount)
 print "Current system fitness:"
-systemFitness = Evaluator.evaluate()
-print systemFitness
 
-while (server.getInstructions(systemFitness)=="regenerate"):
-    print "regenerating system"
-    seedNumber = server.getRandomSeed()
-    print "new seed:"
-    print seedNumber
-    aSolarSystem = System(seedNumber)
-    #aSolarSystem.buildPrime(seedNumber)
-    Evaluator = Eval(aSolarSystem, timeStepCount)
-    print "Current system fitness:"
-    systemFitness = Evaluator.evaluate()
-    print systemFitness
-    
-print "acceptable system found"
-    
-#TODO return completed system back to the server
+planetWindow = Universe(Evaluator)
 
-planetWindow = Universe()
-planetWindow.importSystem(aSolarSystem)
-planetWindow.loadPlanets()
 run()
