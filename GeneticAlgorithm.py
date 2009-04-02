@@ -42,7 +42,7 @@ class GeneticAlgorithm:
 		#self.initFirstGen
 		for mark in range (0,self.maxMark):
 			self.alphaRate= 0.2/(mark**(9/10))
-			if mark%100 == 0:
+			if mark%10 == 0:
                                 print "compute viral fitness for "+`mark`+" dt iterations"
 			sysVar =0
 			for aSystem in self.population:
@@ -51,7 +51,7 @@ class GeneticAlgorithm:
 				fitness=clientProc.evaluate()
 				if fitness > -.3 :
 					self.nextGen.append(aSystem)
-					if mark%1000 == 0:
+					if mark%100 == 0:
 						
 						self.write_conditions( aSystem,folder)
 						sysVar+=1

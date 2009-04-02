@@ -40,10 +40,11 @@ class Eval:
 		return self.avgStability
 	def accelerate(self):		
 		G=2.93558*10**-4
+		epsilon = 0.01
 		for i in range(0,len(self.system.bodies)):
 			current_body=self.system.bodies[i]
 			current_position=current_body.position
-			for j in range(0,len(self.system.bodies)):
+			for j in range(0,i):
 				other_body=self.system.bodies[j]
 				other_position=other_body.position
 				d_x=(other_position.x-current_position.x)
@@ -51,8 +52,12 @@ class Eval:
 				d_z=(other_position.z-current_position.z)
 				radius = d_x**2 + d_y**2 + d_z**2
 				grav_mag=0
+				
 				if radius >0:
-					grav_mag = G/(radius**(3.0/2.0))
+					grav_mag = G/((radius+epsilon)**(3.0/2.0))
+				else:
+                                        radius = 0.001
+                                        grav_mag = G/((radius+epsilon)**(3.0/2.0))
 				grav_x=grav_mag*d_x
 				grav_y=grav_mag*d_y
 				grav_z=grav_mag*d_z

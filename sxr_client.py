@@ -23,7 +23,7 @@ aSolarSystem = System(seedNumber)
 aSolarSystem.buildPrime()
 Evaluator = Eval(aSolarSystem, timeStepCount)
 print "Current system fitness:"
-
+print Evaluator.evaluate()
 planetWindow = Universe(Evaluator)
 
 run()
