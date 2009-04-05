@@ -8,6 +8,8 @@ import os
 import copy
 import psyco
 psyco.full()
+
+#add collision detection
 class Eval:
 	def __init__(self,aSystem, maxMark):
 		self.dt=.2

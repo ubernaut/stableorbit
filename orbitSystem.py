@@ -5,8 +5,9 @@ import math
 import sys
 import os
 import copy
-#import psyco
-#psyco.full()
+import psyco
+psyco.full()
+#load from xml
 class Body(object):
 	def __init__ (self,body_data):
 		self.name=body_data[0]

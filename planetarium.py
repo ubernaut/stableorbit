@@ -12,6 +12,8 @@ from orbitSystem import System
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
+import psyco
+psyco.full()
 
 class Universe(DirectObject):
 	def __init__(self, neweval, dt= .02):
