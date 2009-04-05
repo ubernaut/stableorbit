@@ -1,6 +1,10 @@
 #Server code sxr_server.py
 import SimpleXMLRPCServer
 import orbitSystem
+#TODO:
+# * load system objects from extrasolar.xml
+# * pass system object to clients
+# * render clients as stars in a galaxy with planetarium
 
 #import GeneticAlgorithm
 class StringFunctions(object):
