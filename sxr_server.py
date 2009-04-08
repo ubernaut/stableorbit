@@ -1,35 +1,25 @@
 #Server code sxr_server.py
-import SimpleXMLRPCServer
 import orbitSystem
-#TODO:
-# * load system objects from extrasolar.xml
-# * pass system object to clients
-# * render clients as stars in a galaxy with planetarium
+import cPickle
+import SimpleXMLRPCServer
+from orbitSystem import System
 
-#import GeneticAlgorithm
-class StringFunctions(object):
+class GalaxyServer(object):
     def __init__(self):
+        import string
+        self.python_string = string
         self.seedcount = 1
-        self.population = []
-    def getRandomSeed(self):
-        self.seedcount+=1
-        return self.seedcount
-    def getTimeSteps(self):
-        return 100
-    def getGoalFitness(self):
-        return -0.3
-    def getInstructions(self, fitness):
-        if ((fitness<100)&(fitness>-10)):
-            return "mutate"
-        elif((fitness<2)&(fitness>-2)):
-            return "goal"            
-        else:
-            return "regenerate"
-        
-
+    def getSystem(self):
+        self.seedcount += 1
+        aSystem = orbitSystem.System(self.seedcount)
+        aSystem.buildPrime()
+        aString = cPickle.dumps(aSystem)
+        return aString
+        #xfile = open("serialSystem.txt")
+        #print xfile.read()
+  
 if __name__=='__main__':
     server = SimpleXMLRPCServer.SimpleXMLRPCServer(("localhost", 8000))
-    server.register_instance(StringFunctions())
-    server.register_function(lambda astr: '_' + asts, '_string')
+    server.register_instance(GalaxyServer())
     server.serve_forever()
     
