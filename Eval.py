@@ -6,13 +6,13 @@ import math
 import sys
 import os
 import copy
-import psyco
-psyco.full()
+#import psyco
+#psyco.full()
 
 #add collision detection
 class Eval:
-	def __init__(self,aSystem, maxMark):
-		self.dt=.2
+	def __init__(self,aSystem, maxMark=10000, dt = .2):
+		self.dt=dt
 		self.system = aSystem
 		self.maxMark=maxMark
 		self.fitness=self.system.evaluate(self.system.bodies)

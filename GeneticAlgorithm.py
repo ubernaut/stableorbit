@@ -3,16 +3,16 @@ import Eval
 import sxr_server
 import random
 import os
-import psyco
-psyco.full()
+#import psyco
+#psyco.full()
 from Eval import Eval
 from orbitSystem import System
 
 class GeneticAlgorithm:
-	def __init__(self):
+	def __init__(self, newMaxMark):
 		self.population =[]
-		self.maxMark = 100000;
-		self.popSize = 5
+		self.maxMark = newMaxMark;
+		self.popSize = 1
 		self.alphaRate= 1
 		while len(self.population)<self.popSize:
 			aSystem=System(len(self.population))

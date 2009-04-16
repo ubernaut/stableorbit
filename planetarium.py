@@ -12,8 +12,8 @@ from orbitSystem import System
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
-import psyco
-psyco.full()
+#import psyco
+#psyco.full()
 
 class Universe(DirectObject):
 	def __init__(self, neweval, dt= .02):
@@ -23,14 +23,14 @@ class Universe(DirectObject):
 		self.bodies = {}
                 self.evaluator= neweval
                 self.loadPlanets()
-		base.camLens.setFar(1000000000000)
+		base.camLens.setFar(1000000000000000000000)
 		taskMgr.add(self.move,"move")
 	def loadPlanets(self):
                 for body in self.evaluator.system.bodies:                        
 			body.node = render.attachNewNode(body.name)
 			body.sphere = loader.loadModelCopy("models/planet_sphere")			
 			body.sphere.reparentTo(body.node)
-			body.sphere.setScale(body.mass)
+			body.sphere.setScale((.01 * body.mass) +.2)
 			if body.mass < 0.1 :
 				body.texture = loader.loadTexture("models/neptune.jpg")
 			elif body.mass >= 0.1 and body.mass < .2:
