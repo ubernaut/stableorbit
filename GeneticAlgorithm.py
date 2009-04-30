@@ -1,6 +1,6 @@
 import orbitSystem
 import Eval
-import sxr_server
+import solarServer
 import random
 import os
 #import psyco
@@ -9,7 +9,7 @@ from Eval import Eval
 from orbitSystem import System
 
 class GeneticAlgorithm:
-	def __init__(self, newMaxMark):
+	def __init__(self, newMaxMark=1000):
 		self.population =[]
 		self.maxMark = newMaxMark;
 		self.popSize = 1

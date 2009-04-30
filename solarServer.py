@@ -1,12 +1,15 @@
-#Server code sxr_server.py
+#Server code solarClient
 import orbitSystem
 import cPickle
 import SimpleXMLRPCServer
+import sys
+sys.path.append('./beta')
 import StableOrbitDAO
+
 import os
 from orbitSystem import System
 
-class GalaxyServer(object):
+class solarServer(object):
     def __init__(self):
         import string
         self.python_string = string
@@ -32,7 +35,7 @@ class GalaxyServer(object):
         #StableOrbitDAO.insertSystem(xfile)
   
 if __name__=='__main__':
-    server = SimpleXMLRPCServer.SimpleXMLRPCServer(("192.168.1.100", 8000))
-    server.register_instance(GalaxyServer())
+    server = SimpleXMLRPCServer.SimpleXMLRPCServer(("127.0.0.1", 8000))
+    server.register_instance(solarServer())
     server.serve_forever()
     
