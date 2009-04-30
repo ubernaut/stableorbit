@@ -14,7 +14,9 @@ struct Body
 
 typedef struct System {
   int N;
-  struct Body bodies[60];
+  int bodyCount;
+  struct Body * bodies;
+	
 } System;
 
 void update_position(System* p_system, double dt)

@@ -32,7 +32,7 @@ class GalaxyServer(object):
         #StableOrbitDAO.insertSystem(xfile)
   
 if __name__=='__main__':
-    server = SimpleXMLRPCServer.SimpleXMLRPCServer(("localhost", 8000))
+    server = SimpleXMLRPCServer.SimpleXMLRPCServer(("192.168.1.100", 8000))
     server.register_instance(GalaxyServer())
     server.serve_forever()
     

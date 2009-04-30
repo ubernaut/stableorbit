@@ -12,7 +12,8 @@ from orbitSystem import System
 from Eval import Eval
 
 class solarClient(object):
-    def __init__(self, xString = 'http://localhost:8000', scoreThresh=1):
+    def __init__(self, xString = 'http://192.168.1.106:8000', 
+scoreThresh=1):
         self.server = xmlrpclib.Server(xString)
         self.xfile = self.server.getSystem()
         self.mySystem = cPickle.loads(self.xfile)
