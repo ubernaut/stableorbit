@@ -27,21 +27,22 @@ class solarServer(object):
         #print xfile.read()
     def insertSystem(self, xfile):# playerName, fitness, iterations):
         print"connection acquired"
-        print "saving system"
         os.chdir('data')
-        saveFile = open('system'+str(self.seedcount)+'.sys', "w+")
+        sysName = 'system'+str(self.seedcount)+'.sys'
+        print "saving system as:"
+        print sysName
+        saveFile = open(sysName, "w+")
         saveFile.write(xfile)
         saveFile.close()
         os.chdir("..")
-        return 'system'+str(self.seedcount)
+        return sysName
     def retrieveSystem(self, sysName):
         print "recieved request to retrieve system"
         print sysName
         os.chdir('data')
-        saveFile = open(sysName+'.sys', "w+")
-        xfile = saveFile.read()
-        saveFile.close()
+        xfile = open(sysName+'.sys').read()
         os.chdir("..")
+        print "sending system"
         return xfile
         #print xfile
         #StableOrbitDAO.insertSystem(xfile)
