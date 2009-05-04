@@ -25,8 +25,10 @@ class Body(object):
 		del self.position
 		del self.velocity
 		del self.acceleration
+       
+                
 class Point(object):
-        def __init(self, position_data):
+        def __init__(self, position_data):
 		self.x=float(position_data[0])
 		self.y=float(position_data[1])
 		self.z=float(position_data[2])
@@ -34,6 +36,10 @@ class Point(object):
 		self.x=0
 		self.y=0
 		self.z=0
+#class Star(object):
+#        def __init__(self, aPos=Point([1,1,1]), aName="default"):
+#                self.pos = aPos
+#                self.name = aName
                 
 class Position(object):
 	def __init__ (self,position_data):
@@ -58,6 +64,7 @@ class System(object):
 	def __init__(self, seed, starcount=1, bodycount=2, abodyDistance=3, abodySpeed=0.05):
                 random.seed = seed
                 self.seed = seed
+                #self.star = Star()
 		self.starCount=starcount
 		self.bodyCount= bodycount
 		self.bodies=[]
@@ -71,8 +78,7 @@ class System(object):
 		self.avgStability=0.5 - self.evaluate(self.bodies)
 	def build(self):
 		bodies=self.bodies
-		#N=random.randint(4,self.bodyCount)
-                N=self.bodyCount
+		N=self.bodyCount
 		for i in range(0,N):
 			body_data=[]
 			body_data.append("body_" + str(i))
@@ -90,28 +96,7 @@ class System(object):
 					body_data.append(random.uniform(-self.bodySpeed,self.bodySpeed))
 			body=Body(body_data)
 			bodies.append(body)
-##	def buildPrime(self):
-##		bodies=self.bodies
-##		random.seed = self.seed
-##                body_data=[]
-##                body_data.append("star_" + "0")
-##                body_data.append(random.uniform(.8,5))
-##                for j in range(0,3):
-##                        body_data.append(random.uniform(-.003,.003))
-##                for j in range(0,3):
-##                        body_data.append(random.uniform(-.001,.001))
-##                body=Body(body_data)
-##                self.bodies.append(body)
-##		planet_n=random.randint(20,40)
-##		for i in range(0,planet_n):
-##			body_data.append("body_" + str(i))
-##			body_data.append(random.uniform(.02,0.5))
-##			for j in range(0,3):
-##				body_data.append(random.uniform(-20,20))
-##			for j in range(0,3):
-##				body_data.append(random.uniform(-1,1))
-##			abody=Body(body_data)
-##			self.bodies.append(abody)
+
 	def mutate(self, alphaMass, alphaPosition, alphaVelocity):
 		whichBody=random.randint(0,len(self.bodies)-1)
 		oldPosition =copy.deepcopy(self.bodies[whichBody].position)

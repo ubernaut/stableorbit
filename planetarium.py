@@ -30,7 +30,7 @@ class Universe(DirectObject):
 			body.node = render.attachNewNode(body.name)
 			body.sphere = loader.loadModelCopy("models/planet_sphere")			
 			body.sphere.reparentTo(body.node)
-			body.sphere.setScale((.01 * body.mass) +.2)
+			body.sphere.setScale((.05 * body.mass) +.1)
 			if body.mass < 0.1 :
 				body.texture = loader.loadTexture("models/neptune.jpg")
 			elif body.mass >= 0.1 and body.mass < .2:
