@@ -12,10 +12,13 @@ from orbitSystem import System
 from Eval import Eval
 
 class solarClient(object):
-    def __init__(self, xString='http://bamdastard.kicks-ass.net:8000', scoreThresh=1):
+    def __init__(self, xString='http://bamdastard.kicks-ass.net:8000', scoreThresh=1, sysName="none"):
+        if sysName != "none":
+            self.xString = xString
+            self.sysName = sysName
+            self.retrieveSystem()
         if xString == "standalone":
-                runLocal()
-       # for (i=0;i<10;i++):   
+                runLocal()   
         try:
             print "connecting to server "+xString
             self.server = xmlrpclib.Server(xString)
@@ -31,18 +34,41 @@ class solarClient(object):
                 self.Evaluator = Eval(self.mySystem, 1000)
                 print "calculating score"
                 self.score = self.Evaluator.evaluate()
-                print "system stability score = "+self.score
-            print"found acceptable system"
-            self.server.insertSystem(self.xfile)
-            print self.server.retrieveSystem("test request")
+                print "system stability score = "
+                print self.score
+            print "found acceptable system"
+            print "recording system as"
+            systemName = self.server.insertSystem(self.xfile)
+            print systemName
+            print self.xfile
+            print "launching planetarium.. .  .    .        ."
             self.planetWindow = Universe(self.Evaluator)
             run()
         except:
             print "oops, there was an error"
-            #self.runLocal()
-      
+            self.runLocal()
+    def retrieveSystem(self):
+        print "connecting to server "
+        print self.xString
+        self.server = xmlrpclib.Server(self.xString)
+        print "attempting to retrieve and launch system: "
+        print self.sysName
+        self.xfile = self.server.retrieveSystem(self.sysName)
+        print "unpacking system"
+        self.mySystem = cPickle.loads(self.xfile)
+        print "launching evaluator"
+        self.Evaluator = Eval(self.mySystem, 1000)
+        print "calculating score"
+        self.score = self.Evaluator.evaluate()
+        print "system stability score = "
+        print self.score
+        print "launching planetarium.. .  .    .        ."
+        self.planetWindow = Universe(self.Evaluator)
+        run()
+
+        
     def runLocal(self):
-        print "unable to connect to server"
+        print "generating system locally"
         sysCount = 1
         self.mySystem = System(sysCount)
         self.Evaluator = Eval(self.mySystem, 1000)
@@ -54,11 +80,10 @@ class solarClient(object):
             self.score = self.Evaluator.evaluate()
             print "system stability score = "+self.score
             sysCount+=1
+        print "launching planetarium.. .  .    .        ."
         self.planetWindow = Universe(self.Evaluator)
         run()
+        
+#defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system6")
 
-defaultClient = solarClient("192.168.1.101:8000", 1)
-#defaultClient = solarClient("127.0.0.1:8000", 1)
-#defaultClient = solarClient("localhost:8000", 1)
-#defaultClient = solarClient()
-
+defaultClient = solarClient()
