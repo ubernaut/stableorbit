@@ -18,7 +18,8 @@ class solarClient(object):
             self.sysName = sysName
             self.retrieveSystem()
         if xString == "standalone":
-                runLocal()   
+            print "launching disconnected viewer"
+            runLocal()   
         try:
             print "connecting to server "+xString
             self.server = xmlrpclib.Server(xString)
@@ -36,11 +37,10 @@ class solarClient(object):
                 self.score = self.Evaluator.evaluate()
                 print "system stability score = "
                 print self.score
-            print "found acceptable system"
-            print "recording system as"
+            print "found acceptable system, recording system as: "
             systemName = self.server.insertSystem(self.xfile)
             print systemName
-            print self.xfile
+            #print self.xfile
             print "launching planetarium.. .  .    .        ."
             self.planetWindow = Universe(self.Evaluator)
             run()
@@ -84,7 +84,14 @@ class solarClient(object):
         print "launching planetarium.. .  .    .        ."
         self.planetWindow = Universe(self.Evaluator)
         run()
-        
-#defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system6")
 
-defaultClient = solarClient()
+#Uncomment the following line to retrieve "system6" from the server
+defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system10.sys")
+
+#Uncomment the following line if you want the client to run offline
+#defaultClient = solarClient("standalone",1, "none")
+
+#This is the default configuration which attempts to retrieve a system from
+#the server. Failure will cause the client to launch locally in disconnected mode
+#defaultClient = solarClient()
+

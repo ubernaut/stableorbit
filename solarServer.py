@@ -40,7 +40,7 @@ class solarServer(object):
         print "recieved request to retrieve system"
         print sysName
         os.chdir('data')
-        xfile = open(sysName+'.sys').read()
+        xfile = open(sysName).read()
         os.chdir("..")
         print "sending system"
         return xfile
@@ -48,11 +48,7 @@ class solarServer(object):
         #StableOrbitDAO.insertSystem(xfile)
   
 if __name__=='__main__':
-    xString = "192.168.1.101"
-#    xString = "127.0.0.1"
-
-#    xString = "75.95.157.198"
-
+    xString = "192.168.1.100"
 #    xString = "localhost"
     server = SimpleXMLRPCServer.SimpleXMLRPCServer((xString, 8000))
     server.register_instance(solarServer(xString))
