@@ -49,6 +49,7 @@ class solarServer(object):
   
 if __name__=='__main__':
     xString = "192.168.1.100"
+#    xString = "YOUR IP GOES HERE"
 #    xString = "localhost"
     server = SimpleXMLRPCServer.SimpleXMLRPCServer((xString, 8000))
     server.register_instance(solarServer(xString))
