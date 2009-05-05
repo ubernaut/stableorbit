@@ -78,7 +78,8 @@ class solarClient(object):
             self.mySystem = System(sysCount)
             self.Evaluator = Eval(self.mySystem, 1000)
             self.score = self.Evaluator.evaluate()
-            print "system stability score = "+self.score
+            print "system stability score = "
+            print self.score
             sysCount+=1
         print "launching planetarium.. .  .    .        ."
         self.planetWindow = Universe(self.Evaluator)
