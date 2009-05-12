@@ -12,14 +12,10 @@ class Body(object):
 	def __init__ (self,body_data):
 		self.name=body_data[0]
 		self.mass=float(body_data[1])
-		self.position=Position(body_data[2:5])
-		self.velocity=Velocity(body_data[5:8])
-                self.acceleration = Acceleration()
-
-##		self.position=Point(body_data[2:5])
-##		self.velocity=Point(body_data[5:8])
-##		self.acceleration=Point(body_data[5:8])
-##		self.acceleration.reset()
+		self.position=Point(body_data[2:5])
+		self.velocity=Point(body_data[5:8])
+		self.acceleration=Point(body_data[5:8])
+		self.acceleration.reset()
 	
 	def __del__(self):
 		del self.position
@@ -41,25 +37,7 @@ class Point(object):
 #                self.pos = aPos
 #                self.name = aName
                 
-class Position(object):
-	def __init__ (self,position_data):
-		self.x=float(position_data[0])
-		self.y=float(position_data[1])
-		self.z=float(position_data[2])
-class Velocity(object):
-	def __init__ (self,velocity_data):
-		self.x=float(velocity_data[0])
-		self.y=float(velocity_data[1])
-		self.z=float(velocity_data[2])
-class Acceleration(object):
-	def __init__(self):
-		self.x=0
-		self.y=0
-		self.z=0		
-	def reset(self):
-		self.x=0
-		self.y=0
-		self.z=0
+
 class System(object):
 	def __init__(self, seed, starcount=1, bodycount=2, abodyDistance=3, abodySpeed=0.05):
                 random.seed = seed
@@ -150,4 +128,33 @@ class System(object):
 		except:
 			return 100.0
 	def bodies(self):
-                return self.bodies  
+                return self.bodies
+
+        
+class GridSystem(object):
+        def __init__(self, bodies=[]):
+                self.count = bodies.length()
+                N = self.count
+                self.names[N] = "un-named"
+                self.mass[N] = 0.0
+                self.pos[N][3] = 0.0
+                self.vel[N][3] = 0.0
+                self.acc[N][3] = 0.0
+
+                i = 0;
+                for body in bodies:
+                        self.names[i] = body.name
+                        self.mass[i] = body.mass
+
+                        self.pos[i][0] = body.position.x
+                        self.pos[i][1] = body.position.y
+                        self.pos[i][2] = body.position.z
+                       
+                        self.vel[i][0] = body.velocity.x
+                        self.vel[i][1] = body.velocity.y
+                        self.vel[i][2] = body.velocity.z
+
+                        self.acc[i][0] = body.acceleration.x
+                        self.acc[i][1] = body.acceleration.y
+                        self.acc[i][2] = body.acceleration.z
+                        i+=1
