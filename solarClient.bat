@@ -1,1 +1,1 @@
-C:\Panda3D-1.6.1\python\python.exe solarClient.py
+C:\Panda3D-1.5.4\python\python.exe solarClient.py

@@ -6,9 +6,9 @@ import math
 import sys
 import os
 import copy
-import pycuda.autoinit
-import pycuda.driver as drv
-import numpy
+#import pycuda.autoinit
+#import pycuda.driver as drv
+#import numpy
 #import psyco
 #psyco.full()
 
