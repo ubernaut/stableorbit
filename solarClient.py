@@ -47,10 +47,18 @@ class solarClient(object):
         except:
             print "oops, there was an error"
             self.runLocal()
+    def getAllStars(self):
+        print "getting all star names"
+        allStars = self.server.getAllStars()
+        for star in allStars:
+            print star
+        return        
+
     def retrieveSystem(self):
         print "connecting to server "
         print self.xString
         self.server = xmlrpclib.Server(self.xString)
+        self.getAllStars()
         print "attempting to retrieve and launch system: "
         print self.sysName
         self.xfile = self.server.retrieveSystem(self.sysName)
@@ -88,10 +96,10 @@ class solarClient(object):
         run()
 
 #Uncomment the following line to retrieve "system6" from the server
-#defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system142.sys")
+defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system20.sys")
 #Uncomment the following line if you want the client to run offline
-#defaultClient = solarClient("standalone",1, "none")
+#defaultClient = solarClient("standalone")
 #This is the default configuration which attempts to retrieve a system from
 #the server. Failure will cause the client to launch locally in disconnected mode
-defaultClient = solarClient()
+#defaultClient = solarClient()
 

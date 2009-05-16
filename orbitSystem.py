@@ -15,6 +15,8 @@ class Body(object):
 		self.position=Point(body_data[2:5])
 		self.velocity=Point(body_data[5:8])
 		self.acceleration=Point(body_data[5:8])
+		self.orientation=Point()
+		self.angVelocity=Point()
 		self.acceleration.reset()
 	
 	def __del__(self):
@@ -24,8 +26,8 @@ class Body(object):
        
                 
 class Point(object):
-        def __init__(self, position_data):
-		self.x=float(position_data[0])
+        def __init__(self, position_data=[0,0,0]):
+                self.x=float(position_data[0])
 		self.y=float(position_data[1])
 		self.z=float(position_data[2])
 	def reset(self):

@@ -25,6 +25,13 @@ class solarServer(object):
         return aString
         #xfile = open("serialSystem.txt")
         #print xfile.read()
+    def getAllStars(self):
+        print "Get All Stars"
+        allStarFiles = os.listdir('data')
+        print allStarFiles
+        #os.chdir('..')
+        return allStarFiles
+        
     def insertSystem(self, xfile):# playerName, fitness, iterations):
         print"connection acquired"
         os.chdir('data')
