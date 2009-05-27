@@ -24,7 +24,11 @@ class Universe(DirectObject):
                 self.evaluator= neweval
                 self.loadPlanets()
 		base.camLens.setFar(1000000000000000000000)
-		taskMgr.add(self.move,"move")
+		base.disableMouse()
+		self.mouseX = 0# base.mouseWatcherNode.getMouseX()
+                self.mouseY = 0# base.mouseWatcherNode.getMouseY()
+                self.mouseBody=Body()
+                taskMgr.add(self.move,"move")
 	def loadPlanets(self):
                 for body in self.evaluator.system.bodies:                        
 			body.node = render.attachNewNode(body.name)
@@ -65,12 +69,29 @@ class Universe(DirectObject):
 	def move(self,task):
 		dt = self.dt
 		self.evaluator.evaluateStep()
+		self.updateMouse()
 		if self.starting: 
 			dt=dt/2.0
 			self.starting=False
 		for body in self.evaluator.system.bodies:
 			self.move_body(body,dt)
 		return Task.cont
+	def updateMouse(self):
+                if base.mouseWatcherNode.hasMouse():
+                        newX = base.mouseWatcherNode.getMouseX()
+                        newY = base.mouseWatcherNode.getMouseY()
+                        deltaX = self.mouseX - newX
+                        deltaY = self.mouseY - newY
+                        self.mouseX = newX
+                        self.mouseY = newY
+                        self.mouseBody.orientation.x += (20*deltaX) 
+                        self.mouseBody.orientation.y -= (20*deltaY) 
+                        base.camera.setPos(0,-20,0)
+                        base.camera.setHpr(self.mouseBody.orientation.x,self.mouseBody.orientation.y,0)
+                #targetBody.orientation.y+=deltaX
+                #targetBody.orientation.x+=deltaY
+
+                
 	def move_body(self,body,dt):
 		self.set_body_position(body,body.position.x,body.position.y,body.position.z)
 	def set_body_position(self,body,x,y,z):

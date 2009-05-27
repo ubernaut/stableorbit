@@ -96,9 +96,9 @@ class solarClient(object):
         run()
 
 #Uncomment the following line to retrieve "system6" from the server
-defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system20.sys")
+#defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system20.sys")
 #Uncomment the following line if you want the client to run offline
-#defaultClient = solarClient("standalone")
+defaultClient = solarClient("standalone")
 #This is the default configuration which attempts to retrieve a system from
 #the server. Failure will cause the client to launch locally in disconnected mode
 #defaultClient = solarClient()

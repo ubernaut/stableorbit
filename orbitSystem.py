@@ -9,7 +9,9 @@ import copy
 #psyco.full()
 #load from xml
 class Body(object):
-	def __init__ (self,body_data):
+	def __init__ (self,body_data=[]):
+                if body_data == []:
+                        body_data=["body",1,0,0,0,0,0,0,0,0,0]
 		self.name=body_data[0]
 		self.mass=float(body_data[1])
 		self.position=Point(body_data[2:5])
