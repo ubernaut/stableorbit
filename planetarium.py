@@ -20,7 +20,7 @@ from direct.task.Task import Task
                 
 class Universe(DirectObject):
 	def __init__(self, neweval, dt= .02):
-                self.zoom = .6
+                self.zoom = 1
                 self.evaluator = neweval
 		self.dt=dt
 		self.starting=True
@@ -91,7 +91,7 @@ class Universe(DirectObject):
                 self.player.model = loader.loadModelCopy("models/fighter")			
                 self.player.model.reparentTo(self.player.node)
                 self.player.texture = loader.loadTexture("models/texturemap.png")
-                self.player.model.setScale(.005)
+                self.player.model.setScale(.05)
                 self.player.node.setPos(self.player.position.x ,self.player.position.y ,self.player.position.z)
 #                self.player.model.reparentTo(render)                
 	def move(self,task):
@@ -124,9 +124,12 @@ class Universe(DirectObject):
                         dZ = hyp * math.sin(self.player.orientation.y) 
                         dX = hyp * math.cos(self.player.orientation.y)
                         base.camera.setHpr(self.player.orientation.x,self.player.orientation.y,0)
-                        base.camera.setPos(self.player.position.x+dX*-1,
-                                           self.player.position.y+dY*-1,
-                                           self.player.position.z+dZ*-1)
+##                        base.camera.setPos(self.player.position.x+dX*-1,
+##                                           self.player.position.y+dY*-1,
+##                                           self.player.position.z+dZ*-1)
+                        base.camera.setPos(self.player.position.x,
+                                           self.player.position.y+3,
+                                           self.player.position.z)                        
                         #base.camera.setHpr(self.player.orientation.x,self.player.orientation.y,0)                        
                         
                 #targetBody.orientation.y+=deltaX
