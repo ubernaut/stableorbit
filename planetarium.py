@@ -20,7 +20,7 @@ from direct.task.Task import Task
                 
 class Universe(DirectObject):
 	def __init__(self, neweval, dt= .02):
-                self.zoom = 1
+                self.zoom = 3
                 self.evaluator = neweval
 		self.dt=dt
 		self.starting=True
@@ -117,29 +117,28 @@ class Universe(DirectObject):
                         deltaY = self.mouseY - newY
                         self.mouseX = newX
                         self.mouseY = newY
-                        self.player.orientation.x += (200*deltaX) 
-                        self.player.orientation.y -= (200*deltaY)                        
-                        dY = self.zoom*math.sin(self.player.orientation.x) 
-                        hyp = self.zoom*math.cos(self.player.orientation.x)
-                        dZ = hyp * math.sin(self.player.orientation.y) 
-                        dX = hyp * math.cos(self.player.orientation.y)
-                        base.camera.setHpr(self.player.orientation.x,self.player.orientation.y,0)
-##                        base.camera.setPos(self.player.position.x+dX*-1,
-##                                           self.player.position.y+dY*-1,
-##                                           self.player.position.z+dZ*-1)
-                        base.camera.setPos(self.player.position.x,
-                                           self.player.position.y+3,
-                                           self.player.position.z)                        
-                        #base.camera.setHpr(self.player.orientation.x,self.player.orientation.y,0)                        
+                        self.player.orientation.x += (100*deltaX) 
+                        self.player.orientation.y -= (100*deltaY)                        
+                        dY = self.zoom*math.sin(self.player.orientation.y* (math.pi / 180.0)) 
+                        hyp = self.zoom*math.cos(self.player.orientation.y* (math.pi / 180.0))
+                        dZ = hyp * math.sin(self.player.orientation.x* (math.pi / 180.0)) 
+                        dX = hyp * math.cos(self.player.orientation.x* (math.pi / 180.0))
+#                        base.camera.setHpr(self.player.orientation.x,self.player.orientation.y,0)
+#                        base.camera.setPos(dX, dY, dZ)
+                        base.camera.setHpr(self.player.orientation.x* (math.pi / 180.0),self.player.orientation.y* (math.pi / 180.0),0)
+                        base.camera.setPos(self.player.position.x+dY,
+                                           self.player.position.y+dX,
+                                           self.player.position.z+dZ)                        
+                         
                         
                 #targetBody.orientation.y+=deltaX
                 #targetBody.orientation.x+=deltaY
 	def move_body(self,body,dt):
 		self.set_body_position(body,body.position.x,body.position.y,body.position.z)
 	def set_body_position(self,body,x,y,z):
-                body.node.setHpr(body.orientation.x, body.orientation.y, body.orientation.z)
+                #body.node.setHpr(body.orientation.x, body.orientation.y, body.orientation.z)
 		body.node.setPos(x,y,z)
-		
+                
         def set_conditions(data_folder):
         	a=dircache.listdir(data_folder)
                 try:
