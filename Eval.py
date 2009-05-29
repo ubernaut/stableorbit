@@ -93,6 +93,8 @@ class Eval:
 		epsilon = 0.01
 		for i in range(0,len(self.system.bodies)):
 			current_body=self.system.bodies[i]
+##			if current_body.name == "player":
+##                                print "accelerating player"
 			current_position=current_body.position
 			for j in range(0,i):
 				other_body=self.system.bodies[j]
