@@ -20,7 +20,7 @@ from direct.task.Task import Task
                 
 class Universe(DirectObject):
 	def __init__(self, neweval, dt= .02):
-                self.zoom = 3
+                self.zoom = 1
                 self.evaluator = neweval
 		self.dt=dt
 		self.starting=True
@@ -41,7 +41,7 @@ class Universe(DirectObject):
                 self.evaluator= neweval
                 self.evaluator.system.bodies.append(self.player)
                 self.loadPlanets()
-#                self.loadPlayer()
+                self.loadPlayer(self.mouseBody)
 #                self.bodies.append(self.player)
 		base.camLens.setFar(1000000000000000000000)
                 #base.camera.setHpr(0, 0, 0)
@@ -80,26 +80,26 @@ class Universe(DirectObject):
                                 body.sphere.setTexture(body.texture,1)
                                 body.node.setPos(body.position.x,body.position.y,body.position.z)
                         else:
-                                self.loadPlayer()
+                                self.loadPlayer(body)
 		self.sky = loader.loadModel("models/solar_sky_sphere")
 		self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
 		self.sky.setTexture(self.sky_tex, 1)
 		self.sky.reparentTo(render)
 		self.sky.setScale(20000)
-	def loadPlayer(self):
-                self.player.node = render.attachNewNode("player")
-                self.player.model = loader.loadModelCopy("models/fighter")			
-                self.player.model.reparentTo(self.player.node)
-                self.player.texture = loader.loadTexture("models/texturemap.png")
-                self.player.model.setScale(.05)
-                self.player.node.setPos(self.player.position.x ,self.player.position.y ,self.player.position.z)
+	def loadPlayer(self, abody):
+                abody.node = render.attachNewNode("player")
+                abody.model = loader.loadModelCopy("models/fighter")			
+                abody.model.reparentTo(self.player.node)
+                abody.texture = loader.loadTexture("models/texturemap.png")
+                abody.model.setScale(.01)
+                abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
 #                self.player.model.reparentTo(render)                
 	def move(self,task):
 		dt = self.dt
 		#base.camera.setPos(0,-22,0)
 		#base.camera.printPos()		
 		self.evaluator.evaluateStep()
-		self.updateMouse()
+		self.updateMouse(self.player)
 		if self.starting: 
 			dt=dt/2.0
 			self.starting=False
@@ -109,36 +109,43 @@ class Universe(DirectObject):
 ##                                print body.position.x , body.position.y, body.position.z
 			self.move_body(body,dt)
 		return Task.cont
-	def updateMouse(self):
+	def updateMouse(self, abody):
                 if base.mouseWatcherNode.hasMouse():
                         newX = base.mouseWatcherNode.getMouseX()
-                        newY = base.mouseWatcherNode.getMouseY()
+                        newY = base.mouseWatcherNode.getMouseY()                        
                         deltaX = self.mouseX - newX
                         deltaY = self.mouseY - newY
                         self.mouseX = newX
                         self.mouseY = newY
-                        self.player.orientation.x += (100*deltaX) 
-                        self.player.orientation.y -= (100*deltaY)                        
-                        dY = self.zoom*math.sin(self.player.orientation.y* (math.pi / 180.0)) 
-                        hyp = self.zoom*math.cos(self.player.orientation.y* (math.pi / 180.0))
-                        dZ = hyp * math.sin(self.player.orientation.x* (math.pi / 180.0)) 
-                        dX = hyp * math.cos(self.player.orientation.x* (math.pi / 180.0))
+                        abody.orientation.x += (200*deltaX) 
+                        abody.orientation.y -= (200*deltaY)                        
+                        dY = self.zoom*math.sin(abody.orientation.y* (math.pi / 180.0)) 
+                        hyp = self.zoom*math.cos(abody.orientation.y* (math.pi / 180.0))
+                        dZ = hyp * math.sin(abody.orientation.x* (math.pi / 180.0)) 
+                        dX = hyp * math.cos(abody.orientation.x* (math.pi / 180.0))
+                        abody.node.setHpr(abody.orientation.x* (math.pi / 180.0),
+                                          abody.orientation.y* (math.pi / 180.0),0)
+                        abody.node.setPos(abody.position.x,#+dY,
+                                          abody.position.y,#+dX,
+                                          abody.position.z)#+dZ)
+                        self.mouseBody.node.setPos(abody.position.x,
+                                                   abody.position.y,
+                                                   abody.position.z)
+
 #                        base.camera.setHpr(self.player.orientation.x,self.player.orientation.y,0)
 #                        base.camera.setPos(dX, dY, dZ)
-                        base.camera.setHpr(self.player.orientation.x* (math.pi / 180.0),self.player.orientation.y* (math.pi / 180.0),0)
-                        base.camera.setPos(self.player.position.x+dY,
-                                           self.player.position.y+dX,
-                                           self.player.position.z+dZ)                        
-                         
-                        
+#                        base.camera.setHpr(abody.orientation.x* (math.pi / 180.0),
+#                                           abody.orientation.y* (math.pi / 180.0),0)
+#                        base.camera.setPos(abody.position.x+dY,
+#                                           abody.position.y+dX,
+#                                           abody.position.z+dZ)              
                 #targetBody.orientation.y+=deltaX
                 #targetBody.orientation.x+=deltaY
 	def move_body(self,body,dt):
 		self.set_body_position(body,body.position.x,body.position.y,body.position.z)
 	def set_body_position(self,body,x,y,z):
-                #body.node.setHpr(body.orientation.x, body.orientation.y, body.orientation.z)
-		body.node.setPos(x,y,z)
-                
+                body.node.setHpr(body.orientation.x, body.orientation.y, body.orientation.z)
+		body.node.setPos(x,y,z)                
         def set_conditions(data_folder):
         	a=dircache.listdir(data_folder)
                 try:
@@ -154,10 +161,3 @@ class Universe(DirectObject):
                         body_data.insert(0,f)
                         body=Body(body_data)
                         bodies[body.name]=body
-
-
-
-
-
-	
-
