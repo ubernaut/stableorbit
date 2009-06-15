@@ -135,9 +135,9 @@ class Universe(DirectObject):
                         #                  abody.orientation.y* (math.pi / 180.0),0)
 
                         self.mouseBody.node.setHpr(abody.orientation.x, abody.orientation.y,0)
-                        self.mouseBody.node.setPos(abody.position.x+dX,
-                                                   abody.position.y+dY,
-                                                   abody.position.z+dZ)
+                        self.mouseBody.node.setPos(abody.position.x-dX,
+                                                   abody.position.y-dY,
+                                                   abody.position.z-dZ)
 
 ##                        base.camera.setHpr(abody.orientation.x,
 ##                                           abody.orientation.y,0)
