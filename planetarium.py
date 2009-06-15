@@ -124,8 +124,8 @@ class Universe(DirectObject):
                         self.mouseY = newY
                         abody.orientation.x += (200*deltaX) 
                         abody.orientation.y -= (200*deltaY)                        
-                        dZ = self.zoom*math.sin((abody.orientation.y+180)*(math.pi / 180.0)) 
-                        hyp = self.zoom*math.cos((abody.orientation.y+180)*(math.pi / 180.0))
+                        dZ = self.zoom*math.sin((-abody.orientation.y+180)*(math.pi / 180.0)) 
+                        hyp = self.zoom*math.cos((-abody.orientation.y+180)*(math.pi / 180.0))
 ##                        dZ=0;
 ##                        hyp = self.zoom;
 
