@@ -126,8 +126,11 @@ class Universe(DirectObject):
                         abody.orientation.y -= (200*deltaY)                        
                         dZ = self.zoom*math.sin((abody.orientation.y+180)*(math.pi / 180.0)) 
                         hyp = self.zoom*math.cos((abody.orientation.y+180)*(math.pi / 180.0))
-                        dX = hyp * math.sin((abody.orientation.x+180)*(math.pi / 180.0)) 
-                        dY = hyp * math.cos((abody.orientation.x+180)*(math.pi / 180.0))
+##                        dZ=0;
+##                        hyp = self.zoom;
+
+                        dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0)) 
+                        dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
                         #abody.node.setHpr(abody.orientation.x* (math.pi / 180.0),
                         #                  abody.orientation.y* (math.pi / 180.0),0)
 
