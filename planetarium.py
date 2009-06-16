@@ -30,13 +30,13 @@ class Universe(DirectObject):
 		self.player = Body()
 		self.mouseBody = Body()
 		self.mouseBody.position.x = 0
-		self.mouseBody.position.y = 10
+		self.mouseBody.position.y = 5
 		self.mouseBody.position.z = 0
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
 		self.player.mass = .001
 		self.player.position.x=0
-		self.player.position.y=-20
+		self.player.position.y=-10
 		self.player.position.z=0
 #		self.loadPlayer()
                 self.evaluator= neweval
@@ -98,7 +98,7 @@ class Universe(DirectObject):
                         abody.texture = loader.loadTexture("models/texturemap.png")
                 elif abody.name == "mouse":
                         abody.texture = loader.loadTexture("models/sun.jpg")
-                abody.model.setScale(.05)
+                abody.model.setScale(.01)
                 
                 abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
 #                self.player.model.reparentTo(render)                
@@ -134,16 +134,16 @@ class Universe(DirectObject):
                         #abody.node.setHpr(abody.orientation.x* (math.pi / 180.0),
                         #                  abody.orientation.y* (math.pi / 180.0),0)
 
-                        self.mouseBody.node.setHpr(abody.orientation.x, abody.orientation.y,0)
-                        self.mouseBody.node.setPos(abody.position.x-dX,
-                                                   abody.position.y-dY,
-                                                   abody.position.z-dZ)
+##                        self.mouseBody.node.setHpr(abody.orientation.x, abody.orientation.y,0)
+##                        self.mouseBody.node.setPos(abody.position.x-dX,
+##                                                   abody.position.y-dY,
+##                                                   abody.position.z-dZ)
 
-##                        base.camera.setHpr(abody.orientation.x,
-##                                           abody.orientation.y,0)
-##                        base.camera.setPos(abody.position.x+dY,
-##                                           abody.position.y+dX,
-##                                           abody.position.z+dZ)              
+                        base.camera.setHpr(abody.orientation.x,
+                                           abody.orientation.y,0)
+                        base.camera.setPos(abody.position.x-dX,
+                                           abody.position.y-dY,
+                                           abody.position.z-dZ)              
 
 	def move_body(self,body,dt):
 		self.set_body_position(body,body.position.x,body.position.y,body.position.z)
