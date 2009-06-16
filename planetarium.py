@@ -29,14 +29,14 @@ class Universe(DirectObject):
 #		self.bodies = []#{}
 		self.player = Body()
 		self.mouseBody = Body()
-		self.mouseBody.position.x = 0
-		self.mouseBody.position.y = 5
-		self.mouseBody.position.z = 0
+##		self.mouseBody.position.x = 0
+##		self.mouseBody.position.y = 5
+##		self.mouseBody.position.z = 0
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
 		self.player.mass = .001
 		self.player.position.x=0
-		self.player.position.y=-10
+		self.player.position.y=-5
 		self.player.position.z=0
 #		self.loadPlayer()
                 self.evaluator= neweval
@@ -83,7 +83,7 @@ class Universe(DirectObject):
                         else:
                                 print "yo"
                                 self.loadPlayer(body)
-                                self.loadPlayer(self.mouseBody)
+#                                self.loadPlayer(self.mouseBody)
                 #self.loadPlayer(self.mouseBody)
 		self.sky = loader.loadModel("models/solar_sky_sphere")
 		self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
