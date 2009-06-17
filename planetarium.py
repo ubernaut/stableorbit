@@ -17,36 +17,29 @@ from direct.task.Task import Task
 ##class Player(object):
 ##        def __init__(self):
 ##                self.position = Point()
-                
+
 class Universe(DirectObject):
 	def __init__(self, neweval, dt= .02):
-                self.zoom = 3
+                self.zoom = 1.1
                 self.evaluator = neweval
 		self.dt=dt
 		self.starting=True
-		self.mouseX = 0# base.mouseWatcherNode.getMouseX()
-                self.mouseY = 0# base.mouseWatcherNode.getMouseY()
-#		self.bodies = []#{}
+		self.mouseX = 0
+                self.mouseY = 0
 		self.player = Body()
 		self.mouseBody = Body()
-##		self.mouseBody.position.x = 0
-##		self.mouseBody.position.y = 5
-##		self.mouseBody.position.z = 0
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
 		self.player.mass = .001
 		self.player.position.x=0
 		self.player.position.y=-5
 		self.player.position.z=0
-#		self.loadPlayer()
                 self.evaluator= neweval
                 self.evaluator.system.bodies.append(self.player)                
                 self.loadPlanets()
-                
-#                self.bodies.append(self.player)
 		base.camLens.setFar(1000000000000000000000)
-                #base.camera.setHpr(0, 0, 0)
 		taskMgr.add(self.move,"move")
+		
 	def loadPlanets(self):
                 for body in self.evaluator.system.bodies:
                         if body.name != "player":
@@ -83,8 +76,6 @@ class Universe(DirectObject):
                         else:
                                 print "yo"
                                 self.loadPlayer(body)
-#                                self.loadPlayer(self.mouseBody)
-                #self.loadPlayer(self.mouseBody)
 		self.sky = loader.loadModel("models/solar_sky_sphere")
 		self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
 		self.sky.setTexture(self.sky_tex, 1)
@@ -98,14 +89,10 @@ class Universe(DirectObject):
                         abody.texture = loader.loadTexture("models/texturemap.png")
                 elif abody.name == "mouse":
                         abody.texture = loader.loadTexture("models/sun.jpg")
-                abody.model.setScale(.01)
-                
+                abody.model.setScale(.003)
                 abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
-#                self.player.model.reparentTo(render)                
 	def move(self,task):
 		dt = self.dt
-		#base.camera.setPos(0,-22,0)
-		#base.camera.printPos()
 		self.evaluator.evaluateStep()
 		self.updateMouse(self.player)
 		if self.starting: 
@@ -126,14 +113,8 @@ class Universe(DirectObject):
                         abody.orientation.y -= (200*deltaY)                        
                         dZ = self.zoom*math.sin((-abody.orientation.y+180)*(math.pi / 180.0)) 
                         hyp = self.zoom*math.cos((-abody.orientation.y+180)*(math.pi / 180.0))
-##                        dZ=0;
-##                        hyp = self.zoom;
-
                         dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0)) 
                         dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
-                        #abody.node.setHpr(abody.orientation.x* (math.pi / 180.0),
-                        #                  abody.orientation.y* (math.pi / 180.0),0)
-
 ##                        self.mouseBody.node.setHpr(abody.orientation.x, abody.orientation.y,0)
 ##                        self.mouseBody.node.setPos(abody.position.x-dX,
 ##                                                   abody.position.y-dY,
