@@ -9,14 +9,11 @@ import direct.directbase.DirectStart
 import math
 from orbitSystem import Body
 from orbitSystem import System
+import direct.directbase.DirectStart
+from direct.showbase import DirectObject
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
-#import psyco
-#psyco.full()
-##class Player(object):
-##        def __init__(self):
-##                self.position = Point()
 
 class Universe(DirectObject):
 	def __init__(self, neweval, dt= .02):
@@ -26,11 +23,14 @@ class Universe(DirectObject):
 		self.starting=True
 		self.mouseX = 0
                 self.mouseY = 0
-		self.player = Body()
+                self.dX=0
+                self.dY=0
+                self.dZ=0
+                self.player = Body()
 		self.mouseBody = Body()
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
-		self.player.mass = .001
+		self.player.mass = .0001
 		self.player.position.x=0
 		self.player.position.y=-5
 		self.player.position.z=0
@@ -39,7 +39,7 @@ class Universe(DirectObject):
                 self.loadPlanets()
 		base.camLens.setFar(1000000000000000000000)
 		taskMgr.add(self.move,"move")
-		
+
 	def loadPlanets(self):
                 for body in self.evaluator.system.bodies:
                         if body.name != "player":
@@ -91,7 +91,15 @@ class Universe(DirectObject):
                         abody.texture = loader.loadTexture("models/sun.jpg")
                 abody.model.setScale(.003)
                 abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
+        def exit(self):
+                quit()
+                return
 	def move(self,task):
+                self.accept("mouse1", self.handleMouseClick)
+                self.accept("mouse2", self.handleMouse2)
+		self.accept("wheel_up", self.zoomIn)
+		self.accept("wheel_down", self.zoomOut)
+		self.accept("escape", self.exit)
 		dt = self.dt
 		self.evaluator.evaluateStep()
 		self.updateMouse(self.player)
@@ -101,6 +109,25 @@ class Universe(DirectObject):
 		for body in self.evaluator.system.bodies:
 			self.move_body(body,dt)
 		return Task.cont
+	
+	def handleMouse2(self):
+                print "deccelerating ship"
+                self.player.acceleration.x-=self.dX/10
+                self.player.acceleration.y-=self.dY/10
+                self.player.acceleration.z-=self.dZ/10
+
+        def handleMouseClick(self):
+                print "accelerating ship"
+                self.player.acceleration.x+=self.dX/10
+                self.player.acceleration.y+=self.dY/10
+                self.player.acceleration.z+=self.dZ/10
+                
+	def zoomIn(self):
+                self.zoom*=0.9
+                return
+        def zoomOut(self):
+                self.zoom*=1.1
+                return
 	def updateMouse(self, abody):
                 if base.mouseWatcherNode.hasMouse():
                         newX = base.mouseWatcherNode.getMouseX()
@@ -111,20 +138,15 @@ class Universe(DirectObject):
                         self.mouseY = newY
                         abody.orientation.x += (200*deltaX) 
                         abody.orientation.y -= (200*deltaY)                        
-                        dZ = self.zoom*math.sin((-abody.orientation.y+180)*(math.pi / 180.0)) 
+                        self.dZ = self.zoom*math.sin((-abody.orientation.y+180)*(math.pi / 180.0)) 
                         hyp = self.zoom*math.cos((-abody.orientation.y+180)*(math.pi / 180.0))
-                        dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0)) 
-                        dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
-##                        self.mouseBody.node.setHpr(abody.orientation.x, abody.orientation.y,0)
-##                        self.mouseBody.node.setPos(abody.position.x-dX,
-##                                                   abody.position.y-dY,
-##                                                   abody.position.z-dZ)
-
+                        self.dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0)) 
+                        self.dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
                         base.camera.setHpr(abody.orientation.x,
                                            abody.orientation.y,0)
-                        base.camera.setPos(abody.position.x-dX,
-                                           abody.position.y-dY,
-                                           abody.position.z-dZ)              
+                        base.camera.setPos(abody.position.x-self.dX,
+                                           abody.position.y-self.dY,
+                                           abody.position.z-self.dZ)              
 
 	def move_body(self,body,dt):
 		self.set_body_position(body,body.position.x,body.position.y,body.position.z)
