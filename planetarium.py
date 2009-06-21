@@ -39,7 +39,8 @@ class Universe(DirectObject):
                 self.loadPlanets()
 		base.camLens.setFar(1000000000000000000000)
 		taskMgr.add(self.move,"move")
-
+        
+        
 	def loadPlanets(self):
                 for body in self.evaluator.system.bodies:
                         if body.name != "player":
@@ -76,11 +77,20 @@ class Universe(DirectObject):
                         else:
                                 print "yo"
                                 self.loadPlayer(body)
-		self.sky = loader.loadModel("models/solar_sky_sphere")
+		self.sky = loader.loadModel("models/planet_sphere")
 		self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
 		self.sky.setTexture(self.sky_tex, 1)
 		self.sky.reparentTo(render)
 		self.sky.setScale(20000)
+	def loadRoid(self, abody):
+                self.evaluator.system.bodies.append(abody)
+                abody.node = render.attachNewNode(abody.name)
+                abody.model = loader.loadModelCopy("models/planet_sphere")			
+                abody.model.reparentTo(abody.node)
+                abody.texture = loader.loadTexture("models/pluto.jpg")
+                abody.model.setScale(.01)
+                abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
+                return
 	def loadPlayer(self, abody):
                 abody.node = render.attachNewNode(abody.name)
                 abody.model = loader.loadModelCopy("models/fighter")			
@@ -94,12 +104,14 @@ class Universe(DirectObject):
         def exit(self):
                 quit()
                 return
+                                  
 	def move(self,task):
                 self.accept("mouse1", self.handleMouseClick)
                 self.accept("mouse2", self.handleMouse2)
 		self.accept("wheel_up", self.zoomIn)
 		self.accept("wheel_down", self.zoomOut)
 		self.accept("escape", self.exit)
+		self.accept("space",self.handleSpace)
 		dt = self.dt
 		self.evaluator.evaluateStep()
 		self.updateMouse(self.player)
@@ -109,7 +121,24 @@ class Universe(DirectObject):
 		for body in self.evaluator.system.bodies:
 			self.move_body(body,dt)
 		return Task.cont
-	
+                                  
+	def handleSpace(self):                                  
+                print "spaceBar"
+                abody=Body()
+                abody.velocity.x = self.player.velocity.x
+                abody.velocity.y = self.player.velocity.y
+                abody.velocity.z = self.player.velocity.z
+                abody.position.x = self.player.position.x
+                abody.position.y = self.player.position.y
+                abody.position.z = self.player.position.z
+                abody.acceleration.x += self.dX/5
+                abody.acceleration.y += self.dY/5
+                abody.acceleration.z += self.dZ/5
+                
+                abody.mass =0.1
+                self.loadRoid(abody)                                  
+                return
+        
 	def handleMouse2(self):
                 print "deccelerating ship"
                 self.player.acceleration.x-=self.dX/10
@@ -118,9 +147,9 @@ class Universe(DirectObject):
 
         def handleMouseClick(self):
                 print "accelerating ship"
-                self.player.acceleration.x+=self.dX/10
-                self.player.acceleration.y+=self.dY/10
-                self.player.acceleration.z+=self.dZ/10
+                self.player.acceleration.x+=self.dX/50
+                self.player.acceleration.y+=self.dY/50
+                self.player.acceleration.z+=self.dZ/50
                 
 	def zoomIn(self):
                 self.zoom*=0.9
@@ -136,8 +165,8 @@ class Universe(DirectObject):
                         deltaY = self.mouseY - newY
                         self.mouseX = newX
                         self.mouseY = newY
-                        abody.orientation.x += (200*deltaX) 
-                        abody.orientation.y -= (200*deltaY)                        
+                        abody.orientation.x += (360*deltaX) 
+                        abody.orientation.y -= (360*deltaY)                        
                         self.dZ = self.zoom*math.sin((-abody.orientation.y+180)*(math.pi / 180.0)) 
                         hyp = self.zoom*math.cos((-abody.orientation.y+180)*(math.pi / 180.0))
                         self.dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0)) 
