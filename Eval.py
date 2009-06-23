@@ -52,8 +52,8 @@ class Eval:
 		self.dt=dt
 		self.system = aSystem
 		self.maxMark=maxMark
-		self.fitness=self.system.evaluate(self.system.bodies)
-		self.sumFit=self.system.evaluate(self.system.bodies)
+		self.fitness=self.system.evaluate()
+		self.sumFit=self.system.evaluate()
 		self.t=0
 		self.count=1
 		#self.gridSys = GridSystem(self.system.bodies)
@@ -65,7 +65,7 @@ class Eval:
                         self.calculate_velocity(body,self.dt)
                         self.calculate_position(body,self.dt)
                         body.acceleration.reset()
-			self.sumFit+=self.system.evaluate(self.system.bodies)
+			self.sumFit+=self.system.evaluate()
 			self.t+=self.dt
 		self.count+=1	
 
@@ -76,7 +76,7 @@ class Eval:
 		self.sumFit=0
 		while self.count<self.maxMark:
                         self.evaluateStep()			
-		self.fitness = self.system.evaluate(self.system.bodies)
+		self.fitness = self.system.evaluate()
 		self.avgStability = self.sumFit/self.count
 		return self.avgStability
 	def accelerateCuda(self):

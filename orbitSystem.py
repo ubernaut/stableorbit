@@ -55,9 +55,25 @@ class System(object):
 		self.build()
 
 		print "bodyCount: "+`len(self.bodies)`
-		self.stability = 0.5 - self.evaluate(self.bodies)
+		self.stability = 0.5 - self.evaluate()
 		self.printed=False
-		self.avgStability=0.5 - self.evaluate(self.bodies)
+		self.avgStability=0.5 - self.evaluate()
+	def getStar(self, body_data):
+                body_data.append(random.uniform(1,10))
+                for j in range(0,3):
+                        body_data.append(random.uniform(-1.5,1.5))
+		for j in range(0,3):
+			body_data.append(random.uniform(-0.001,0.001))
+		return body_data
+	def getPlanet(self, body_data):
+#                body_data.append("body_"+len(self.bodies))
+                body_data.append(random.uniform(.01,1))
+                for j in range(0,3):
+                        body_data.append(random.uniform(-self.bodyDistance,self.bodyDistance))
+                for j in range(0,3):
+                        body_data.append(random.uniform(-self.bodySpeed,self.bodySpeed))
+                return body_data
+                
 	def build(self):
 		bodies=self.bodies
 		N=self.bodyCount
@@ -65,19 +81,27 @@ class System(object):
 			body_data=[]
 			body_data.append("body_" + str(i))
 			if i < self.starCount:
-				body_data.append(random.uniform(1,10))
-				for j in range(0,3):
-					body_data.append(random.uniform(-1.5,1.5))
-				for j in range(0,3):
-					body_data.append(random.uniform(-0.001,0.001))
+                                body_data = self.getStar(body_data)
+
 			else:
-				body_data.append(random.uniform(.01,1))
-				for j in range(0,3):
-					body_data.append(random.uniform(-self.bodyDistance,self.bodyDistance))
-				for j in range(0,3):
-					body_data.append(random.uniform(-self.bodySpeed,self.bodySpeed))
+                                body_data = self.getPlanet(body_data)
+
 			body=Body(body_data)
 			bodies.append(body)
+	def addPlanet(self):
+                print "adding body"
+                body_data = []
+                body_data.append("body_X")
+                body_data = self.getPlanet(body_data)
+                aBody = Body(body_data)
+                self.bodies.append(aBody)
+                print "new stability"
+                print self.evaluate()
+                while self.evaluate()>1:
+                        self.bodies.pop()
+                        self.addPlanet()
+                return
+                
 
 	def mutate(self, alphaMass, alphaPosition, alphaVelocity):
 		whichBody=random.randint(0,len(self.bodies)-1)
@@ -107,19 +131,19 @@ class System(object):
 		if self.bodies[whichBody].position.z>=30 or self.bodies[whichBody].position.z<=-30 or self.bodies[whichBody].position.x>=30 or self.bodies[whichBody].position.x<=-30 or self.bodies[whichBody].position.x>=30 or self.bodies[whichBody].position.x<=-30:
 			self.bodies[whichBody].position=oldPosition
 		self.stability = self.evaluate(self.bodies)
-	def evaluate(self,bodies):
+	def evaluate(self):
 		kinetic=0.0
 		potential=0.0
 		G=2.93558*10**-4
-		for body in bodies:
+		for body in self.bodies:
 			vel = body.velocity
 			vel_sq = (vel.x**2 + vel.y**2 + vel.z**2)
 			kinetic += 0.5*body.mass*vel_sq
-		for i in range(0,len(bodies)):
-			current_body=bodies[i]
+		for i in range(0,len(self.bodies)):
+			current_body=self.bodies[i]
 			current_position=current_body.position
 			for j in range(0,i):
-				other_body=bodies[j]
+				other_body=self.bodies[j]
 				other_position=other_body.position
 				d_x=(other_position.x-current_position.x)
 				d_y=(other_position.y-current_position.y)

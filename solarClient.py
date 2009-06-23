@@ -91,6 +91,12 @@ class solarClient(object):
             print "system stability score = "
             print self.score
             sysCount+=1
+        print "adding planets"
+        planetCount = 10
+        while len(self.mySystem.bodies)< planetCount:
+            self.mySystem.addPlanet()
+        print "number of bodies:"
+        print len(self.mySystem.bodies)
         print "launching planetarium.. .  .    .        ."
         self.planetWindow = Universe(self.Evaluator)
         run()
