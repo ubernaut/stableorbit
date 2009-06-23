@@ -30,7 +30,7 @@ class Universe(DirectObject):
 		self.mouseBody = Body()
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
-		self.player.mass = .0001
+		self.player.mass = 0000001
 		self.player.position.x=0
 		self.player.position.y=-10
 		self.player.position.z=0
@@ -159,7 +159,7 @@ class Universe(DirectObject):
                 abody.acceleration.x += self.dX/15
                 abody.acceleration.y += self.dY/15
                 abody.acceleration.z += self.dZ/15
-                abody.mass =0.1
+                abody.mass =0.00000001
                 self.loadRoid(abody)                                  
                 return
 
