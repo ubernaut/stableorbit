@@ -94,7 +94,7 @@ class solarClient(object):
         print "adding planets"
         planetCount = 5
         while len(self.mySystem.bodies)< planetCount:
-            self.mySystem.addPlanet()
+            self.mySystem.addSinglePlanet()
         print "number of bodies:"
         print len(self.mySystem.bodies)
         print "launching planetarium.. .  .    .        ."

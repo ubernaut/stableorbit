@@ -109,7 +109,7 @@ class Eval:
 					grav_mag = G/((radius+epsilon)**(3.0/2.0))
 				else:
                                         radius = 0.001
-                                        grav_mag = G/((radius+epsilon)**(3.0/2.0))
+                                        grav_mag = 0# G/((radius+epsilon)**(3.0/2.0))
 				grav_x=grav_mag*d_x
 				grav_y=grav_mag*d_y
 				grav_z=grav_mag*d_z

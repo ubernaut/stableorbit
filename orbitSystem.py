@@ -88,6 +88,27 @@ class System(object):
 
 			body=Body(body_data)
 			bodies.append(body)
+	def addSinglePlanet(self):
+                print "adding Body"
+                body_data = []
+                body_data.append("body_X")
+                body_data = self.getPlanet(body_data)
+                aBody = Body(body_data)
+                otherBodies = []
+                otherBodies.append(self.bodies[0])
+                otherBodies.append(aBody)
+                while self.evaluateBodies(otherBodies)>1:
+                        body_data = []
+                        body_data.append("body_X")
+                        body_data = self.getPlanet(body_data)
+                        aBody = Body(body_data)
+                        otherBodies = []
+                        otherBodies.append(self.bodies[0])
+                        otherBodies.append(aBody)
+                self.bodies.append(aBody)
+                
+
+                
 	def addPlanet(self):
                 print "adding body"
                 body_data = []
@@ -144,6 +165,30 @@ class System(object):
 			current_position=current_body.position
 			for j in range(0,i):
 				other_body=self.bodies[j]
+				other_position=other_body.position
+				d_x=(other_position.x-current_position.x)
+				d_y=(other_position.y-current_position.y)
+				d_z=(other_position.z-current_position.z)
+				radius = (d_x**2 + d_y**2 + d_z**2)**(0.5)
+				if radius >0 :
+					potential -= G*current_body.mass*other_body.mass/radius
+		try:	
+			return abs(kinetic/potential)
+		except:
+			return 100
+	def evaluateBodies(self, someBodies):
+		kinetic=0.0
+		potential=0.0
+		G=2.93558*10**-4
+		for body in someBodies:
+			vel = body.velocity
+			vel_sq = (vel.x**2 + vel.y**2 + vel.z**2)
+			kinetic += 0.5*body.mass*vel_sq
+		for i in range(0,len(someBodies)):
+			current_body=someBodies[i]
+			current_position=current_body.position
+			for j in range(0,i):
+				other_body=someBodies[j]
 				other_position=other_body.position
 				d_x=(other_position.x-current_position.x)
 				d_y=(other_position.y-current_position.y)
