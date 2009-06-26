@@ -61,13 +61,13 @@ class System(object):
 	def getStar(self, body_data):
                 body_data.append(random.uniform(1,10))
                 for j in range(0,3):
-                        body_data.append(random.uniform(-1.5,1.5))
+                        body_data.append(random.uniform(-.1,.1))
 		for j in range(0,3):
-			body_data.append(random.uniform(-0.001,0.001))
+			body_data.append(random.uniform(-0.0,0.0))
 		return body_data
 	def getPlanet(self, body_data):
 #                body_data.append("body_"+len(self.bodies))
-                body_data.append(random.uniform(.01,1))
+                body_data.append(random.uniform(.01,.5))
                 for j in range(0,3):
                         body_data.append(random.uniform(-self.bodyDistance,self.bodyDistance))
                 for j in range(0,3):
