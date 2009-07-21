@@ -92,7 +92,7 @@ class Universe(DirectObject):
 		
 	def loadRoid(self, abody):
                 if(len(self.player.bodies)>10):
-                        self.players.bodies.pop()
+                        self.player.bodies.pop()
                 self.player.bodies.append(abody)
                 self.evaluator.system.bodies.append(abody)
                 abody.node = render.attachNewNode(abody.name)
