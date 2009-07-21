@@ -39,6 +39,7 @@ class Universe(DirectObject):
 		self.player.position.x=0
 		self.player.position.y=-10
 		self.player.position.z=0
+		self.player.bodies=[]
                 self.evaluator= neweval
                 self.evaluator.system.bodies.append(self.player)                
                 self.loadPlanets()
@@ -90,6 +91,7 @@ class Universe(DirectObject):
                                 self.sky.reparentTo(render)
 		
 	def loadRoid(self, abody):
+                self.player.bodies.append(abody)
                 self.evaluator.system.bodies.append(abody)
                 abody.node = render.attachNewNode(abody.name)
                 abody.model = loader.loadModelCopy("models/planet_sphere")			
@@ -98,6 +100,19 @@ class Universe(DirectObject):
                 abody.model.setScale(.01)
                 abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
                 return
+        
+        def deloadRoid(self):
+                if(len(self.player.bodies) >0):
+                        abody = self.player.bodies.pop()
+                        self.evaluator.system.bodies.pop()
+                        abody.node.detachNode()
+                return
+#                abody.node = render.attachNewNode(abody.name)
+#                abody.model = loader.loadModelCopy("models/planet_sphere")			
+#                abody.model.reparentTo(abody.node)
+#                abody.texture = loader.loadTexture("models/pluto.jpg")
+#                abody.model.setScale(.01)
+#                abody.node.setPos(abody.position.x ,abody.position.y ,abody.posit
 	def loadPlayer(self, abody):
                 abody.node = render.attachNewNode(abody.name)
                 abody.model = loader.loadModelCopy("models/fighter")			
@@ -120,8 +135,8 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
-                self.accept("mouse1", self.handleMouseClick)
-                self.accept("mouse2", self.handleMouse2)
+                self.accept("mouse2", self.handleRightMouseClick)
+                self.accept("mouse1", self.handleLeftMouseClick)
 		self.accept("wheel_up", self.zoomIn)
 		self.accept("wheel_down", self.zoomOut)
 		self.accept("escape", self.exit)
@@ -163,7 +178,7 @@ class Universe(DirectObject):
                 self.player.acceleration.y-=self.dY/10
                 self.player.acceleration.z-=self.dZ/10
 
-        def handleMouseClick(self):
+        def handleLeftMouseClick(self):
                 print "impactor deployed"
                 abody=Body()
                 abody.velocity.x = self.player.velocity.x
@@ -178,6 +193,9 @@ class Universe(DirectObject):
                 abody.mass =0.00000001
                 self.loadRoid(abody)                                  
                 return
+        def handleRightMouseClick(self):
+                print "removing impactor"
+                self.deloadRoid()
 
                 
 	def zoomIn(self):
