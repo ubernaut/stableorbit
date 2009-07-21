@@ -8,7 +8,7 @@ import Eval
 import math
 from orbitSystem import Body
 from orbitSystem import System
-print "Enter 'f' for fullscreen"
+print "Enter 'f' 'Enter' for fullscreen or just 'Enter' for windowed"
 fullVar = raw_input()
 if(fullVar=="f"):
         from pandac.PandaModules import loadPrcFileData
