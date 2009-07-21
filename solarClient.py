@@ -1,10 +1,10 @@
 #Client code sxrclient.py
 import xmlrpclib
 import orbitSystem
-import planetarium
+#import planetarium
 import Eval
 import cPickle
-from planetarium import Universe
+#from planetarium import Universe
 from orbitSystem import Body
 from orbitSystem import System
 #import psyco
@@ -42,7 +42,8 @@ class solarClient(object):
             print systemName
             #print self.xfile
             print "launching planetarium.. .  .    .        ."
-            self.planetWindow = Universe(self.Evaluator)
+            import planetarium
+            self.planetWindow = planetarium.Universe(self.Evaluator)
             run()
         except:
             print "oops, there was an error"
@@ -71,7 +72,8 @@ class solarClient(object):
         print "system stability score = "
         print self.score
         print "launching planetarium.. .  .    .        ."
-        self.planetWindow = Universe(self.Evaluator)
+        import planetarium
+        self.planetWindow = planetarium.Universe(self.Evaluator)
         run()
     def runLocal(self):
         print "generating system locally"
@@ -98,7 +100,8 @@ class solarClient(object):
         print "number of bodies:"
         print len(self.mySystem.bodies)
         print "launching planetarium.. .  .    .        ."
-        self.planetWindow = Universe(self.Evaluator)
+        import planetarium
+        self.planetWindow = planetarium.Universe(self.Evaluator)
         run()
 
 #Uncomment the following line to retrieve "system6" from the server

@@ -5,15 +5,20 @@ import random
 import dircache
 import orbitSystem
 import Eval
-import direct.directbase.DirectStart
 import math
 from orbitSystem import Body
 from orbitSystem import System
-import direct.directbase.DirectStart
+print "Enter 'f' for fullscreen"
+fullVar = raw_input()
+if(fullVar=="f"):
+        from pandac.PandaModules import loadPrcFileData
+        loadPrcFileData("", "fullscreen 1")
 from direct.showbase import DirectObject
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
+import direct.directbase.DirectStart
+
 
 class Universe(DirectObject):
 	def __init__(self, neweval, dt= .02):
@@ -106,6 +111,13 @@ class Universe(DirectObject):
         def exit(self):
                 quit()
                 return
+        def fullscreen(self):
+                print "doh"
+
+##                if(self.DirectObject.ConfigVariableManager.fullscreen==0):
+##                        self.DirectObject.ConfigVariableManager.fullscreen=1
+##                else:
+##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
                 self.accept("mouse1", self.handleMouseClick)
@@ -116,6 +128,7 @@ class Universe(DirectObject):
 		self.accept("space",self.stop)
 		self.accept("d",self.brake)
 		self.accept("e",self.accelerate)
+		self.accept("f",self.fullscreen)
 		#self.accept("")
 		dt = self.dt
 		self.evaluator.evaluateStep()
