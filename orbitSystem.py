@@ -36,17 +36,18 @@ class Point(object):
 		self.x=0
 		self.y=0
 		self.z=0
-#class Star(object):
-#        def __init__(self, aPos=Point([1,1,1]), aName="default"):
-#                self.pos = aPos
-#                self.name = aName
-                
+class Star(object):
+        def __init__(self, aPos=Point([1,1,1]), aName="default", aPlayer="cos"):
+                self.pos = aPos
+                self.name = aName
+                self.player = aPlayer
+            
 
 class System(object):
 	def __init__(self, seed, starcount=1, bodycount=2, abodyDistance=3, abodySpeed=0.05):
                 random.seed = seed
                 self.seed = seed
-                #self.star = Star()
+                self.star = Star()
 		self.starCount=starcount
 		self.bodyCount= bodycount
 		self.bodies=[]

@@ -76,12 +76,14 @@ class Universe(DirectObject):
                                 body.node.setPos(body.position.x,body.position.y,body.position.z)
                         else:
                                 print "yo"
+                                self.sky = loader.loadModel("models/solar_sky_sphere")
+#                                self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
+                                self.sky_tex = loader.loadTexture("models/starGrid.jpg")
+                                self.sky.setTexture(self.sky_tex, 0)
+                                self.sky.setScale(100)
                                 self.loadPlayer(body)
-		self.sky = loader.loadModel("models/planet_sphere")
-		self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
-		self.sky.setTexture(self.sky_tex, 1)
-		self.sky.reparentTo(render)
-		self.sky.setScale(20000)
+                                self.sky.reparentTo(render)
+		
 	def loadRoid(self, abody):
                 self.evaluator.system.bodies.append(abody)
                 abody.node = render.attachNewNode(abody.name)
@@ -114,6 +116,7 @@ class Universe(DirectObject):
 		self.accept("space",self.stop)
 		self.accept("d",self.brake)
 		self.accept("e",self.accelerate)
+		#self.accept("")
 		dt = self.dt
 		self.evaluator.evaluateStep()
 		self.updateMouse(self.player)
