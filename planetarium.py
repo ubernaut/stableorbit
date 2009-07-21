@@ -135,7 +135,7 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
-                self.accept("mouse2", self.handleRightMouseClick)
+                self.accept("mouse3", self.handleRightMouseClick)
                 self.accept("mouse1", self.handleLeftMouseClick)
 		self.accept("wheel_up", self.zoomIn)
 		self.accept("wheel_down", self.zoomOut)
