@@ -91,6 +91,8 @@ class Universe(DirectObject):
                                 self.sky.reparentTo(render)
 		
 	def loadRoid(self, abody):
+                if(len(self.players.bodies)>10):
+                        self.players.bodies.pop()
                 self.player.bodies.append(abody)
                 self.evaluator.system.bodies.append(abody)
                 abody.node = render.attachNewNode(abody.name)
