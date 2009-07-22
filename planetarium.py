@@ -91,16 +91,15 @@ class Universe(DirectObject):
                                 self.sky.reparentTo(render)
 		
 	def loadRoid(self, abody):
-                if(len(self.player.bodies)>10):
-                        self.player.bodies.pop()
-                self.player.bodies.append(abody)
-                self.evaluator.system.bodies.append(abody)
-                abody.node = render.attachNewNode(abody.name)
-                abody.model = loader.loadModelCopy("models/planet_sphere")			
-                abody.model.reparentTo(abody.node)
-                abody.texture = loader.loadTexture("models/pluto.jpg")
-                abody.model.setScale(.01)
-                abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
+                if(len(self.player.bodies)<10):
+                        self.player.bodies.append(abody)
+                        self.evaluator.system.bodies.append(abody)
+                        abody.node = render.attachNewNode(abody.name)
+                        abody.model = loader.loadModelCopy("models/planet_sphere")			
+                        abody.model.reparentTo(abody.node)
+                        abody.texture = loader.loadTexture("models/pluto.jpg")
+                        abody.model.setScale(.01)
+                        abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
                 return
         
         def deloadRoid(self):
