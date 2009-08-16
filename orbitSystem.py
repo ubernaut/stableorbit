@@ -36,15 +36,41 @@ class Point(object):
 		self.x=0
 		self.y=0
 		self.z=0
+class Galaxy(object):
+        def __init__(self):
+                self.stars = []
+                self.theta = 0
+                self.dTheta = .05
+                self.maxTheta = 10
+                self.alpha = 2000
+                self.beta = 0.25               
+                self.e = 2.71828182845904523536
+                self.starDensity = 4
+                while self.theta< self.maxTheta:
+                        self.theta+=self.dTheta
+                        for i in range(0,self.starDensity):
+                                xPos = self.alpha*(self.e**(self.beta*self.theta))*math.cos(self.theta)
+                                yPos = self.alpha*(self.e**(self.beta*self.theta))*math.sin(self.theta)
+                                xPos+=random.uniform(-1000,1000)
+                                yPos+=random.uniform(-1000,1000)
+                                zPos = random.uniform(-1000,1000)
+                                newStar = Star(xPos,yPos,zPos, "star", "cos")
+                                newStar2 = Star(-xPos,-yPos,-zPos, "star", "cos")
+                                print xPos
+                                print yPos
+                                self.stars.append(newStar)
+                                self.stars.append(newStar2)
+                        
+                        
 class Star(object):
-        def __init__(self, aPos=Point([1,1,1]), aName="default", aPlayer="cos"):
-                self.pos = aPos
+        def __init__(self, xPos=0, yPos=0, zPos=0, aName="default", aPlayer="cos"):
+                self.body = Body(["body",1,xPos,yPos,zPos,0,0,0,0,0,0])
                 self.name = aName
                 self.player = aPlayer
             
 
 class System(object):
-	def __init__(self, seed, starcount=1, bodycount=2, abodyDistance=3, abodySpeed=0.05):
+	def __init__(self, seed=0, starcount=1, bodycount=2, abodyDistance=3, abodySpeed=0.05):
                 random.seed = seed
                 self.seed = seed
                 self.star = Star()
@@ -53,7 +79,10 @@ class System(object):
 		self.bodies=[]
 		self.bodyDistance = abodyDistance
 		self.bodySpeed = abodySpeed
-		self.build()
+		if seed !=0:
+                        self.build()
+                else:
+                        self.buildSol()
 
 		print "bodyCount: "+`len(self.bodies)`
 		self.stability = 0.5 - self.evaluate()
@@ -74,6 +103,13 @@ class System(object):
                 for j in range(0,3):
                         body_data.append(random.uniform(-self.bodySpeed,self.bodySpeed))
                 return body_data
+
+        def buildSol(self):
+                self.bodies=[]
+                body_data=["body",1,0,0,0,0,0,0,0,0,0]
+                self.bodies.append(Body(body_data))
+                body_data=["Earth",0.000003,0,1,0,0,0,0,0,0,0]
+                self.bodies.append(Body(body_data))
                 
 	def build(self):
 		bodies=self.bodies

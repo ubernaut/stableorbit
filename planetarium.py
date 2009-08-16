@@ -19,11 +19,16 @@ from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
 import direct.directbase.DirectStart
 
-
 class Universe(DirectObject):
-	def __init__(self, neweval, dt= .02):
+	def __init__(self, neweval, dt=.002, starList=[]):
+                self.stars=starList
                 self.zoom = 1.1
+                self.mapMode = False
                 self.evaluator = neweval
+                self.hudScale = 1
+                self.objectScale=.01
+                self.starScale = 20
+                self.skyScale=200000
 		self.dt=dt
 		self.starting=True
 		self.mouseX = 0
@@ -35,25 +40,44 @@ class Universe(DirectObject):
 		self.mouseBody = Body()
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
-		self.player.mass = 0000001
+		self.player.mass = .000000001
 		self.player.position.x=0
-		self.player.position.y=-10
+		self.player.position.y=1
 		self.player.position.z=0
 		self.player.bodies=[]
                 self.evaluator= neweval
                 self.evaluator.system.bodies.append(self.player)                
                 self.loadPlanets()
-		base.camLens.setFar(1000000000000000000000)
+                if len(starList)>0:
+                        self.loadStars()
+		base.camLens.setFar(170000000000000000000000000000000000000)
 		taskMgr.add(self.move,"move")
+		
         
+        def loadStars(self):
+                for star in self.stars:
+                        #print "loading Star"
+                        star.body.node = render.attachNewNode(star.body.name)
+                        star.body.sphere = loader.loadModelCopy("models/planet_sphere")			
+                        star.body.sphere.reparentTo(star.body.node)
+                        #body.sphere.setScale((.05 * body.mass) +.005)
+                        #body.sphere.setScale(1)
+                        star.body.sphere.setScale(self.starScale)
+                        print "placing star"
+                        print star.body.position.x,"  ",star.body.position.y,"  ",star.body.position.z
+                        
+                        star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
         
 	def loadPlanets(self):
                 for body in self.evaluator.system.bodies:
                         if body.name != "player":
+                                #if body.name == "sol":
                                 body.node = render.attachNewNode(body.name)
                                 body.sphere = loader.loadModelCopy("models/planet_sphere")			
                                 body.sphere.reparentTo(body.node)
-                                body.sphere.setScale((.05 * body.mass) +.005)
+                                #body.sphere.setScale((.05 * body.mass) +.005)
+                                #body.sphere.setScale(1)
+                                body.sphere.setScale((body.mass/1000)+self.objectScale)
                                 if body.mass < 0.1 :
                                         body.texture = loader.loadTexture("models/neptune.jpg")
                                 elif body.mass >= 0.1 and body.mass < .2:
@@ -82,13 +106,26 @@ class Universe(DirectObject):
                                 body.node.setPos(body.position.x,body.position.y,body.position.z)
                         else:
                                 print "yo"
+                                #self.sky = loader.loadModelCopy("models/planet_sphere")
                                 self.sky = loader.loadModel("models/solar_sky_sphere")
 #                                self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
                                 self.sky_tex = loader.loadTexture("models/startex.jpg")
                                 self.sky.setTexture(self.sky_tex, 1)
-                                self.sky.setScale(100)
+                                self.sky.setScale(self.skyScale)
                                 self.loadPlayer(body)
                                 self.sky.reparentTo(render)
+        def scaleUp(self):
+                self.starScale*= 1.1
+                print self.starScale
+                for star in self.stars:
+                        star.body.sphere.setScale(self.starScale)
+                        
+        def scaleDown(self):
+                self.starScale*= .9
+                print self.starScale
+                for star in self.stars:
+                        star.body.sphere.setScale(self.starScale)
+                                                
 		
 	def loadRoid(self, abody):
                 if(len(self.player.bodies)<10):
@@ -136,6 +173,9 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
+                self.accept("mouse5", self.handlemouse5Click)
+                self.accept("mouse4", self.handlemouse4Click)
+                self.accept("mouse2", self.handlemouse2Click)
                 self.accept("mouse3", self.handleRightMouseClick)
                 self.accept("mouse1", self.handleLeftMouseClick)
 		self.accept("wheel_up", self.zoomIn)
@@ -145,9 +185,13 @@ class Universe(DirectObject):
 		self.accept("d",self.brake)
 		self.accept("e",self.accelerate)
 		self.accept("f",self.fullscreen)
+		self.accept("m",self.togglemap)
+		self.accept("[",self.scaleDown)
+		self.accept("]",self.scaleUp)
 		#self.accept("")
 		dt = self.dt
-		self.evaluator.evaluateStep()
+		if not self.mapMode:
+                        self.evaluator.evaluateStep()
 		self.updateMouse(self.player)
 		if self.starting: 
 			dt=dt/2.0
@@ -155,6 +199,13 @@ class Universe(DirectObject):
 		for body in self.evaluator.system.bodies:
 			self.move_body(body,dt)
 		return Task.cont
+	def togglemap(self):
+                if (self.mapMode):
+                        self.mapMode=False
+                        base.disableMouse()
+                else:
+                        self.mapMode=True
+                        base.enableMouse()
                                   
 	def accelerate(self):                                  
                 print "accelerating ship"
@@ -178,7 +229,12 @@ class Universe(DirectObject):
                 self.player.acceleration.x-=self.dX/10
                 self.player.acceleration.y-=self.dY/10
                 self.player.acceleration.z-=self.dZ/10
-
+        def handlemouse2Click(self):
+                print "mouse2"
+        def handlemouse4Click(self):
+                print "mouse4"
+        def handlemouse5Click(self):
+                print "mouse5"
         def handleLeftMouseClick(self):
                 print "impactor deployed"
                 abody=Body()
@@ -201,12 +257,16 @@ class Universe(DirectObject):
                 
 	def zoomIn(self):
                 self.zoom*=0.9
+                print self.zoom
                 return
         def zoomOut(self):
                 self.zoom*=1.1
+                print self.zoom
+                if self.zoom > 60000:
+                        self.zoomIn()
                 return
 	def updateMouse(self, abody):
-                if base.mouseWatcherNode.hasMouse():
+                if (base.mouseWatcherNode.hasMouse() and self.mapMode==False):
                         newX = base.mouseWatcherNode.getMouseX()
                         newY = base.mouseWatcherNode.getMouseY()                        
                         deltaX = self.mouseX - newX

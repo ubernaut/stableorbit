@@ -7,6 +7,7 @@ import cPickle
 #from planetarium import Universe
 from orbitSystem import Body
 from orbitSystem import System
+from orbitSystem import Galaxy
 #import psyco
 #psyco.full()
 from Eval import Eval
@@ -17,6 +18,8 @@ class solarClient(object):
             self.xString = xString
             self.sysName = sysName
             self.retrieveSystem()
+        if xString == "runSol":
+            self.runSol()
         if xString == "standalone":
             print "launching disconnected viewer"
             self.runLocal()   
@@ -75,8 +78,22 @@ class solarClient(object):
         import planetarium
         self.planetWindow = planetarium.Universe(self.Evaluator)
         run()
+    def runSol(self):
+        print "earthSun"
+        sysCount = 0
+        self.mySystem = System(sysCount)
+        self.Evaluator = Eval(self.mySystem, 1000)
+        print "number of bodies:"
+        print len(self.mySystem.bodies)
+        print "launching planetarium.. .  .    .        ."
+        import planetarium
+        self.planetWindow = planetarium.Universe(self.Evaluator)
+        run()       
     def runLocal(self):
         print "generating system locally"
+        self.galaxy = Galaxy()
+        print "galaxy completed"
+        
         sysCount = 1
         self.mySystem = System(sysCount)
         self.Evaluator = Eval(self.mySystem, 1000)
@@ -94,20 +111,21 @@ class solarClient(object):
             print self.score
             sysCount+=1
         print "adding planets"
-        planetCount = 5
+        planetCount = 20
         while len(self.mySystem.bodies)< planetCount:
             self.mySystem.addSinglePlanet()
         print "number of bodies:"
         print len(self.mySystem.bodies)
         print "launching planetarium.. .  .    .        ."
         import planetarium
-        self.planetWindow = planetarium.Universe(self.Evaluator)
+        self.planetWindow = planetarium.Universe(self.Evaluator,.02, self.galaxy.stars)
         run()
 
 #Uncomment the following line to retrieve "system6" from the server
 #defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system20.sys")
 #Uncomment the following line if you want the client to run offline
 defaultClient = solarClient("standalone")
+#defaultClient = solarClient("runSol")
 #This is the default configuration which attempts to retrieve a system from
 #the server. Failure will cause the client to launch locally in disconnected mode
 #defaultClient = solarClient()
