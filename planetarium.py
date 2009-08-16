@@ -27,7 +27,7 @@ class Universe(DirectObject):
                 self.evaluator = neweval
                 self.hudScale = 1
                 self.objectScale=.01
-                self.starScale = 20
+                self.starScale = 4
                 self.skyScale=200000
 		self.dt=dt
 		self.starting=True
@@ -115,13 +115,13 @@ class Universe(DirectObject):
                                 self.loadPlayer(body)
                                 self.sky.reparentTo(render)
         def scaleUp(self):
-                self.starScale*= 1.1
+                self.starScale*= 1.01
                 print self.starScale
                 for star in self.stars:
                         star.body.sphere.setScale(self.starScale)
                         
         def scaleDown(self):
-                self.starScale*= .9
+                self.starScale*= .99
                 print self.starScale
                 for star in self.stars:
                         star.body.sphere.setScale(self.starScale)
@@ -258,10 +258,12 @@ class Universe(DirectObject):
 	def zoomIn(self):
                 self.zoom*=0.9
                 print self.zoom
+                self.scaleDown()
                 return
         def zoomOut(self):
                 self.zoom*=1.1
                 print self.zoom
+                self.scaleUp()
                 if self.zoom > 60000:
                         self.zoomIn()
                 return
