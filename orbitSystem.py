@@ -45,7 +45,7 @@ class Galaxy(object):
                 self.alpha = 2000
                 self.beta = 0.25               
                 self.e = 2.71828182845904523536
-                self.starDensity = 4
+                self.starDensity = 1
                 while self.theta< self.maxTheta:
                         self.theta+=self.dTheta
                         for i in range(0,self.starDensity):
