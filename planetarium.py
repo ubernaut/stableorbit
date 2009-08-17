@@ -58,7 +58,7 @@ class Universe(DirectObject):
                 for star in self.stars:
                         #print "loading Star"
                         star.body.node = render.attachNewNode(star.body.name)
-                        star.body.sphere = loader.loadModelCopy("models/planet_sphere")			
+                        star.body.sphere = loader.loadModelCopy("models/dodecahedron")			
                         star.body.sphere.reparentTo(star.body.node)
                         #body.sphere.setScale((.05 * body.mass) +.005)
                         #body.sphere.setScale(1)
