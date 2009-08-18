@@ -27,7 +27,7 @@ class Universe(DirectObject):
                 self.evaluator = neweval
                 self.hudScale = 1
                 self.objectScale=.01
-                self.starScale = 4
+                self.starScale = 10
                 self.skyScale=200000
 		self.dt=dt
 		self.starting=True
@@ -63,9 +63,8 @@ class Universe(DirectObject):
                         #body.sphere.setScale((.05 * body.mass) +.005)
                         #body.sphere.setScale(1)
                         star.body.sphere.setScale(self.starScale)
-                        print "placing star"
-                        print star.body.position.x,"  ",star.body.position.y,"  ",star.body.position.z
-                        
+#                        print "placing star"
+#                        print star.body.position.x,"  ",star.body.position.y,"  ",star.body.position.z                        
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
         
 	def loadPlanets(self):
@@ -202,10 +201,12 @@ class Universe(DirectObject):
 	def togglemap(self):
                 if (self.mapMode):
                         self.mapMode=False
-                        base.disableMouse()
+                        self.zoom=1.1
+                        #base.disableMouse()
                 else:
                         self.mapMode=True
-                        base.enableMouse()
+                        self.zoom = 59000
+                        #base.enableMouse()
                                   
 	def accelerate(self):                                  
                 print "accelerating ship"
@@ -258,17 +259,17 @@ class Universe(DirectObject):
 	def zoomIn(self):
                 self.zoom*=0.9
                 print self.zoom
-                self.scaleDown()
+                #self.scaleDown()
                 return
         def zoomOut(self):
                 self.zoom*=1.1
                 print self.zoom
-                self.scaleUp()
+                #self.scaleUp()
                 if self.zoom > 60000:
                         self.zoomIn()
                 return
 	def updateMouse(self, abody):
-                if (base.mouseWatcherNode.hasMouse() and self.mapMode==False):
+                if (base.mouseWatcherNode.hasMouse()):
                         newX = base.mouseWatcherNode.getMouseX()
                         newY = base.mouseWatcherNode.getMouseY()                        
                         deltaX = self.mouseX - newX

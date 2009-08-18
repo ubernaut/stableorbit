@@ -45,19 +45,21 @@ class Galaxy(object):
                 self.alpha = 2000
                 self.beta = 0.25               
                 self.e = 2.71828182845904523536
-                self.starDensity = 1
+                self.starDensity = 10
                 while self.theta< self.maxTheta:
                         self.theta+=self.dTheta
+                        randRange = 2000/(1+self.theta/2)
+                        self.starDensity = 10/(1+self.theta/2)
                         for i in range(0,self.starDensity):
                                 xPos = self.alpha*(self.e**(self.beta*self.theta))*math.cos(self.theta)
                                 yPos = self.alpha*(self.e**(self.beta*self.theta))*math.sin(self.theta)
-                                xPos+=random.uniform(-1000,1000)
-                                yPos+=random.uniform(-1000,1000)
-                                zPos = random.uniform(-1000,1000)
+                                xPos+=random.uniform(-randRange,randRange)
+                                yPos+=random.uniform(-randRange,randRange)
+                                zPos = random.uniform(-randRange,randRange)
                                 newStar = Star(xPos,yPos,zPos, "star", "cos")
                                 newStar2 = Star(-xPos,-yPos,-zPos, "star", "cos")
-                                print xPos
-                                print yPos
+                                #print xPos
+                                #print yPos
                                 self.stars.append(newStar)
                                 self.stars.append(newStar2)
                         
