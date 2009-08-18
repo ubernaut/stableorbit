@@ -15,21 +15,25 @@ from Eval import Eval
 class solarClient(object):
     def __init__(self, xString='http://bamdastard.kicks-ass.net:8000', scoreThresh=1, sysName="none"):
         self.connected=False
-        if sysName != "none":
-            self.xString = xString
-            self.sysName = sysName
-            self.retrieveSystem()
+#        if sysName != "none":
+        self.xString = xString
+        self.sysName = sysName
+#        self.retrieveSystem()
         if xString == "runSol":
             self.runSol()
         if xString == "standalone":
             print "launching disconnected viewer"
             self.runLocal()
         try:
-            print "connecting to server "+xString
-            self.server = xmlrpclib.Server(xString)
-            print "connection acquired"
-            self.scoreThreshold =scoreThresh;
+#            print "connecting to server "+xString
+#            self.server = xmlrpclib.Server(xString)
+#           print "connection acquired"
+            self.scoreThreshold = scoreThresh;
             self.score = 1000
+            self.retrieveGalaxy()
+            self.generateSystem()
+#            self.insertSystem()
+            self.launchSystem()
 ##            while self.score > self.scoreThreshold:
 ##                print "retrieving a system"
 ##                self.xfile = self.server.getSystem()
@@ -42,10 +46,7 @@ class solarClient(object):
 ##                print "system stability score = "
 ##                print self.score
 ##            print "found acceptable system, recording system as: "
-            self.retrieveGalaxy()
-            self.generateSystem()
-            self.insertSystem()
-            self.launchSystem()
+
             
             #print self.xfile
 #            print "launching planetarium.. .  .    .        ."
@@ -69,22 +70,24 @@ class solarClient(object):
         return
 
     def connectToServer(self):
-        print "connecting to server "
+        print "connecting to server ",self.xString
         print self.xString
         self.server = xmlrpclib.Server(self.xString)
         self.connected=True
+
         
     def retrieveGalaxy(self):
-        self.connectToServer(self)
+        if self.connected == False:
+            self.connectToServer()
         print "retrieving galaxy"
         xfile = self.server.getGalaxy()
         print "loading galaxy"
         self.galaxy=cPickle.loads(xfile)
-        
 
     def retrieveSystem(self):
-        self.connectToServer(self)        
-        self.getAllStars()
+        if self.connected == False:
+            self.connectToServer()        
+        #self.getAllStars()
         print "attempting to retrieve and launch system: "
         print self.sysName
         self.xfile = self.server.retrieveSystem(self.sysName)
@@ -149,6 +152,7 @@ class solarClient(object):
         self.galaxy = Galaxy()
         print "galaxy completed"
         self.generateSystem()
+        self.mySystem.star = self.galaxy.stars[len(self.galaxy.stars)-1]
         self.launchSystem()        
 
 #Uncomment the following line to retrieve "system6" from the server

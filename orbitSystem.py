@@ -65,7 +65,7 @@ class Galaxy(object):
                         
                         
 class Star(object):
-        def __init__(self, xPos=0, yPos=0, zPos=0, aName="default", aPlayer="cos"):
+        def __init__(self, xPos=30000, yPos=0, zPos=0, aName="default", aPlayer="cos"):
                 self.body = Body(["body",1,xPos,yPos,zPos,0,0,0,0,0,0])
                 self.name = aName
                 self.player = aPlayer
@@ -85,11 +85,15 @@ class System(object):
                         self.build()
                 else:
                         self.buildSol()
-
 		print "bodyCount: "+`len(self.bodies)`
 		self.stability = 0.5 - self.evaluate()
 		self.printed=False
 		self.avgStability=0.5 - self.evaluate()
+	def moveToStar(self):
+                for body in self.bodies:
+                        body.position.x += self.star.body.position.x
+                        body.position.y += self.star.body.position.y
+                        body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
                 body_data.append(random.uniform(1,10))
                 for j in range(0,3):
@@ -105,7 +109,6 @@ class System(object):
                 for j in range(0,3):
                         body_data.append(random.uniform(-self.bodySpeed,self.bodySpeed))
                 return body_data
-
         def buildSol(self):
                 self.bodies=[]
                 body_data=["body",1,0,0,0,0,0,0,0,0,0]
@@ -146,8 +149,6 @@ class System(object):
                         otherBodies.append(aBody)
                 self.bodies.append(aBody)
                 
-
-                
 	def addPlanet(self):
                 print "adding body"
                 body_data = []
@@ -160,8 +161,7 @@ class System(object):
                 while self.evaluate()>1:
                         self.bodies.pop()
                         self.addPlanet()
-                return
-                
+                return                
 
 	def mutate(self, alphaMass, alphaPosition, alphaVelocity):
 		whichBody=random.randint(0,len(self.bodies)-1)

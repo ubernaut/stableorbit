@@ -46,7 +46,8 @@ class Universe(DirectObject):
 		self.player.position.z=0
 		self.player.bodies=[]
                 self.evaluator= neweval
-                self.evaluator.system.bodies.append(self.player)                
+                self.evaluator.system.bodies.append(self.player)
+                self.evaluator.system.moveToStar()
                 self.loadPlanets()
                 if len(starList)>0:
                         self.loadStars()
