@@ -8,11 +8,13 @@ import sys
 
 import os
 from orbitSystem import System
+from orbitSystem import Galaxy
 
 class solarServer(object):
     def __init__(self,xString):
         import string
         print "solarServer launched: "+xString+":8000"
+        self.galaxy = Galaxy()
         self.python_string = string
         self.seedcount = 1
         
@@ -31,6 +33,9 @@ class solarServer(object):
         print allStarFiles
         #os.chdir('..')
         return allStarFiles
+    def getGalaxy(self):
+        return cPickle.dumps(self.galaxy)
+        
         
     def insertSystem(self, xfile):# playerName, fitness, iterations):
         print"connection acquired"
@@ -55,7 +60,7 @@ class solarServer(object):
         #StableOrbitDAO.insertSystem(xfile)
   
 if __name__=='__main__':
-    xString = "192.168.1.100"
+    xString = "192.168.1.101"
 #    xString = "YOUR IP GOES HERE"
 #    xString = "localhost"
     server = SimpleXMLRPCServer.SimpleXMLRPCServer((xString, 8000))
