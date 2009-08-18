@@ -56,16 +56,12 @@ class Universe(DirectObject):
 		
         
         def loadStars(self):
+                print "loading stars"
                 for star in self.stars:
-                        #print "loading Star"
                         star.body.node = render.attachNewNode(star.body.name)
                         star.body.sphere = loader.loadModelCopy("models/dodecahedron")			
                         star.body.sphere.reparentTo(star.body.node)
-                        #body.sphere.setScale((.05 * body.mass) +.005)
-                        #body.sphere.setScale(1)
                         star.body.sphere.setScale(self.starScale)
-#                        print "placing star"
-#                        print star.body.position.x,"  ",star.body.position.y,"  ",star.body.position.z                        
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
         
 	def loadPlanets(self):
