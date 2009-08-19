@@ -19,7 +19,7 @@ class solarClient(object):
             self.score = 1000
             self.retrieveGalaxy()
             self.generateSystem()
-#            self.insertSystem()
+            self.insertSystem()
             self.launchSystem()
         except:
             print "oops, there was an error"
@@ -88,14 +88,14 @@ class solarClient(object):
     def generateSystem(self):
         sysCount = 1
         self.mySystem = System(sysCount)
-        self.Evaluator = Eval(self.mySystem, 1000)
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        bodycount=10
+        bodycount=20
         bodyDistance=3
         bodySpeed=0.05
         self.mySystem = System(sysCount, starcount, bodycount, bodyDistance, bodySpeed)
+        self.Evaluator = Eval(self.mySystem, 1000)
         print "number of bodies:"
         print len(self.mySystem.bodies)        
         
