@@ -91,7 +91,9 @@ class solarClient(object):
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        bodycount=20
+        print "how many planets should be created?"
+        fullVar = raw_input()
+        bodycount= int(fullVar)
         bodyDistance=3
         bodySpeed=0.05
         self.mySystem = System(sysCount, starcount, bodycount, bodyDistance, bodySpeed)
