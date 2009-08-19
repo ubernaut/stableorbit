@@ -8,10 +8,11 @@ from orbitSystem import Galaxy
 from Eval import Eval
 
 class solarClient(object):
-    def __init__(self, xString='http://bamdastard.kicks-ass.net:8000'):
+    def __init__(self, xString='http://bamdastard.kicks-ass.net:8000', mode="normal"):
         self.connected=False
         self.xString = xString
         self.sysName = "aSystem"
+        self.mode = mode
         if xString == "local":
             self.runLocal()
         try:
@@ -91,8 +92,10 @@ class solarClient(object):
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        print "Press 'Enter' for 10 planets or input another number now"
-        fullVar = raw_input()
+        fullVar = ""
+        if self.mode == "normal":
+            print "Press 'Enter' for 10 planets or input another number now"
+            fullVar = raw_input()
         if fullVar=="":
             fullVar = "10"
         bodycount= int(fullVar)

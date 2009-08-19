@@ -27,6 +27,7 @@ def config():
         if screenVar == "3":
                 loadPrcFileData("", "win-size 1600 1050")
 config()
+
 from direct.showbase import DirectObject
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import PointLight,Vec4
@@ -213,11 +214,13 @@ class Universe(DirectObject):
 			self.move_body(body,dt)
 		return Task.cont
 	def togglemouselook(self):
+                print "toggling mouselook"
                 if self.mouselook:
                         self.mouselook = False
                 else:
                         self.mouselook = True
 	def togglemap(self):
+                print "toggling map"
                 if (self.mapMode):
                         self.mapMode=False
                         self.zoom=1.1
