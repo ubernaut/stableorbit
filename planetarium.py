@@ -37,6 +37,7 @@ import direct.directbase.DirectStart
 
 class Universe(DirectObject):
 	def __init__(self, neweval, dt=.002, starList=[]):
+                #messenger.toggleVerbose()
                 self.stars=starList
                 self.mouselook=True
                 self.zoom = 4
@@ -186,8 +187,14 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
-                self.accept("wheel_right", self.handlemouseRightClick)
-                self.accept("wheel_left", self.handlemouseLeftClick)
+                self.accept("mouse7", self.tiltLeft)
+                self.accept("mouse6", self.tiltRight)
+                self.accept("mouse5", self.tiltLeft)
+                self.accept("mouse4", self.tiltRight)
+                self.accept("mouse8", self.tiltLeft)
+                self.accept("mouse9", self.tiltRight)
+                self.accept("wheel_left", self.tiltLeft)
+                self.accept("wheel_right", self.tiltRight)
                 self.accept("w", self.tiltLeft)
                 self.accept("r", self.tiltRight)
                 self.accept("mouse2", self.handlemouse2Click)
@@ -216,8 +223,10 @@ class Universe(DirectObject):
 			self.move_body(body,dt)
 		return Task.cont
 	def tiltLeft(self):
+                print "left"
                 self.player.orientation.z-=10
         def tiltRight(self):
+                print "right"
                 self.player.orientation.z+=10
 	def togglemouselook(self):
                 print "toggling mouselook"
