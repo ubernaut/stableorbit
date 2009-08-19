@@ -186,8 +186,8 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
-                self.accept("mouse5", self.handlemouse5Click)
-                self.accept("mouse4", self.handlemouse4Click)
+                self.accept("wheel_right", self.handlemouseRightClick)
+                self.accept("wheel_left", self.handlemouseLeftClick)
                 self.accept("mouse2", self.handlemouse2Click)
                 self.accept("mouse3", self.handleRightMouseClick)
                 self.accept("mouse1", self.handleLeftMouseClick)
@@ -255,10 +255,10 @@ class Universe(DirectObject):
         def handlemouse2Click(self):
                 print "mouse2"
                 self.togglemouselook()
-        def handlemouse4Click(self):
-                print "mouse4"
-        def handlemouse5Click(self):
-                print "mouse5"
+        def handlemouseLeftClick(self):
+                print "mouseLeft"
+        def handlemouseRightClick(self):
+                print "mouseRight"
         def handleLeftMouseClick(self):
                 print "impactor deployed"
                 abody=Body()

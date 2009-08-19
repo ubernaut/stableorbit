@@ -8,19 +8,20 @@ from orbitSystem import Galaxy
 from Eval import Eval
 
 class solarClient(object):
-    def __init__(self, xString='http://bamdastard.kicks-ass.net:8000', mode="normal"):
+    def __init__(self, xString='http://bamdastard.kicks-ass.net:8000', mode="normal", userName="Default"):
         self.connected=False
         self.xString = xString
+        self.username = userName
         self.sysName = "aSystem"
         self.mode = mode
         if xString == "local":
             self.runLocal()
         try:
-            self.scoreThreshold = scoreThresh;
+            self.scoreThreshold = 1;
             self.score = 1000
             self.retrieveGalaxy()
             self.generateSystem()
-            self.insertSystem()
+            #self.insertSystem()
             self.launchSystem()
         except:
             print "oops, there was an error"
@@ -42,7 +43,6 @@ class solarClient(object):
 
     def connectToServer(self):
         print "connecting to server ",self.xString
-        print self.xString
         self.server = xmlrpclib.Server(self.xString)
         self.connected=True
         
@@ -93,7 +93,7 @@ class solarClient(object):
         self.score = 1000
         starcount=1
         fullVar = ""
-        if self.mode == "normal":
+        if self.mode != "screen":
             print "Press 'Enter' for 10 planets or input another number now"
             fullVar = raw_input()
         if fullVar=="":
@@ -127,5 +127,6 @@ class solarClient(object):
 #defaultClient = solarClient("runSol")
 #This is the default configuration which attempts to retrieve a system from
 #the server. Failure will cause the client to launch locally in disconnected mode
-defaultClient = solarClient()
+#defaultClient = solarClient("192.168.0.101:8000", "normal")
 
+defaultClient = solarClient()
