@@ -117,19 +117,15 @@ class System(object):
                 self.bodies.append(Body(body_data))
                 
 	def build(self):
-		bodies=self.bodies
-		N=self.bodyCount
-		for i in range(0,N):
-			body_data=[]
-			body_data.append("body_" + str(i))
+		for i in range(0,self.bodyCount):
 			if i < self.starCount:
-                                body_data = self.getStar(body_data)
-
+                                self.addStar()
 			else:
-                                body_data = self.getPlanet(body_data)
-
-			body=Body(body_data)
-			bodies.append(body)
+                                self.addSinglePlanet()
+	def addStar(self):
+                body_data = self.getStar(["star"])
+                body = Body(body_data)
+                self.bodies.append(body)
 	def addSinglePlanet(self):
                 print "adding Body"
                 body_data = []

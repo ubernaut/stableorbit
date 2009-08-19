@@ -92,20 +92,10 @@ class solarClient(object):
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        bodycount=2
+        bodycount=10
         bodyDistance=3
         bodySpeed=0.05
-        while self.score > self.scoreThreshold:
-            self.mySystem = System(sysCount, starcount, bodycount, bodyDistance, bodySpeed)
-            self.Evaluator = Eval(self.mySystem, 1000)
-            self.score = self.Evaluator.evaluate()
-            print "system stability score = "
-            print self.score
-            sysCount+=1
-        print "adding planets"
-        planetCount = 3
-        while len(self.mySystem.bodies)< planetCount:
-            self.mySystem.addSinglePlanet()
+        self.mySystem = System(sysCount, starcount, bodycount, bodyDistance, bodySpeed)
         print "number of bodies:"
         print len(self.mySystem.bodies)        
         
@@ -130,5 +120,5 @@ class solarClient(object):
 #defaultClient = solarClient("runSol")
 #This is the default configuration which attempts to retrieve a system from
 #the server. Failure will cause the client to launch locally in disconnected mode
-defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "none")
+defaultClient = solarClient()
 
