@@ -91,8 +91,10 @@ class solarClient(object):
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        print "how many planets should be created?"
+        print "Press 'Enter' for 10 planets or input another number now"
         fullVar = raw_input()
+        if fullVar=="":
+            fullVar = "10"
         bodycount= int(fullVar)
         bodyDistance=3
         bodySpeed=0.05
@@ -113,7 +115,7 @@ class solarClient(object):
         print "galaxy completed"
         self.generateSystem()
         self.mySystem.star = self.galaxy.stars[len(self.galaxy.stars)-1]
-        self.launchSystem()        
+        self.launchSystem() 
 
 #Uncomment the following line to retrieve "system6" from the server
 #defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system20.sys")

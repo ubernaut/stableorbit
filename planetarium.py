@@ -8,21 +8,37 @@ import Eval
 import math
 from orbitSystem import Body
 from orbitSystem import System
-print "Enter 'f' 'Enter' for fullscreen or just 'Enter' for windowed"
-fullVar = raw_input()
-if(fullVar=="f"):
-        from pandac.PandaModules import loadPrcFileData
-        loadPrcFileData("", "fullscreen 1")
+from pandac.PandaModules import loadPrcFileData
+def config():
+        loadPrcFileData("", "window-title stableorbit")
+        print "Enter 'f' 'Enter' for fullscreen or just 'Enter' for windowed"
+        fullVar = raw_input()
+        if(fullVar=="f"):        
+                loadPrcFileData("", "fullscreen 1")
+        print "Enter '1' for 1200x600"
+        print "      '2' for 1440x900"
+        print "      '3' for 1600x1050"
+        print "or 'Enter' for default 800x600"
+        screenVar = raw_input()
+        if screenVar == "1":
+                loadPrcFileData("", "win-size 1200 600")
+        if screenVar == "2":
+                loadPrcFileData("", "win-size 1440 900")
+        if screenVar == "3":
+                loadPrcFileData("", "win-size 1600 1050")
+config()
 from direct.showbase import DirectObject
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
 import direct.directbase.DirectStart
 
+
 class Universe(DirectObject):
 	def __init__(self, neweval, dt=.002, starList=[]):
                 self.stars=starList
-                self.zoom = 1.1
+                self.mouselook=True
+                self.zoom = 4
                 self.mapMode = False
                 self.evaluator = neweval
                 self.hudScale = 1
@@ -184,6 +200,7 @@ class Universe(DirectObject):
 		self.accept("m",self.togglemap)
 		self.accept("[",self.scaleDown)
 		self.accept("]",self.scaleUp)
+		self.accept("l",self.togglemouselook)
 		#self.accept("")
 		dt = self.dt
 		if not self.mapMode:
@@ -195,6 +212,11 @@ class Universe(DirectObject):
 		for body in self.evaluator.system.bodies:
 			self.move_body(body,dt)
 		return Task.cont
+	def togglemouselook(self):
+                if self.mouselook:
+                        self.mouselook = False
+                else:
+                        self.mouselook = True
 	def togglemap(self):
                 if (self.mapMode):
                         self.mapMode=False
@@ -229,6 +251,7 @@ class Universe(DirectObject):
                 self.player.acceleration.z-=self.dZ/10
         def handlemouse2Click(self):
                 print "mouse2"
+                self.togglemouselook()
         def handlemouse4Click(self):
                 print "mouse4"
         def handlemouse5Click(self):
@@ -266,7 +289,7 @@ class Universe(DirectObject):
                         self.zoomIn()
                 return
 	def updateMouse(self, abody):
-                if (base.mouseWatcherNode.hasMouse()):
+                if (base.mouseWatcherNode.hasMouse() and self.mouselook):
                         newX = base.mouseWatcherNode.getMouseX()
                         newY = base.mouseWatcherNode.getMouseY()                        
                         deltaX = self.mouseX - newX
@@ -291,11 +314,11 @@ class Universe(DirectObject):
                         hyp = self.zoom*math.cos((-abody.orientation.y+180)*(math.pi / 180.0))
                         self.dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0)) 
                         self.dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
-                        base.camera.setHpr(abody.orientation.x,
-                                           abody.orientation.y,0)
-                        base.camera.setPos(abody.position.x-self.dX,
-                                           abody.position.y-self.dY,
-                                           abody.position.z-self.dZ)              
+                base.camera.setHpr(abody.orientation.x,
+                                   abody.orientation.y,0)
+                base.camera.setPos(abody.position.x-self.dX,
+                                   abody.position.y-self.dY,
+                                   abody.position.z-self.dZ)              
 
 	def move_body(self,body,dt):
 		self.set_body_position(body,body.position.x,body.position.y,body.position.z)
