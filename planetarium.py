@@ -188,6 +188,8 @@ class Universe(DirectObject):
 	def move(self,task):
                 self.accept("wheel_right", self.handlemouseRightClick)
                 self.accept("wheel_left", self.handlemouseLeftClick)
+                self.accept("w", self.tiltLeft)
+                self.accept("r", self.tiltRight)
                 self.accept("mouse2", self.handlemouse2Click)
                 self.accept("mouse3", self.handleRightMouseClick)
                 self.accept("mouse1", self.handleLeftMouseClick)
@@ -213,6 +215,10 @@ class Universe(DirectObject):
 		for body in self.evaluator.system.bodies:
 			self.move_body(body,dt)
 		return Task.cont
+	def tiltLeft(self):
+                self.player.orientation.z-=10
+        def tiltRight(self):
+                self.player.orientation.z+=10
 	def togglemouselook(self):
                 print "toggling mouselook"
                 if self.mouselook:
@@ -318,7 +324,7 @@ class Universe(DirectObject):
                         self.dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0)) 
                         self.dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
                 base.camera.setHpr(abody.orientation.x,
-                                   abody.orientation.y,0)
+                                   abody.orientation.y,abody.orientation.z)
                 base.camera.setPos(abody.position.x-self.dX,
                                    abody.position.y-self.dY,
                                    abody.position.z-self.dZ)              
