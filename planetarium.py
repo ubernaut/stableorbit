@@ -189,14 +189,8 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
-                self.accept("mouse6", self.tiltLeft)
-                self.accept("mouse7", self.tiltRight)
-                self.accept("mouse5", self.tiltLeft)
-                self.accept("mouse4", self.tiltRight)
-                self.accept("mouse8", self.tiltLeft)
-                self.accept("mouse9", self.tiltRight)
-                self.accept("x_wheel_left", self.tiltLeft)
-                self.accept("x_wheel_right", self.tiltRight)
+                self.accept("wheel_right", self.tiltLeft)
+                self.accept("wheel_left", self.tiltRight)
                 self.accept("w", self.tiltLeft)
                 self.accept("r", self.tiltRight)
                 self.accept("mouse2", self.handlemouse2Click)
