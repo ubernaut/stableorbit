@@ -8,6 +8,8 @@ import Eval
 import math
 from orbitSystem import Body
 from orbitSystem import System
+import interactiveConsole#.interactiveConsole
+
 from pandac.PandaModules import loadPrcFileData
 def config():
         loadPrcFileData("", "window-title stableorbit")
@@ -36,9 +38,11 @@ from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
 import direct.directbase.DirectStart
 
+#import interactiveConsole
 
 class Universe(DirectObject):
 	def __init__(self, neweval, dt=.002, starList=[]):
+                
                 #messenger.toggleVerbose()
                 self.stars=starList
                 self.mouselook=True
@@ -73,7 +77,8 @@ class Universe(DirectObject):
                         self.loadStars()
 		base.camLens.setFar(170000000000000000000000000000000000000)
 		taskMgr.add(self.move,"move")
-		
+		 
+				
         
         def loadStars(self):
                 print "loading stars"
@@ -198,7 +203,7 @@ class Universe(DirectObject):
                 self.accept("mouse1", self.handleLeftMouseClick)
 		self.accept("wheel_up", self.zoomIn)
 		self.accept("wheel_down", self.zoomOut)
-		self.accept("escape", self.exit)
+		self.accept("`", self.exit)
 		self.accept("space",self.stop)
 		self.accept("d",self.brake)
 		self.accept("e",self.accelerate)

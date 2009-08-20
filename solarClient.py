@@ -109,7 +109,11 @@ class solarClient(object):
     def launchSystem(self):
         print "launching planetarium.. .  .    .        ."
         import planetarium
+        
         self.planetWindow = planetarium.Universe(self.Evaluator,.02, self.galaxy.stars)
+        import interactiveConsole.interactiveConsole
+        from interactiveConsole.interactiveConsole import pandaConsole, INPUT_CONSOLE, INPUT_GUI, OUTPUT_PYTHON, OUTPUT_IRC 
+        console = pandaConsole( INPUT_CONSOLE|INPUT_GUI|OUTPUT_PYTHON|OUTPUT_IRC, locals() )
         run()
         
     def runLocal(self):
