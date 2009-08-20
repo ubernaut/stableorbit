@@ -26,6 +26,8 @@ def config():
                 loadPrcFileData("", "win-size 1440 900")
         if screenVar == "3":
                 loadPrcFileData("", "win-size 1600 1050")
+        loadPrcFileData("","x-wheel-left-button 6")
+        loadPrcFileData("","x-wheel-right-button 7")
 config()
 
 from direct.showbase import DirectObject
@@ -187,14 +189,14 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
-                self.accept("mouse7", self.tiltLeft)
-                self.accept("mouse6", self.tiltRight)
+                self.accept("mouse6", self.tiltLeft)
+                self.accept("mouse7", self.tiltRight)
                 self.accept("mouse5", self.tiltLeft)
                 self.accept("mouse4", self.tiltRight)
                 self.accept("mouse8", self.tiltLeft)
                 self.accept("mouse9", self.tiltRight)
-                self.accept("wheel_left", self.tiltLeft)
-                self.accept("wheel_right", self.tiltRight)
+                self.accept("x_wheel_left", self.tiltLeft)
+                self.accept("x_wheel_right", self.tiltRight)
                 self.accept("w", self.tiltLeft)
                 self.accept("r", self.tiltRight)
                 self.accept("mouse2", self.handlemouse2Click)
