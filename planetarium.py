@@ -41,8 +41,8 @@ import direct.directbase.DirectStart
 #import interactiveConsole
 
 class Universe(DirectObject):
-	def __init__(self, neweval, dt=.002, starList=[]):
-                
+	def __init__(self, neweval, starList=[], console=[]):
+
                 #messenger.toggleVerbose()
                 self.stars=starList
                 self.mouselook=True
@@ -53,7 +53,7 @@ class Universe(DirectObject):
                 self.objectScale=.01
                 self.starScale = 10
                 self.skyScale=200000
-		self.dt=dt
+		self.dt=.02
 		self.starting=True
 		self.mouseX = 0
                 self.mouseY = 0
@@ -73,12 +73,13 @@ class Universe(DirectObject):
                 self.evaluator.system.bodies.append(self.player)
                 self.evaluator.system.moveToStar()
                 self.loadPlanets()
+                self.console = console
                 if len(starList)>0:
                         self.loadStars()
 		base.camLens.setFar(170000000000000000000000000000000000000)
 		taskMgr.add(self.move,"move")
-		 
-				
+		
+
         
         def loadStars(self):
                 print "loading stars"
@@ -147,7 +148,9 @@ class Universe(DirectObject):
                 for star in self.stars:
                         star.body.sphere.setScale(self.starScale)
                                                 
-		
+	def toggleConsole(self):
+                print "toggle console"
+                self.console.toggle()
 	def loadRoid(self, abody):
                 if(len(self.player.bodies)<10):
                         self.player.bodies.append(abody)
@@ -194,6 +197,7 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
+                self.accept("escape", self.toggleConsole)
                 self.accept("wheel_right", self.tiltLeft)
                 self.accept("wheel_left", self.tiltRight)
                 self.accept("w", self.tiltLeft)
