@@ -28,6 +28,12 @@ class solarServer(object):
         return aString
         #xfile = open("serialSystem.txt")
         #print xfile.read()
+    def getNextStar(self):
+        print "Getting Next Star"
+        starfile = cPickle.dumps(
+            self.galaxy.stars[
+                len(self.galaxy.stars)-self.seedcount])
+        return starfile
     def getAllStars(self):
         print "Get All Stars"
         allStarFiles = os.listdir('data')

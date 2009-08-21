@@ -54,6 +54,14 @@ class solarClient(object):
         xfile = self.server.getGalaxy()
         print "loading galaxy"
         self.galaxy=cPickle.loads(xfile)
+    def getNextStar(self):
+        if self.connected == False:
+            self.connectToServer()
+        print "retrieving Star"
+        xfile = self.server.getNextStar()
+        print "retrieved Star"
+        return cPickle.loads(xfile)
+        
 
     def retrieveSystem(self):
         if self.connected == False:
@@ -97,7 +105,7 @@ class solarClient(object):
         bodyDistance=3
         bodySpeed=0.05
         self.mySystem = System(sysCount, starcount, bodycount, bodyDistance, bodySpeed)
-        self.mySystem.star = self.galaxy.stars[4*len(self.galaxy.stars)/5]
+        self.mySystem.star = self.getNextStar()#self.galaxy.stars[4*len(self.galaxy.stars)/5]
         self.Evaluator = Eval(self.mySystem, 1000)
         print "number of bodies:"
         print len(self.mySystem.bodies)        
@@ -116,7 +124,8 @@ class solarClient(object):
         self.galaxy = Galaxy()
         print "galaxy completed"
         self.generateSystem()
-        self.mySystem.star = self.galaxy.stars[4*len(self.galaxy.stars)/5]
+        #self.mySystem.star = self.galaxy.stars[4*len(self.galaxy.stars)/5]
+        self.mySystem.star = self.galaxy.stars[len(self.galaxy.stars)-1]
         self.launchSystem() 
 
 #Uncomment the following line to retrieve "system6" from the server
