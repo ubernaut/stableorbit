@@ -30,6 +30,7 @@ class solarServer(object):
         #print xfile.read()
     def getNextStar(self):
         print "Getting Next Star"
+        self.seedcount++
         starfile = cPickle.dumps(
             self.galaxy.stars[
                 len(self.galaxy.stars)-self.seedcount])
