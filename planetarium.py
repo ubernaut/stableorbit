@@ -17,20 +17,24 @@ def config():
         fullVar = raw_input()
         if(fullVar=="f"):        
                 loadPrcFileData("", "fullscreen 1")
-        print "Enter '1' for 1200x600"
-        print "      '2' for 1440x900"
+        print "Enter '1' for 800x600"
+        print "      '2' for 1200x600"
         print "      '3' for 1600x1050"
-        print "or 'Enter' for default 800x600"
+        print "or 'Enter' for default 1440x900"
         screenVar = raw_input()
         if screenVar == "1":
-                loadPrcFileData("", "win-size 1200 600")
+                loadPrcFileData("", "win-size 800 600")
         if screenVar == "2":
-                loadPrcFileData("", "win-size 1440 900")
+                loadPrcFileData("", "win-size 1200 600")
         if screenVar == "3":
                 loadPrcFileData("", "win-size 1600 1050")
+        else:
+                loadPrcFileData("", "win-size 1440 900")
+
         loadPrcFileData("","x-wheel-left-button 6")
         loadPrcFileData("","x-wheel-right-button 7")
 config()
+
 
 from direct.showbase import DirectObject
 from direct.showbase.DirectObject import DirectObject
@@ -42,7 +46,6 @@ import direct.directbase.DirectStart
 
 class Universe(DirectObject):
 	def __init__(self, neweval, starList=[], console=[]):
-
                 #messenger.toggleVerbose()
                 self.stars=starList
                 self.mouselook=True

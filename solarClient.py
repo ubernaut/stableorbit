@@ -14,19 +14,20 @@ class solarClient(object):
         self.username = userName
         self.sysName = "aSystem"
         self.mode = mode
+        self.scoreThreshold = 1;
+        self.score = 1000
+        
         if xString == "local":
             self.runLocal()
+    def clientLoop(self):
         try:
-            self.scoreThreshold = 1;
-            self.score = 1000
             self.retrieveGalaxy()
             self.generateSystem()
-            #self.insertSystem()
+#            self.insertSystem()
             self.launchSystem()
         except:
-            print "oops, there was an error"
             self.runLocal()
-            
+
     def insertSystem(self):
         self.xfile=cPickle.dumps(self.mySystem)
         if(self.connected == False):
@@ -92,25 +93,18 @@ class solarClient(object):
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        fullVar = ""
-        if self.mode != "screen":
-            print "Press 'Enter' for 10 planets or input another number now"
-            fullVar = raw_input()
-        if fullVar=="":
-            fullVar = "10"
-        bodycount= int(fullVar)
+        bodycount = 10
         bodyDistance=3
         bodySpeed=0.05
         self.mySystem = System(sysCount, starcount, bodycount, bodyDistance, bodySpeed)
+        self.mySystem.star = self.galaxy.stars[4*len(self.galaxy.stars)/5]
         self.Evaluator = Eval(self.mySystem, 1000)
         print "number of bodies:"
         print len(self.mySystem.bodies)        
         
     def launchSystem(self):
         print "launching planetarium.. .  .    .        ."
-        import planetarium
-        
-        
+        import planetarium        
         import interactiveConsole.interactiveConsole
         from interactiveConsole.interactiveConsole import pandaConsole, INPUT_CONSOLE, INPUT_GUI, OUTPUT_PYTHON, OUTPUT_IRC 
         self.console = pandaConsole( INPUT_CONSOLE|INPUT_GUI|OUTPUT_PYTHON|OUTPUT_IRC, locals() )
@@ -122,16 +116,17 @@ class solarClient(object):
         self.galaxy = Galaxy()
         print "galaxy completed"
         self.generateSystem()
-        self.mySystem.star = self.galaxy.stars[len(self.galaxy.stars)-1]
+        self.mySystem.star = self.galaxy.stars[4*len(self.galaxy.stars)/5]
         self.launchSystem() 
 
 #Uncomment the following line to retrieve "system6" from the server
 #defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system20.sys")
 #Uncomment the following line if you want the client to run offline
-defaultClient = solarClient("local")
+#defaultClient = solarClient("local")
 #defaultClient = solarClient("runSol")
 #This is the default configuration which attempts to retrieve a system from
 #the server. Failure will cause the client to launch locally in disconnected mode
 #defaultClient = solarClient("192.168.0.101:8000", "normal")
 
-#defaultClient = solarClient()
+defaultClient = solarClient()
+defaultClient.clientLoop()
