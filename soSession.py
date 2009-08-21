@@ -1,5 +1,6 @@
 import orbitSystem
 import solarClient
+from solarClient import solarClient
 import solarServer
 import os
 import cPickle
@@ -19,11 +20,11 @@ class soConfig(object):
             print "please enter a player name: "
             playerName=raw_input()
             self.configs.append(
-                soConfigEntry("localPlayer",soPlayer(playerName)))
+                soConfigEntry("localPlayer", None))
             self.configs.append(
                 soConfigEntry("mainScreen", ["window", "800 600"]))
             self.configs.append(
-                soConfigEntry("clientRole", solarClient())
+                soConfigEntry("clientRole", None))
             self.configs.append(
                 soConfigEntry("maxBodyCount", 15))
             self.saveConfig()
@@ -33,6 +34,7 @@ class soConfig(object):
                 self.configs.remove(entry)
         self.configs.append(newEntry)
     def getConfig(self, entryName):
+        print "retrieving config option"
         for entry in self.configs:
             if entry.name == entryName:
                 return entry
@@ -41,12 +43,15 @@ class soConfig(object):
                 return None
                     
     def loadConfig(self):
+        print os.listdir("./")
+        print "loading config ", self.name
         try:
-            self = cPickle.loads(open(self.name))
+            self = cPickle.loads(open("./"+self.name))
         except:
             print "couldn't load", self.name
             
     def saveConfig(self):
+        print"saving config file: ", self.name
         configFile = cPickle.dumps(self)
         saveFile = open(self.name, "w+")
         saveFile.write(configFile)
@@ -56,18 +61,20 @@ class soConfig(object):
 class soPlayer(object):
     def __init__(self, name="Default", inip="127.0.0.1", exip="127.0.0.1"):
         self.name = name
-        self.internalip = ip
+        self.internalip = inip
         self.externalip = exip
 
 
 class soSession(object):
     def __init__(self, configName="Default.conf", args=[]):
-                self.config = soConfig(configName)
+        print "Creating Session"
+        self.config = soConfig(configName)
     def loadSession(self):
-                clientRole = self.config.getConfig("clientRole")
-                if(clientRole != None):
-                    self.client = clientRole.value
-                
+        print "Loading config options"
+        clientRole = self.config.getConfig("clientRole")
+        if(clientRole != None):
+                self.client = solarClient.solarClient()
+x=soSession()
             
             
             

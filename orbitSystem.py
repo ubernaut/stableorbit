@@ -8,17 +8,6 @@ import copy
 #import psyco
 #psyco.full()
 #load from xml
-
-class Point(object):
-        def __init__(self, position_data=[0,0,0]):
-                self.x=float(position_data[0])
-		self.y=float(position_data[1])
-		self.z=float(position_data[2])
-	def reset(self):
-		self.x=0
-		self.y=0
-		self.z=0
-		
 class Body(object):
 	def __init__ (self,body_data=[]):
                 if body_data == []:
@@ -36,12 +25,51 @@ class Body(object):
 		del self.position
 		del self.velocity
 		del self.acceleration
-
+       
+                
+class Point(object):
+        def __init__(self, position_data=[0,0,0]):
+                self.x=float(position_data[0])
+		self.y=float(position_data[1])
+		self.z=float(position_data[2])
+	def reset(self):
+		self.x=0
+		self.y=0
+		self.z=0
+class Galaxy(object):
+        def __init__(self):
+                self.stars = []
+                self.theta = 0
+                self.dTheta = .05
+                self.maxTheta = 10
+                self.alpha = 2000
+                self.beta = 0.25               
+                self.e = 2.71828182845904523536
+                self.starDensity = 10
+                while self.theta< self.maxTheta:
+                        self.theta+=self.dTheta
+                        randRange = 2000/(1+self.theta/2)
+                        self.starDensity = 10/(1+self.theta/2)
+                        for i in range(0,self.starDensity):
+                                xPos = self.alpha*(self.e**(self.beta*self.theta))*math.cos(self.theta)
+                                yPos = self.alpha*(self.e**(self.beta*self.theta))*math.sin(self.theta)
+                                xPos+=random.uniform(-randRange,randRange)
+                                yPos+=random.uniform(-randRange,randRange)
+                                zPos = random.uniform(-randRange,randRange)
+                                newStar = Star(xPos,yPos,zPos, "star", "cos")
+                                newStar2 = Star(-xPos,-yPos,-zPos, "star", "cos")
+                                #print xPos
+                                #print yPos
+                                self.stars.append(newStar)
+                                self.stars.append(newStar2)
+                        
+                        
 class Star(object):
         def __init__(self, xPos=30000, yPos=0, zPos=0, aName="default", aPlayer="cos"):
                 self.body = Body(["body",1,xPos,yPos,zPos,0,0,0,0,0,0])
                 self.name = aName
                 self.player = aPlayer
+            
 
 class System(object):
 	def __init__(self, seed=0, starcount=1, bodycount=2, abodyDistance=3, abodySpeed=0.05):
@@ -73,6 +101,7 @@ class System(object):
 		for j in range(0,3):
 			body_data.append(random.uniform(-0.0,0.0))
 		return body_data
+	
 	def getPlanet(self, body_data):
 #                body_data.append("body_"+len(self.bodies))
                 body_data.append(random.uniform(.01,.5))
@@ -81,6 +110,7 @@ class System(object):
                 for j in range(0,3):
                         body_data.append(random.uniform(-self.bodySpeed,self.bodySpeed))
                 return body_data
+        
         def buildSol(self):
                 self.bodies=[]
                 body_data=["body",1,0,0,0,0,0,0,0,0,0]
@@ -209,34 +239,7 @@ class System(object):
 			return 100.0
 	def bodies(self):
                 return self.bodies
-            
 
-class Galaxy(object):
-        def __init__(self):
-                self.stars = []
-                self.theta = 0
-                self.dTheta = .05
-                self.maxTheta = 10
-                self.alpha = 2000
-                self.beta = 0.25               
-                self.e = 2.71828182845904523536
-                self.starDensity = 10
-                while self.theta< self.maxTheta:
-                        self.theta+=self.dTheta
-                        randRange = 2000/(1+self.theta/2)
-                        self.starDensity = 10/(1+self.theta/2)
-                        for i in range(0,self.starDensity):
-                                xPos = self.alpha*(self.e**(self.beta*self.theta))*math.cos(self.theta)
-                                yPos = self.alpha*(self.e**(self.beta*self.theta))*math.sin(self.theta)
-                                xPos+=random.uniform(-randRange,randRange)
-                                yPos+=random.uniform(-randRange,randRange)
-                                zPos = random.uniform(-randRange,randRange)
-                                newStar = Star(xPos,yPos,zPos, "star", "cos")
-                                newStar2 = Star(-xPos,-yPos,-zPos, "star", "cos")
-                                #print xPos
-                                #print yPos
-                                self.stars.append(newStar)
-                                self.stars.append(newStar2)
         
 class GridSystem(object):
         def __init__(self, bodies=[]):
