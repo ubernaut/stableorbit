@@ -64,6 +64,7 @@ class soPhysics:
                # print "collision detected"
                 if body1.name == "player":
                         print "you died"
+                        body1.position.x += .5
                         body1.position.z += .5
                         body1.velocity.x*=0.125
                         body1.velocity.y*=0.125
