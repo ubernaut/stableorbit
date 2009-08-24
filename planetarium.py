@@ -64,8 +64,8 @@ class Universe(DirectObject):
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
 		self.player.mass = .000000001
-		self.player.position.x=0
-		self.player.position.y=1
+		self.player.position.x=1
+		self.player.position.y=0
 		self.player.position.z=0
 		self.player.bodies=[]
                 self.evaluator= neweval

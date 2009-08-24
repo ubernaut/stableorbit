@@ -93,7 +93,7 @@ class solarClient(object):
         print "earthSun"
         sysCount = 0
         self.mySystem = System(sysCount)
-        self.Evaluator = Eval(self.mySystem, 1000)
+        self.Evaluator = soPhysics(self.mySystem, 100,0.2)
         print "number of bodies:"
         print len(self.mySystem.bodies)
         print "launching planetarium.. .  .    .        ."
@@ -122,7 +122,7 @@ class solarClient(object):
         except:
             print "couldn't get one"
             self.mySystem.star = self.galaxy.stars[4*len(self.galaxy.stars)/5] 
-        self.Evaluator = soPhysics(self.mySystem, 1000)
+        self.Evaluator = soPhysics(self.mySystem, 1000, .2)
         print "number of bodies:"
         print len(self.mySystem.bodies)
         

@@ -64,10 +64,10 @@ class soPhysics:
                # print "collision detected"
                 if body1.name == "player":
                         print "you died"
-                        body1.position.x += 5
-                        body1.velocity.x=0
-                        body1.velocity.y=0
-                        body1.velocity.z=0
+                        body1.position.z += 1
+                        body1.velocity.x*=0.125
+                        body1.velocity.y*=0.125
+                        body1.velocity.z*=0.125
         def combineBodies(self, body1, body2):
                 body3 = Body()
                 body3.mass = body1.mass + body2.mass
@@ -93,7 +93,7 @@ class soPhysics:
                         body.acceleration.reset()
 			self.sumFit+=self.system.evaluate()
 			self.t+=self.dt
-		self.count+=1	
+		self.count+=1
 
 	def evaluate(self):
 		self.t=0
@@ -130,10 +130,10 @@ class soPhysics:
 				radius = d_x**2 + d_y**2 + d_z**2
 				grav_mag=0
 				
-				if radius >.005:
+				if radius >.0001:
                                         grav_mag = G/((radius+epsilon)**(3.0/2.0))
 				else:
-                                        self.collisions.append([i,j])
+                                        #self.collisions.append([i,j])
                                         self.collisionDetected(self.system.bodies[i],
                                                                self.system.bodies[j])                                                               
                                         grav_mag = 0# G/((radius+epsilon)**(3.0/2.0))

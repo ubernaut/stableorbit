@@ -72,7 +72,8 @@ class Star(object):
             
 
 class System(object):
-	def __init__(self, seed=0, starcount=1, bodycount=2, abodyDistance=3, abodySpeed=0.05):
+	def __init__(self, seed=0, starcount=1,
+                     bodycount=2, abodyDistance=3, abodySpeed=0.05):
                 random.seed = seed
                 self.seed = seed
                 self.star = Star()
