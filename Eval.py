@@ -47,8 +47,8 @@ import copy
 ##}
 ##""")
                 
-class Eval:
-	def __init__(self,aSystem, maxMark=10000, dt = .2):
+class soPhysics:
+	def __init__(self,aSystem, maxMark=10000, dt=.02):
 		self.dt=dt
 		self.system = aSystem
 		self.maxMark=maxMark
@@ -56,9 +56,35 @@ class Eval:
 		self.sumFit=self.system.evaluate()
 		self.t=0
 		self.count=1
+		self.collisions=[]
 		#self.gridSys = GridSystem(self.system.bodies)
 		#self.accGravSingle = mod.get_function("accGravSingle")
-		
+
+	def collisionDetected(self, body1, body2):
+               # print "collision detected"
+                if body1.name == "player":
+                        print "you died"
+                        body1.position.x += 5
+                        body1.velocity.x=0
+                        body1.velocity.y=0
+                        body1.velocity.z=0
+        def combineBodies(self, body1, body2):
+                body3 = Body()
+                body3.mass = body1.mass + body2.mass
+                body3.position.x = body1.position.x + body2.position.x/2
+                body3.position.y = body1.position.y
+                body3.position.z = body1.position.z
+                body3.velocity.x = (((body1.mass*body1.velocity.x)+
+                                     (body2.mass*body2.velocity.x)/
+                                     (body1.mass+body2.mass)))
+                body3.velocity.y = (((body1.mass*body1.velocity.y)+
+                                     (body2.mass*body2.velocity.y)/
+                                     (body1.mass+body2.mass)))
+                body3.velocity.z = (((body1.mass*body1.velocity.z)+
+                                     (body2.mass*body2.velocity.z)/
+                                     (body1.mass+body2.mass)))
+                return body3
+                        
 	def evaluateStep(self):
                 self.accelerate()
                 for body in self.system.bodies:
@@ -91,10 +117,9 @@ class Eval:
 	def accelerate(self):		
 		G=2.93558*10**-4
 		epsilon = 0.01
+		self.collisions =[]
 		for i in range(0,len(self.system.bodies)):
 			current_body=self.system.bodies[i]
-##			if current_body.name == "player":
-##                                print "accelerating player"
 			current_position=current_body.position
 			for j in range(0,i):
 				other_body=self.system.bodies[j]
@@ -105,10 +130,12 @@ class Eval:
 				radius = d_x**2 + d_y**2 + d_z**2
 				grav_mag=0
 				
-				if radius >0:
+				if radius >.005:
                                         grav_mag = G/((radius+epsilon)**(3.0/2.0))
 				else:
-                                        radius = 0.001
+                                        self.collisions.append([i,j])
+                                        self.collisionDetected(self.system.bodies[i],
+                                                               self.system.bodies[j])                                                               
                                         grav_mag = 0# G/((radius+epsilon)**(3.0/2.0))
 				grav_x=grav_mag*d_x
 				grav_y=grav_mag*d_y

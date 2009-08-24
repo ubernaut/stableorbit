@@ -5,75 +5,40 @@ import solarServer
 import os
 import cPickle
 import sys
+import datetime
+import soConfig
+from soConfig import soConfigEntry
 
-class soConfigEntry(object):
-    def __init__(self, name="Default", value=object()):
-        self.name = name
-        self.value = object
-class soConfig(object):
-    def __init__(self, name="Default.conf", configs=[]):
-        self.name = name
-        self.configs=configs
-        self.loadConfig()
-        if self.name =="Default.conf" and self.configs == []:
-            print "Creating Default.conf"
-            print "please enter a player name: "
-            playerName=raw_input()
-            self.configs.append(
-                soConfigEntry("localPlayer", None))
-            self.configs.append(
-                soConfigEntry("mainScreen", ["window", "800 600"]))
-            self.configs.append(
-                soConfigEntry("clientRole", None))
-            self.configs.append(
-                soConfigEntry("maxBodyCount", 15))
-            self.saveConfig()
-    def setConfig(self, newEntry):
-        for entry in self.configs:
-            if entry.name == newEntry.name:
-                self.configs.remove(entry)
-        self.configs.append(newEntry)
-    def getConfig(self, entryName):
-        print "retrieving config option"
-        for entry in self.configs:
-            if entry.name == entryName:
-                return entry
-            else:
-                print "no config entry for ", entry.name
-                return None
-                    
-    def loadConfig(self):
-        print os.listdir("./")
-        print "loading config ", self.name
-        try:
-            self = cPickle.loads(open("./"+self.name))
-        except:
-            print "couldn't load", self.name
-            
-    def saveConfig(self):
-        print"saving config file: ", self.name
-        configFile = cPickle.dumps(self)
-        saveFile = open(self.name, "w+")
-        saveFile.write(configFile)
-        saveFile.close()
-
+from pandac.PandaModules import loadPrcFileData
         
 class soPlayer(object):
-    def __init__(self, name="Default", inip="127.0.0.1", exip="127.0.0.1"):
+    def __init__(self, name="Default", password="Default",
+                 inip="127.0.0.1", exip="127.0.0.1"):
         self.name = name
+        self.password = password
         self.internalip = inip
         self.externalip = exip
-
+        self.online = False
+        self.visitedStars = []
+        self.lastOnline = datetime.datetime.now()
+        self.health =100
 
 class soSession(object):
-    def __init__(self, configName="Default.conf", args=[]):
+    def __init__(self, args=["fullscreen 0","win-size 1200 600"]):
         print "Creating Session"
-        self.config = soConfig(configName)
+        #self.config = soConfig(configName)
+        self.pandaFigs=args
+        self.loadSession()
     def loadSession(self):
-        print "Loading config options"
-        clientRole = self.config.getConfig("clientRole")
-        if(clientRole != None):
-                self.client = solarClient.solarClient()
+        self.client = solarClient()
+        self.configPanda()
+        self.client.runLocal()
+        
+    def configPanda(self):
+#        figlist = self.config.getConfig("pandafig")
+#        print "figs:",figlist
+        for fig in self.pandaFigs:
+             loadPrcFileData("", fig)
 x=soSession()
             
             

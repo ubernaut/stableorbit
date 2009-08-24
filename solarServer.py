@@ -3,14 +3,13 @@ import orbitSystem
 import cPickle
 import SimpleXMLRPCServer
 import sys
-
 #sys.path.append('./beta')
 #import StableOrbitDAO
-
 import os
 from orbitSystem import System
 from orbitSystem import Galaxy
-
+import soSession
+import datetime
 class solarServer(object):
     def __init__(self,xString):
         import string
@@ -18,6 +17,8 @@ class solarServer(object):
         self.galaxy = Galaxy()
         self.python_string = string
         self.seedcount = 1
+        self.players = []
+        self.onPlayers = []
         
     def getSystem(self):
         print "recieved system request"
@@ -28,6 +29,23 @@ class solarServer(object):
         return aString
         #xfile = open("serialSystem.txt")
         #print xfile.read()
+    
+        
+    def playerLogin(self, uname, passw):
+        if uname == "Default":
+            return soPlayer()
+        for player in self.players:
+            if player.name == uname:
+                if player.passw == passw:
+                    return player
+                else:
+                    return "password unknown"
+        print SimpleXMLRPCServer.SimpleXMLRPCServer.get_request()
+        #print client.address
+        player = soPlayer(uname, passw)
+        self.players.append(player)
+        self.onPlayers.append(player)
+      
     def getNextStar(self):
         print "Getting Next Star #", self.seedcount
         self.seedcount+=1
@@ -35,12 +53,15 @@ class solarServer(object):
             self.galaxy.stars[
                 len(self.galaxy.stars)-self.seedcount])
         return starfile
+      
+        
     def getAllStars(self):
         print "Get All Stars"
         allStarFiles = os.listdir('data')
         print allStarFiles
         #os.chdir('..')
         return allStarFiles
+    
     def getGalaxy(self):
         return cPickle.dumps(self.galaxy)
         
@@ -64,13 +85,9 @@ class solarServer(object):
         os.chdir("..")
         print "sending system"
         return xfile
-        #print xfile
-        #StableOrbitDAO.insertSystem(xfile)
-  
+
 if __name__=='__main__':
     xString = "192.168.1.101"
-#    xString = "YOUR IP GOES HERE"
-#    xString = "localhost"
     server = SimpleXMLRPCServer.SimpleXMLRPCServer((xString, 8000))
     server.register_instance(solarServer(xString))
     server.serve_forever()

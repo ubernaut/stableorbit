@@ -89,7 +89,7 @@ class System(object):
 		self.stability = 0.5 - self.evaluate()
 		self.printed=False
 		self.avgStability=0.5 - self.evaluate()
-	def moveToStar(self):
+	def moveToStar(self):                
                 for body in self.bodies:
                         body.position.x += self.star.body.position.x
                         body.position.y += self.star.body.position.y
@@ -138,6 +138,7 @@ class System(object):
                 otherBodies.append(self.bodies[0])
                 otherBodies.append(aBody)
                 while self.evaluateBodies(otherBodies)>1:
+                        print "testing configuration"
                         body_data = []
                         body_data.append("body_X")
                         body_data = self.getPlanet(body_data)
@@ -146,6 +147,7 @@ class System(object):
                         otherBodies.append(self.bodies[0])
                         otherBodies.append(aBody)
                 self.bodies.append(aBody)
+                return aBody
                 
 	def addPlanet(self):
                 print "adding body"

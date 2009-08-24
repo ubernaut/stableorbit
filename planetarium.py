@@ -8,32 +8,28 @@ import Eval
 import math
 from orbitSystem import Body
 from orbitSystem import System
-import interactiveConsole#.interactiveConsole
-
+import interactiveConsole
 from pandac.PandaModules import loadPrcFileData
+
 def config():
         loadPrcFileData("", "window-title stableorbit")
         print "Enter 'f' 'Enter' for fullscreen or just 'Enter' for windowed"
         fullVar = raw_input()
         if(fullVar=="f"):        
                 loadPrcFileData("", "fullscreen 1")
-        print "Enter '1' for 800x600"
-        print "      '2' for 1200x600"
+        print "Enter '1' for 1200x600"
+        print "      '2' for 1440x900"
         print "      '3' for 1600x1050"
-        print "or 'Enter' for default 1440x900"
+        print "or 'Enter' for default 800x600"
         screenVar = raw_input()
         if screenVar == "1":
-                loadPrcFileData("", "win-size 800 600")
-        if screenVar == "2":
                 loadPrcFileData("", "win-size 1200 600")
+        if screenVar == "2":
+                loadPrcFileData("", "win-size 1440 900")
         if screenVar == "3":
                 loadPrcFileData("", "win-size 1600 1050")
         else:
-                loadPrcFileData("", "win-size 1440 900")
-
-        loadPrcFileData("","x-wheel-left-button 6")
-        loadPrcFileData("","x-wheel-right-button 7")
-config()
+                loadPrcFileData("", "win-size 1200 600")
 
 
 from direct.showbase import DirectObject
@@ -92,45 +88,45 @@ class Universe(DirectObject):
                         star.body.sphere.reparentTo(star.body.node)
                         star.body.sphere.setScale(self.starScale)
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
-        
+        def loadSinglePlanet(self, body):
+                #if body.name == "sol":
+                body.node = render.attachNewNode(body.name)
+                body.sphere = loader.loadModelCopy("models/planet_sphere")			
+                body.sphere.reparentTo(body.node)
+                #body.sphere.setScale((.05 * body.mass) +.005)
+                #body.sphere.setScale(1)
+                body.sphere.setScale((body.mass/1000)+self.objectScale)
+                if body.mass < 0.1 :
+                        body.texture = loader.loadTexture("models/neptune.jpg")
+                elif body.mass >= 0.1 and body.mass < .2:
+                        body.texture = loader.loadTexture("models/pluto.jpg")
+                elif body.mass >= .2 and body.mass < .3:
+                        body.texture = loader.loadTexture("models/venus.jpg")
+                elif body.mass >= .3 and body.mass < .4:
+                        body.texture = loader.loadTexture("models/earthmoon.jpg")
+                elif body.mass >= .4 and body.mass < .5:
+                        body.texture = loader.loadTexture("models/mars.jpg")
+                elif body.mass >= .5 and body.mass < .6:
+                        body.texture = loader.loadTexture("models/pluto.jpg")
+                elif body.mass >= .6 and body.mass < .7:
+                        body.texture = loader.loadTexture("models/saturn.jpg")
+                elif body.mass >= .7 and body.mass < .8:
+                        body.texture = loader.loadTexture("models/jupiter.jpg")
+                elif body.mass >= .8 and body.mass < .9:
+                        body.texture = loader.loadTexture("models/mercury.jpg")
+                elif body.mass >= .9 and body.mass < 2:
+                        body.texture = loader.loadTexture("models/mars.jpg")
+                elif body.mass >= 2:
+                        body.texture = loader.loadTexture("models/sun.jpg")
+                else:
+                        body.texture = loader.loadTexture("models/mars.jpg")
+                body.sphere.setTexture(body.texture,1)
+                body.node.setPos(body.position.x,body.position.y,body.position.z)
 	def loadPlanets(self):
                 for body in self.evaluator.system.bodies:
                         if body.name != "player":
-                                #if body.name == "sol":
-                                body.node = render.attachNewNode(body.name)
-                                body.sphere = loader.loadModelCopy("models/planet_sphere")			
-                                body.sphere.reparentTo(body.node)
-                                #body.sphere.setScale((.05 * body.mass) +.005)
-                                #body.sphere.setScale(1)
-                                body.sphere.setScale((body.mass/1000)+self.objectScale)
-                                if body.mass < 0.1 :
-                                        body.texture = loader.loadTexture("models/neptune.jpg")
-                                elif body.mass >= 0.1 and body.mass < .2:
-                                        body.texture = loader.loadTexture("models/pluto.jpg")
-                                elif body.mass >= .2 and body.mass < .3:
-                                        body.texture = loader.loadTexture("models/venus.jpg")
-                                elif body.mass >= .3 and body.mass < .4:
-                                        body.texture = loader.loadTexture("models/earthmoon.jpg")
-                                elif body.mass >= .4 and body.mass < .5:
-                                        body.texture = loader.loadTexture("models/mars.jpg")
-                                elif body.mass >= .5 and body.mass < .6:
-                                        body.texture = loader.loadTexture("models/pluto.jpg")
-                                elif body.mass >= .6 and body.mass < .7:
-                                        body.texture = loader.loadTexture("models/saturn.jpg")
-                                elif body.mass >= .7 and body.mass < .8:
-                                        body.texture = loader.loadTexture("models/jupiter.jpg")
-                                elif body.mass >= .8 and body.mass < .9:
-                                        body.texture = loader.loadTexture("models/mercury.jpg")
-                                elif body.mass >= .9 and body.mass < 2:
-                                        body.texture = loader.loadTexture("models/mars.jpg")
-                                elif body.mass >= 2:
-                                        body.texture = loader.loadTexture("models/sun.jpg")
-                                else:
-                                        body.texture = loader.loadTexture("models/mars.jpg")
-                                body.sphere.setTexture(body.texture,1)
-                                body.node.setPos(body.position.x,body.position.y,body.position.z)
+                                self.loadSinglePlanet(body)
                         else:
-                                print "yo"
                                 #self.sky = loader.loadModelCopy("models/planet_sphere")
                                 self.sky = loader.loadModel("models/solar_sky_sphere")
 #                                self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
@@ -154,6 +150,10 @@ class Universe(DirectObject):
 	def toggleConsole(self):
                 print "toggle console"
                 self.console.toggle()
+        def addPlanet(self):
+                self.loadSinglePlanet(self.evaluator.system.addSinglePlanet())
+                
+                return #self.evaluator.system.bodies
 	def loadRoid(self, abody):
                 if(len(self.player.bodies)<10):
                         self.player.bodies.append(abody)
@@ -200,7 +200,8 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
-                self.accept("escape", self.toggleConsole)
+                self.accept("p", self.addPlanet)
+                self.accept("`", self.toggleConsole)
                 self.accept("wheel_right", self.tiltLeft)
                 self.accept("wheel_left", self.tiltRight)
                 self.accept("w", self.tiltLeft)
@@ -210,7 +211,7 @@ class Universe(DirectObject):
                 self.accept("mouse1", self.handleLeftMouseClick)
 		self.accept("wheel_up", self.zoomIn)
 		self.accept("wheel_down", self.zoomOut)
-		self.accept("`", self.exit)
+		self.accept("escape", self.exit)
 		self.accept("space",self.stop)
 		self.accept("d",self.brake)
 		self.accept("e",self.accelerate)
