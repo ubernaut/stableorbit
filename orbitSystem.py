@@ -40,12 +40,12 @@ class Galaxy(object):
         def __init__(self):
                 self.stars = []
                 self.theta = 0
-                self.dTheta = .05
+                self.dTheta = .1
                 self.maxTheta = 10
                 self.alpha = 2000
                 self.beta = 0.25               
                 self.e = 2.71828182845904523536
-                self.starDensity = 10
+                self.starDensity = 1
                 while self.theta< self.maxTheta:
                         self.theta+=self.dTheta
                         randRange = 2000/(1+self.theta/2)
