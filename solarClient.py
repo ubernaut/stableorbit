@@ -107,7 +107,7 @@ class solarClient(object):
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        bodycount = 5
+        bodycount = 16
         bodyDistance=3
         bodySpeed=0.05
         self.mySystem = System(sysCount, starcount,
@@ -121,8 +121,8 @@ class solarClient(object):
             
         except:
             print "couldn't get one"
-            self.mySystem.star = self.galaxy.stars[4*len(self.galaxy.stars)/5] 
-        self.Evaluator = soPhysics(self.mySystem, 1000, .2)
+            self.galaxy.stars[4*len(self.galaxy.stars)/5] 
+        self.Evaluator = soPhysics(self.mySystem, 1000, .02)
         print "number of bodies:"
         print len(self.mySystem.bodies)
         

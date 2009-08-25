@@ -21,14 +21,11 @@ class Body(object):
 		self.angVelocity=Point()
 		self.acceleration.reset()
 		self.radius=.5
-		
-
 	
 	def __del__(self):
 		del self.position
 		del self.velocity
-		del self.acceleration
-       
+		del self.acceleration       
                 
 class Point(object):
         def __init__(self, position_data=[0,0,0]):
@@ -61,8 +58,6 @@ class Galaxy(object):
                                 zPos = random.uniform(-randRange,randRange)
                                 newStar = Star(xPos,yPos,zPos, "star", "cos")
                                 newStar2 = Star(-xPos,-yPos,-zPos, "star", "cos")
-                                #print xPos
-                                #print yPos
                                 self.stars.append(newStar)
                                 self.stars.append(newStar2)
                         
@@ -100,19 +95,23 @@ class System(object):
                         body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
                 body_data.append(random.uniform(1,10))
-                for j in range(0,3):
+                for j in range(0,2):
                         body_data.append(random.uniform(-.1,.1))
-		for j in range(0,3):
+                body_data.append(0.0)
+		for j in range(0,2):
 			body_data.append(random.uniform(-0.0,0.0))
+		body_data.append(0.0)
 		return body_data
 	
 	def getPlanet(self, body_data):
 #                body_data.append("body_"+len(self.bodies))
                 body_data.append(random.uniform(.01,.5))
-                for j in range(0,3):
+                for j in range(0,2):
                         body_data.append(random.uniform(-self.bodyDistance,self.bodyDistance))
-                for j in range(0,3):
+                body_data.append(0.0)
+                for j in range(0,2):
                         body_data.append(random.uniform(-self.bodySpeed,self.bodySpeed))
+                body_data.append(0.0)
                 return body_data
         
         def buildSol(self):
@@ -245,32 +244,64 @@ class System(object):
 			return 100.0
 	def bodies(self):
                 return self.bodies
-
-        
+       
 class GridSystem(object):
         def __init__(self, bodies=[]):
-                self.count = bodies.length()
+                self.count = len(bodies)
                 N = self.count
-                self.names[N] = "un-named"
-                self.mass[N] = 0.0
-                self.pos[N][3] = 0.0
-                self.vel[N][3] = 0.0
-                self.acc[N][3] = 0.0
-
-                i = 0;
+                self.names = [""]
+                self.mass= [0.0]
+                self.rad = [0.0]
+                self.pos = [[0.0,0.0,0.0]]
+                self.ori = [[0.0,0.0,0.0]]
+                self.vel = [[0.0,0.0,0.0]]
+                self.acc = [[0.0,0.0,0.0]]
+                for i in range (0,self.count):
+                        self.addSpace()
+                i = 0
                 for body in bodies:
                         self.names[i] = body.name
                         self.mass[i] = body.mass
-
+                        self.rad[i] = body.radius
                         self.pos[i][0] = body.position.x
                         self.pos[i][1] = body.position.y
                         self.pos[i][2] = body.position.z
-                       
+
+                        self.ori[i][0] = body.position.x
+                        self.ori[i][1] = body.position.y
+                        self.ori[i][2] = body.orientation.z
+
                         self.vel[i][0] = body.velocity.x
                         self.vel[i][1] = body.velocity.y
                         self.vel[i][2] = body.velocity.z
-
+                        
                         self.acc[i][0] = body.acceleration.x
                         self.acc[i][1] = body.acceleration.y
-                        self.acc[i][2] = body.acceleration.z
+                        self.acc[i][2] = body.acceleration.z                        
                         i+=1
+                for i in range (0,self.count):
+                        self.printBody(i)
+
+        def printBody(self, i):
+                print "printing body: ", i
+                print "nam :",self.names[i]
+                print "mas :",self.mass[i]
+                print "rad :",self.rad[i]
+                print "pos :",self.pos[i]
+                print "vel :",self.vel[i]
+                print "acc :",self.acc[i]
+        def resetAcc(self):
+                for i in range (0, self.count):
+                    self.acc[i] = [0.0,0.0,0.0]
+                        
+                
+        def addSpace(self):
+                #count = len(self.names)-1
+                self.names.append("")
+                self.mass.append(0.0)
+                self.rad.append(0.0)
+                self.pos.append([0.0,0.0,0.0])
+                self.ori.append([0.0,0.0,0.0])
+                self.vel.append([0.0,0.0,0.0])
+                self.acc.append([0.0,0.0,0.0])
+

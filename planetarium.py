@@ -68,9 +68,9 @@ class Universe(DirectObject):
 		self.player.position.y=0
 		self.player.position.z=0
 		self.player.bodies=[]
-                self.evaluator= neweval
-                self.evaluator.system.bodies.append(self.player)
-                self.evaluator.system.moveToStar()
+		self.evaluator.system.bodies.append(self.player)
+                self.evaluator= Eval.soPhysics(neweval.system)                
+                #self.evaluator.system.moveToStar()
                 self.loadPlanets()
                 self.console = console
                 if len(starList)>0:
@@ -88,57 +88,59 @@ class Universe(DirectObject):
                         star.body.sphere.reparentTo(star.body.node)
                         star.body.sphere.setScale(self.starScale)
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
-        def loadSinglePlanet(self, body):
-                #if body.name == "sol":
+        def loadSinglePlanet(self, body,i):
                 body.node = render.attachNewNode(body.name)
-                body.sphere = loader.loadModelCopy("models/planet_sphere")			
-                body.sphere.reparentTo(body.node)
-                scaleRate = ((math.sqrt(body.mass))/100)+.01
-                #scaleRate=((body.mass)/1000)+.005
-                #body.sphere.setScale((.05 * body.mass) +.005)
-                body.sphere.setScale(scaleRate)
-                body.radius=scaleRate
-                #body.sphere.setScale(((body.mass**.5)/100)+.001)
-                #body.radius = ((body.mass**.5)/100)+.001
-                if body.mass < 0.1 :
-                        body.texture = loader.loadTexture("models/neptune.jpg")
-                elif body.mass >= 0.1 and body.mass < .2:
-                        body.texture = loader.loadTexture("models/pluto.jpg")
-                elif body.mass >= .2 and body.mass < .3:
-                        body.texture = loader.loadTexture("models/venus.jpg")
-                elif body.mass >= .3 and body.mass < .4:
-                        body.texture = loader.loadTexture("models/earthmoon.jpg")
-                elif body.mass >= .4 and body.mass < .5:
-                        body.texture = loader.loadTexture("models/mars.jpg")
-                elif body.mass >= .5 and body.mass < .6:
-                        body.texture = loader.loadTexture("models/pluto.jpg")
-                elif body.mass >= .6 and body.mass < .7:
-                        body.texture = loader.loadTexture("models/saturn.jpg")
-                elif body.mass >= .7 and body.mass < .8:
-                        body.texture = loader.loadTexture("models/jupiter.jpg")
-                elif body.mass >= .8 and body.mass < .9:
-                        body.texture = loader.loadTexture("models/mercury.jpg")
-                elif body.mass >= .9 and body.mass < 2:
-                        body.texture = loader.loadTexture("models/mars.jpg")
-                elif body.mass >= 2:
-                        body.texture = loader.loadTexture("models/sun.jpg")
-                else:
-                        body.texture = loader.loadTexture("models/mars.jpg")
-                body.sphere.setTexture(body.texture,1)
-                body.node.setPos(body.position.x,body.position.y,body.position.z)
-	def loadPlanets(self):
-                for body in self.evaluator.system.bodies:
-                        if body.name != "player":
-                                self.loadSinglePlanet(body)
+                if self.evaluator.gridSystem.names[i]!="player":
+                        body.sphere = loader.loadModelCopy("models/planet_sphere")			
+                        body.sphere.reparentTo(body.node)
+                        scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/100)+.01
+                        body.sphere.setScale(scaleRate)
+                        self.evaluator.gridSystem.rad[i]=scaleRate
+                                
+                        body.mass=self.evaluator.gridSystem.mass[i]
+                        if body.mass< 0.1:                       
+                                body.texture = loader.loadTexture("models/neptune.jpg")
+                        elif body.mass >= 0.1 and body.mass < .2:
+                                body.texture = loader.loadTexture("models/pluto.jpg")
+                        elif body.mass >= .2 and body.mass < .3:
+                                body.texture = loader.loadTexture("models/venus.jpg")
+                        elif body.mass >= .3 and body.mass < .4:
+                                body.texture = loader.loadTexture("models/earthmoon.jpg")
+                        elif body.mass >= .4 and body.mass < .5:
+                                body.texture = loader.loadTexture("models/mars.jpg")
+                        elif body.mass >= .5 and body.mass < .6:
+                                body.texture = loader.loadTexture("models/pluto.jpg")
+                        elif body.mass >= .6 and body.mass < .7:
+                                body.texture = loader.loadTexture("models/saturn.jpg")
+                        elif body.mass >= .7 and body.mass < .8:
+                                body.texture = loader.loadTexture("models/jupiter.jpg")
+                        elif body.mass >= .8 and body.mass < .9:
+                                body.texture = loader.loadTexture("models/mercury.jpg")
+                        elif body.mass >= .9 and body.mass < 2:
+                                body.texture = loader.loadTexture("models/mars.jpg")
+                        elif body.mass >= 2:
+                                body.texture = loader.loadTexture("models/sun.jpg")
                         else:
-                                #self.sky = loader.loadModelCopy("models/planet_sphere")
-                                self.sky = loader.loadModel("models/solar_sky_sphere")
-#                                self.sky_tex = loader.loadTexture("models/stars_1k_tex.jpg")
-                                self.sky_tex = loader.loadTexture("models/startex.jpg")
-                                self.sky.setTexture(self.sky_tex, 1)
-                                self.sky.setScale(self.skyScale)
-                                self.loadPlayer(body)
-                                self.sky.reparentTo(render)
+                                body.texture = loader.loadTexture("models/mars.jpg")
+                        body.sphere.setTexture(body.texture,1)
+                        body.node.setPos(self.evaluator.gridSystem.pos[i][0],
+                                         self.evaluator.gridSystem.pos[i][1],
+                                         self.evaluator.gridSystem.pos[i][2])
+                else:
+                        self.loadPlayer(body)
+
+	def loadPlanets(self):
+                i=0
+                for body in self.evaluator.system.bodies:
+                        self.loadSinglePlanet(body,i)
+                        i+=1
+                self.sky = loader.loadModel("models/solar_sky_sphere")                               
+                self.sky_tex = loader.loadTexture("models/startex.jpg")
+                self.sky.setTexture(self.sky_tex, 1)
+                self.sky.setScale(self.skyScale)
+                self.sky.reparentTo(render)
+
+                
         def scaleUp(self):
                 self.starScale*= 1.01
                 print self.starScale
@@ -154,10 +156,11 @@ class Universe(DirectObject):
 	def toggleConsole(self):
                 print "toggle console"
                 self.console.toggle()
+
         def addPlanet(self):
-                self.loadSinglePlanet(self.evaluator.system.addSinglePlanet())
-                
-                return #self.evaluator.system.bodies
+                self.loadSinglePlanet(self.evaluator.system.addSinglePlanet())                
+                return
+        
 	def loadRoid(self, abody):
                 if(len(self.player.bodies)<10):
                         self.player.bodies.append(abody)
@@ -176,15 +179,9 @@ class Universe(DirectObject):
                         self.evaluator.system.bodies.pop()
                         abody.node.detachNode()
                 return
-#                abody.node = render.attachNewNode(abody.name)
-#                abody.model = loader.loadModelCopy("models/planet_sphere")			
-#                abody.model.reparentTo(abody.node)
-#                abody.texture = loader.loadTexture("models/pluto.jpg")
-#                abody.model.setScale(.01)
-#                abody.node.setPos(abody.position.x ,abody.position.y ,abody.posit
+
 	def loadPlayer(self, abody):
                 abody.node = render.attachNewNode(abody.name)
-#                abody.model = loader.loadModelCopy("models/planet_sphere")			
                 abody.model = loader.loadModelCopy("models/fighter")			
                 abody.model.reparentTo(abody.node)
                 if abody.name == "player":
@@ -193,19 +190,18 @@ class Universe(DirectObject):
                         abody.texture = loader.loadTexture("models/sun.jpg")
                 abody.model.setScale(.003)
                 abody.radius=.003
-                #abody.model.setScale(.003)
-                abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
+                i = self.evaluator.gridSystem.count - 1
+                self.evaluator.gridSystem.rad[i]=0.03
+                abody.node.setPos(self.evaluator.gridSystem.pos[i][0],
+                                  self.evaluator.gridSystem.pos[i][1],
+                                  self.evaluator.gridSystem.pos[i][2])
+
         def exit(self):
                 quit()
                 return
         def fullscreen(self):
                 print "doh"
-
-##                if(self.DirectObject.ConfigVariableManager.fullscreen==0):
-##                        self.DirectObject.ConfigVariableManager.fullscreen=1
-##                else:
-##                        self.DirectObject.ConfigVariableManager.fullscreen=0
-                                  
+                             
 	def move(self,task):
 #                self.accept("p", self.addPlanet)
                 self.accept("`", self.toggleConsole)
@@ -214,8 +210,8 @@ class Universe(DirectObject):
                 self.accept("w", self.tiltLeft)
                 self.accept("r", self.tiltRight)
                 self.accept("mouse2", self.handlemouse2Click)
-                self.accept("mouse3", self.handleRightMouseClick)
-                self.accept("mouse1", self.handleLeftMouseClick)
+                #self.accept("mouse3", self.handleRightMouseClick)
+                #self.accept("mouse1", self.handleLeftMouseClick)
 		self.accept("wheel_up", self.zoomIn)
 		self.accept("wheel_down", self.zoomOut)
 		self.accept("escape", self.exit)
@@ -227,16 +223,14 @@ class Universe(DirectObject):
 		self.accept("[",self.scaleDown)
 		self.accept("]",self.scaleUp)
 		self.accept("l",self.togglemouselook)
-		#self.accept("")
 		dt = self.dt
 		if not self.mapMode:
-                        self.evaluator.evaluateStep()
+                        self.evaluator.accelerateCuda()
 		self.updateMouse(self.player)
 		if self.starting: 
 			dt=dt/2.0
 			self.starting=False
-		for body in self.evaluator.system.bodies:
-			self.move_body(body,dt)
+		self.setAllPositions()
 		return Task.cont
 	def tiltLeft(self):
                 print "left"
@@ -250,34 +244,45 @@ class Universe(DirectObject):
                         self.mouselook = False
                 else:
                         self.mouselook = True
+
 	def togglemap(self):
                 print "toggling map"
                 if (self.mapMode):
                         self.mapMode=False
                         self.zoom=1.1
-                        #base.disableMouse()
                 else:
                         self.mapMode=True
                         self.zoom = 59000
-                        #base.enableMouse()
-                                  
+                        
 	def accelerate(self):                                  
                 print "accelerating ship"
-                self.player.acceleration.x+=self.dX/50
-                self.player.acceleration.y+=self.dY/50
-                self.player.acceleration.z+=self.dZ/50                                  
+                i = self.evaluator.gridSystem.count - 1
+                self.evaluator.gridSystem.printBody(i)
+                self.evaluator.gridSystem.printBody(0)
+                self.evaluator.gridSystem.acc[i][0]+=self.dX/50
+                self.evaluator.gridSystem.acc[i][1]+=self.dY/50
+                self.evaluator.gridSystem.acc[i][2]+=self.dZ/50                                  
                 return
+        
         def stop(self):
-                print "stopping ship"
-                self.player.velocity.x=0
-                self.player.velocity.y=0
-                self.player.velocity.z=0
+                i = self.evaluator.gridSystem.count - 1
+                print "stopping ship", i
+                self.evaluator.gridSystem.printBody(i)
+                self.evaluator.gridSystem.printBody(0)
+                self.evaluator.gridSystem.vel[i][0]=0.0
+                self.evaluator.gridSystem.vel[i][1]=0.0
+                self.evaluator.gridSystem.vel[i][2]=0.0
                 return
+        
         def brake(self):
                 print "slowing ship"
-                self.player.acceleration.x-=self.dX/50
-                self.player.acceleration.y-=self.dY/50
-                self.player.acceleration.z-=self.dZ/50 
+                i = self.evaluator.gridSystem.count - 1
+                self.evaluator.gridSystem.printBody(i)
+                self.evaluator.gridSystem.printBody(0)
+                self.evaluator.gridSystem.acc[i][0]-=self.dX/50
+                self.evaluator.gridSystem.acc[i][1]-=self.dY/50
+                self.evaluator.gridSystem.acc[i][2]-=self.dZ/50
+                
 	def handleMouse2(self):
                 print "deccelerating ship"
                 self.player.acceleration.x-=self.dX/10
@@ -305,16 +310,17 @@ class Universe(DirectObject):
                 abody.mass =0.00000001
                 self.loadRoid(abody)                                  
                 return
+        
         def handleRightMouseClick(self):
                 print "removing impactor"
                 self.deloadRoid()
-
                 
 	def zoomIn(self):
                 self.zoom*=0.9
                 print self.zoom
                 #self.scaleDown()
                 return
+        
         def zoomOut(self):
                 self.zoom*=1.1
                 print self.zoom
@@ -322,6 +328,7 @@ class Universe(DirectObject):
                 if self.zoom > 60000:
                         self.zoomIn()
                 return
+        
 	def updateMouse(self, abody):
                 if (base.mouseWatcherNode.hasMouse() and self.mouselook):
                         newX = base.mouseWatcherNode.getMouseX()
@@ -350,28 +357,21 @@ class Universe(DirectObject):
                         self.dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
                 base.camera.setHpr(abody.orientation.x,
                                    abody.orientation.y,abody.orientation.z)
-                base.camera.setPos(abody.position.x-self.dX,
-                                   abody.position.y-self.dY,
-                                   abody.position.z-self.dZ)              
+                cpos=self.evaluator.gridSystem.count-1
 
-	def move_body(self,body,dt):
-		self.set_body_position(body,body.position.x,body.position.y,body.position.z)
+                base.camera.setPos(self.evaluator.gridSystem.pos[cpos][0]-self.dX,
+                                   self.evaluator.gridSystem.pos[cpos][1]-self.dY,
+                                   self.evaluator.gridSystem.pos[cpos][2]-self.dZ)
+
+        def setAllPositions(self):
+                i=0
+                for body in self.evaluator.system.bodies:
+                        self.set_body_position(body,
+                                               self.evaluator.gridSystem.pos[i][0],
+                                               self.evaluator.gridSystem.pos[i][1],
+                                               self.evaluator.gridSystem.pos[i][2])
+                        i+=1
+                        
 	def set_body_position(self,body,x,y,z):
                 body.node.setPos(x,y,z) 
                 body.node.setHpr(body.orientation.x, body.orientation.y, body.orientation.z)
-		               
-        def set_conditions(data_folder):
-        	a=dircache.listdir(data_folder)
-                try:
-                	a.remove('.svn')
-                        a.remove('evolotion')
-        	except:
-                	print "svn wasnt there"
-                body_data=[]
-                for f in a:
-                        values = open(data_folder+f).readlines()
-                        v = values[0]
-                        body_data = v.split()
-                        body_data.insert(0,f)
-                        body=Body(body_data)
-                        bodies[body.name]=body
