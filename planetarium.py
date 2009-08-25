@@ -93,9 +93,13 @@ class Universe(DirectObject):
                 body.node = render.attachNewNode(body.name)
                 body.sphere = loader.loadModelCopy("models/planet_sphere")			
                 body.sphere.reparentTo(body.node)
+                scaleRate = ((math.sqrt(body.mass))/100)+.01
+                #scaleRate=((body.mass)/1000)+.005
                 #body.sphere.setScale((.05 * body.mass) +.005)
-                #body.sphere.setScale(1)
-                body.sphere.setScale(((body.mass**.5)/100)+self.objectScale)
+                body.sphere.setScale(scaleRate)
+                body.radius=scaleRate
+                #body.sphere.setScale(((body.mass**.5)/100)+.001)
+                #body.radius = ((body.mass**.5)/100)+.001
                 if body.mass < 0.1 :
                         body.texture = loader.loadTexture("models/neptune.jpg")
                 elif body.mass >= 0.1 and body.mass < .2:
@@ -180,6 +184,7 @@ class Universe(DirectObject):
 #                abody.node.setPos(abody.position.x ,abody.position.y ,abody.posit
 	def loadPlayer(self, abody):
                 abody.node = render.attachNewNode(abody.name)
+#                abody.model = loader.loadModelCopy("models/planet_sphere")			
                 abody.model = loader.loadModelCopy("models/fighter")			
                 abody.model.reparentTo(abody.node)
                 if abody.name == "player":
@@ -187,6 +192,8 @@ class Universe(DirectObject):
                 elif abody.name == "mouse":
                         abody.texture = loader.loadTexture("models/sun.jpg")
                 abody.model.setScale(.003)
+                abody.radius=.003
+                #abody.model.setScale(.003)
                 abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
         def exit(self):
                 quit()
@@ -200,7 +207,7 @@ class Universe(DirectObject):
 ##                        self.DirectObject.ConfigVariableManager.fullscreen=0
                                   
 	def move(self,task):
-                self.accept("p", self.addPlanet)
+#                self.accept("p", self.addPlanet)
                 self.accept("`", self.toggleConsole)
                 self.accept("wheel_right", self.tiltLeft)
                 self.accept("wheel_left", self.tiltRight)

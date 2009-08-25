@@ -122,7 +122,7 @@ class solarClient(object):
         except:
             print "couldn't get one"
             self.mySystem.star = self.galaxy.stars[4*len(self.galaxy.stars)/5] 
-        self.Evaluator = soPhysics(self.mySystem, 1000, .1)
+        self.Evaluator = soPhysics(self.mySystem, 1000, .2)
         print "number of bodies:"
         print len(self.mySystem.bodies)
         

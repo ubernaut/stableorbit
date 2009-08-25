@@ -8,7 +8,7 @@ import os
 import copy
 #import pycuda.autoinit
 #import pycuda.driver as drv
-#import numpy
+import numpy
 #import psyco
 #psyco.full()
 
@@ -63,7 +63,7 @@ class soPhysics:
 	def collisionDetected(self, body1, body2):
                # print "collision detected"
                 if body1.name == "player":
-                        print "you died"
+#                        print "you died"
 #                        body1.position.x += .5
                         body1.position.z += 1
                         body1.velocity.x*=0.125
@@ -129,10 +129,10 @@ class soPhysics:
 				d_y=(other_position.y-current_position.y)
 				d_z=(other_position.z-current_position.z)
 				radius = d_x**2 + d_y**2 + d_z**2
-				grav_mag=0
-				
-				if radius >.0001:
-                                        grav_mag = G/((radius+epsilon)**(3.0/2.0))
+				rad2=math.sqrt(radius)
+				grav_mag=0                                
+				if radius >(current_body.radius+other_body.radius):
+				        grav_mag = G/((radius+epsilon)**(3.0/2.0))
 				else:
                                         #self.collisions.append([i,j])
                                         self.collisionDetected(self.system.bodies[i],

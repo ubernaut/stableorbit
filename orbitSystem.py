@@ -20,6 +20,9 @@ class Body(object):
 		self.orientation=Point()
 		self.angVelocity=Point()
 		self.acceleration.reset()
+		self.radius=.5
+		
+
 	
 	def __del__(self):
 		del self.position
@@ -40,7 +43,7 @@ class Galaxy(object):
         def __init__(self):
                 self.stars = []
                 self.theta = 0
-                self.dTheta = .1
+                self.dTheta = .05
                 self.maxTheta = 10
                 self.alpha = 2000
                 self.beta = 0.25               
