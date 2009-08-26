@@ -271,8 +271,8 @@ class GridSystem(object):
                         self.pos[i][1] = body.position.y
                         self.pos[i][2] = body.position.z
 
-                        self.ori[i][0] = body.position.x
-                        self.ori[i][1] = body.position.y
+                        self.ori[i][0] = body.orientation.x
+                        self.ori[i][1] = body.orientation.y
                         self.ori[i][2] = body.orientation.z
 
                         self.vel[i][0] = body.velocity.x
@@ -328,7 +328,6 @@ class GridSystem(object):
                 self.count -=1
                         
                         
-                if i<self.count -1:
         def resetAcc(self):
                 for i in range (0, self.count):
                     self.acc[i] = [0.0,0.0,0.0]
