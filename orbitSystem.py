@@ -249,6 +249,7 @@ class GridSystem(object):
         def __init__(self, bodies=[]):
                 self.count = len(bodies)
                 N = self.count
+                self.player=0
                 self.names = [""]
                 self.mass= [0.0]
                 self.rad = [0.0]
@@ -261,6 +262,8 @@ class GridSystem(object):
                         self.addSpace()
                 i = 0
                 for body in bodies:
+                        if body.name == "player":
+                                self.player = i
                         self.names[i] = body.name
                         self.mass[i] = body.mass
                         self.rad[i] = body.radius
@@ -283,6 +286,15 @@ class GridSystem(object):
                 
                 for i in range (0,self.count):
                         self.printBody(i)
+        def getPlayerIndex(self):
+                i=0
+                for name in self.names:
+                        if name == "player":
+                                self.player = i
+                                return i
+                        else:
+                                i+=1
+                
 
         def printBody(self, i):
                 print "printing body: ", i
@@ -292,7 +304,7 @@ class GridSystem(object):
                 print "pos :",self.pos[i]
                 print "vel :",self.vel[i]
                 print "acc :",self.acc[i]
-        
+
         def moveBody(self,source,dest):
                 self.names[dest]=self.names[source]
                 self.mass[dest]=self.mass[source]
