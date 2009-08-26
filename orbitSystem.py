@@ -256,6 +256,7 @@ class GridSystem(object):
                 self.ori = [[0.0,0.0,0.0]]
                 self.vel = [[0.0,0.0,0.0]]
                 self.acc = [[0.0,0.0,0.0]]
+                self.allocated =1
                 for i in range (0,self.count):
                         self.addSpace()
                 i = 0
@@ -279,6 +280,7 @@ class GridSystem(object):
                         self.acc[i][1] = body.acceleration.y
                         self.acc[i][2] = body.acceleration.z                        
                         i+=1
+                
                 for i in range (0,self.count):
                         self.printBody(i)
 
@@ -290,13 +292,38 @@ class GridSystem(object):
                 print "pos :",self.pos[i]
                 print "vel :",self.vel[i]
                 print "acc :",self.acc[i]
+        
+        def moveBody(self,source,dest):
+                self.names[dest]=self.names[source]
+                self.mass[dest]=self.mass[source]
+                self.rad[dest]=self.rad[source]
+                self.pos[dest]=self.pos[source]
+                self.ori[dest]=self.ori[source]
+                self.vel[dest]=self.vel[source]
+                self.acc[dest]=self.acc[source]
+                
+        def removeBody(self, i):
+                if i == self.count -1:
+                        self.names[i]=""
+                        self.mass[i]=0.0
+                        self.rad[i]=0.0
+                        self.pos[i]=[0.0,0.0,0.0]
+                        self.ori[i]=[0.0,0.0,0.0]
+                        self.vel[i]=[0.0,0.0,0.0]
+                        self.acc[i]=[0.0,0.0,0.0]
+                else:
+                        self.moveBody(self.count-1, i)
+                self.count -=1
+                        
+                        
+                if i<self.count -1:
         def resetAcc(self):
                 for i in range (0, self.count):
                     self.acc[i] = [0.0,0.0,0.0]
-                        
-                
+                                        
         def addSpace(self):
                 #count = len(self.names)-1
+                self.allocated +=1
                 self.names.append("")
                 self.mass.append(0.0)
                 self.rad.append(0.0)
