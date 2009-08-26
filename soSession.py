@@ -24,7 +24,7 @@ class soPlayer(object):
         self.health =100
 
 class soSession(object):
-    def __init__(self, args=["fullscreen 0","win-size 1200 600"]):
+    def __init__(self, args=["fullscreen 1","win-size 1024 600"]):
         print "Creating Session"
         #self.config = soConfig(configName)
         self.pandaFigs=args

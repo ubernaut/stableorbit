@@ -140,8 +140,11 @@ class soPhysics:
 		epsilon = 0.01
 		for i in range(0,self.gridSystem.count):
 			for j in range(0,i):
-                                self.accGravSingle(self.gridSystem.mass, self.gridSystem.pos,
-                                                   self.gridSystem.vel, self.gridSystem.acc,self.gridSystem.rad, i, j)
+                                self.accGravSingle(self.gridSystem.mass,
+                                                   self.gridSystem.pos,
+                                                   self.gridSystem.vel,
+                                                   self.gridSystem.acc,
+                                                   self.gridSystem.rad, i, j)
                 self.calVelPosCuda()
                 self.gridSystem.resetAcc()
                 
