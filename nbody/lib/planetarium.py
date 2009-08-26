@@ -10,12 +10,14 @@ import direct.directbase.DirectStart
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import PointLight,Vec4
 from direct.task.Task import Task
-nbody_c = CDLL('lib/nbody.dylib')
+#gcc -o nbody.so -shared -fPIC nbody.c
+nbody_c = CDLL('lib/nbody.so') 
+
 
 class DirectBody(object):
   def __init__(self, body):
     self.c=body
-    self.node = 0
+    self.node = 0 
     self.texture = 0
     self.sphere = 0
     
@@ -73,3 +75,4 @@ class Universe(DirectObject):
   def set_body_position(self,body):
     body.node.setPos(float(body.c.position.x),float(body.c.position.y),float(body.c.position.z))
   
+
