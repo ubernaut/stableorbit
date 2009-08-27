@@ -44,6 +44,7 @@ __global__ void accGravSingle(float* mass, float* pos[3], float* vel[3], float* 
                 *(acc+jth)[2] +=grav_z*mass[ith];   
 }
 
+*/
                 
 __global__ void calVelPos(float* mass, float* pos[3], float* vel[3], float* acc[3], float* rad, int count, float dt)
 {
@@ -76,7 +77,7 @@ __global__ void accelerateAll(float* mass, float* pos[3], float* vel[3], float* 
 			}
 		}
 calVelPos(mass, pos, vel, acc, rad, count, dt);
-}*/
+}
 """)
 
 multiply_them = mod.get_function("multiply_them")
