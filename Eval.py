@@ -6,6 +6,9 @@ import math
 import sys
 import os
 import copy
+from ctypes import *
+
+cphysics = CDLL('sophysics.so')
 #import pycuda.autoinit
 #import pycuda.driver as drv
 #import numpy
@@ -140,11 +143,14 @@ class soPhysics:
 		epsilon = 0.01
 		for i in range(0,self.gridSystem.count):
 			for j in range(0,i):
-                                self.accGravSingle(self.gridSystem.mass,
-                                                   self.gridSystem.pos,
-                                                   self.gridSystem.vel,
-                                                   self.gridSystem.acc,
-                                                   self.gridSystem.rad, i, j)
+                                self.accGravSingle(byref(self.gridSystem.mass),
+                                                   byref(self.gridSystem.pos),
+                                                   byref(self.gridSystem.vel),
+                                                   byref(self.gridSystem.acc),
+                                                   byref(self.gridSystem.rad),
+                                                   i, j)
+#                                self.accGravSingle(self.gridSystem.mass, self.gridSystem.pos,
+#                                                   self.gridSystem.vel, self.gridSystem.acc,self.gridSystem.rad, i, j)
                 self.calVelPosCuda()
                 self.gridSystem.resetAcc()
                 
