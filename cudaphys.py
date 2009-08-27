@@ -20,12 +20,10 @@ __global__ void accGravSingle(float* mass, float* pos[3], float* vel[3], float* 
                 float radius = d_x*d_x + d_y*d_y + d_z*d_z;
                 float rad2 = sqrt(radius);
                 float grav_mag = 0.0;
-                
+
                 if (rad2 > *(rad+ith)+ *(rad+jth))
 		{
-//                    grav_mag =G/pow((radius+epsilon),(3.0/2.0));
                     grav_mag =G/pow(radius+epsilon,3/2);
-                        
 		}
                 else
 		{
@@ -74,7 +72,7 @@ __global__ void accelerateAll(float* mass, float* pos[3], float* vel[3], float* 
 		{
 		for (j=0; j<i;j++)
 			{
-			 //accGravSingle(mass, pos, vel, acc, rad, i, j);
+			 //initrd.imgaccGravSingle(mass, pos, vel, acc, rad, i, j);
 			}
 		}
 //calVelPos(mass, pos, vel, acc, rad, count, dt);

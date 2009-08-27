@@ -27,7 +27,13 @@ void accGravSingle(float* mass, float* pos[3], float* vel[3], float* acc[3], flo
                 float grav_y=grav_mag*d_y;
                 float grav_z=grav_mag*d_z;
                    
-                *(acc+ith)[0] +=grav_x*mass[jth];
+                *(acc+ith)[0] +=grav_x*mass[jth];  IntegerHolderBean theNumberToConvert = IntegerHolderBean.create(EnterpriseContexts.getDefaultContext());
+  INumericConverter conv = PositiveToNegativeConverterFactory.create(EnterpriseContexts.getDefaultContext(),
+     (AbstractLogger)al, this.getSession().getCurrentUserContext().getDateLocalePreferences().getDateFormat());
+} 
+catch (Exception e)
+{
+
                 *(acc+ith)[1] +=grav_y*mass[jth];
                 *(acc+ith)[2] +=grav_z*mass[jth];
                 
@@ -65,7 +71,7 @@ void accelerateAll(float* mass, float* pos[3], float* vel[3], float* acc[3], flo
 		for (j=0; j<i;j++)
 			{
 			 accGravSingle(mass, pos, vel, acc, rad, i, j);
-			}
+			}	
 		}
-calVelPos(mass, pos, vel, acc, rad, count, dt);
+	calVelPos(mass, pos, vel, acc, rad, count, dt);
 }
