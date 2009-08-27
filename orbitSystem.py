@@ -20,7 +20,7 @@ class Body(object):
 		self.orientation=Point()
 		self.angVelocity=Point()
 		self.acceleration.reset()
-		self.radius=.03
+		self.radius=.5
 	
 	def __del__(self):
 		del self.position
@@ -36,7 +36,6 @@ class Point(object):
 		self.x=0
 		self.y=0
 		self.z=0
-		
 class Galaxy(object):
         def __init__(self):
                 self.stars = []
@@ -245,22 +244,7 @@ class System(object):
 			return 100.0
 	def bodies(self):
                 return self.bodies
-
-from ctypes import *
-class cSystem(Structure):
-        _fields_ = (("count", c_int),
-                    ("allocated",c_int),
-                    ("names", c_char*50),
-                    ("mass",c_float*50),
-                    ("rad",c_float*50),
-                    ("pos",c_float*50*3),
-                    ("ori",c_float*50*3),
-                    ("vel",c_float*50*3),
-                    ("acc",c_float*50*3))
-        
-        
-        
-        
+       
 class GridSystem(object):
         def __init__(self, bodies=[]):
                 self.count = len(bodies)
@@ -287,8 +271,8 @@ class GridSystem(object):
                         self.pos[i][1] = body.position.y
                         self.pos[i][2] = body.position.z
 
-                        self.ori[i][0] = body.orientation.x
-                        self.ori[i][1] = body.orientation.y
+                        self.ori[i][0] = body.position.x
+                        self.ori[i][1] = body.position.y
                         self.ori[i][2] = body.orientation.z
 
                         self.vel[i][0] = body.velocity.x
@@ -321,6 +305,15 @@ class GridSystem(object):
                 print "vel :",self.vel[i]
                 print "acc :",self.acc[i]
 
+        def arrayconvert(self,source,dest):
+                self.names  = array(self.names)
+                self.mass = array(self.mass)
+                self.rad = array(self.rad)
+                self.pos[dest]=self.pos[source]
+                self.ori[dest]=self.ori[source]
+                self.vel[dest]=self.vel[source]
+                self.acc[dest]=self.acc[source]
+                
         def moveBody(self,source,dest):
                 self.names[dest]=self.names[source]
                 self.mass[dest]=self.mass[source]
@@ -344,6 +337,7 @@ class GridSystem(object):
                 self.count -=1
                         
                         
+                if i<self.count -1:
         def resetAcc(self):
                 for i in range (0, self.count):
                     self.acc[i] = [0.0,0.0,0.0]

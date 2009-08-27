@@ -20,8 +20,6 @@ void accGravSingle(float* mass, float* pos[3], float* vel[3], float* acc[3], flo
 		}
                 else
 		{
-                        //print "collision i ",ith," j ",jth
-                        //print rad2
                         grav_mag = 0;
                 }
               
