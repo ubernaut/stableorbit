@@ -1,23 +1,56 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
-
-
-struct Point
-{
-  float x, y, z;
-};
-
-struct Body 
-{
-  float mass;
-  struct Point position, velocity, acceleration;
-};
-
-typedef struct System {
+/*
+typedef struct cSystem {
   int N;
-  struct Body bodies[80];
+  int count = 50;
+  int player=0;
+  char* names = [""];
+  float mass= [0.0];
+  float rad = [0.0];
+  float pos = [[0.0,0.0,0.0]];
+  float ori = [[0.0,0.0,0.0]];
+  float vel = [[0.0,0.0,0.0]];
+  float acc = [[0.0,0.0,0.0]];
+  float allocated =1;
+ 
 } System;
+*/
+void accGravSingle(float* mass, float* pos[3], float* vel[3], float* acc[3], float* rad, int ith, int jth)
+{
+//                float d_x = *(pos+jth)[0] - *(pos+ith)[0];
+
+                float d_x = *(pos+jth)[0] - *(pos+ith)[0];
+                float d_y = *(pos+jth)[1] - *(pos+ith)[1];
+                float d_z = *(pos+jth)[2] - *(pos+ith)[2];
+                float radius = d_x*d_x + d_y*d_y + d_z*d_z;
+                float rad2 =sqrt(radius);
+                float grav_mag = 0.0;
+                
+                if (rad2 > rad[ith]+rad[jth])
+		{
+                        grav_mag = G/((radius+epsilon)**(3.0/2.0))
+		}
+                else
+		{
+                        //print "collision i ",ith," j ",jth
+                        //print rad2
+                        grav_mag = 0
+                }
+              
+                grav_x=grav_mag*d_x
+                grav_y=grav_mag*d_y
+                grav_z=grav_mag*d_z
+                   
+                acc[ith][0] +=grav_x*mass[jth]
+                acc[ith][1] +=grav_y*mass[jth]
+                acc[ith][2] +=grav_z*mass[jth]
+                
+                *(acc+jth)[0] +=grav_x*mass[ith]
+                *(acc+jth)[1] +=grav_y*mass[ith]
+                *(acc+jth)[2] +=grav_z*mass[ith]   
+}
 
 bool  starting;
 
@@ -46,7 +79,7 @@ void update_velocity(System* p_system, float dt)
     p_system->bodies[i].acceleration.z = 0.0;
   }
 }
-
+/*
 void accelerate(System* p_system)
 {
   int i, j;
@@ -94,3 +127,4 @@ void do_step(System* p_system, float dt)
     update_position(p_system, dt);
   }
 }
+*/
