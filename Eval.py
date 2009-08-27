@@ -8,7 +8,7 @@ import os
 import copy
 from ctypes import *
 
-cphysics = CDLL('sophysics.so')
+#cphysics = CDLL('sophysics.so')
 #import pycuda.autoinit
 #import pycuda.driver as drv
 #import numpy
@@ -143,14 +143,18 @@ class soPhysics:
 		epsilon = 0.01
 		for i in range(0,self.gridSystem.count):
 			for j in range(0,i):
-                                self.accGravSingle(byref(self.gridSystem.mass),
-                                                   byref(self.gridSystem.pos),
-                                                   byref(self.gridSystem.vel),
-                                                   byref(self.gridSystem.acc),
-                                                   byref(self.gridSystem.rad),
+##                                self.accGravSingle(byref(self.gridSystem.mass),
+##                                                   byref(self.gridSystem.pos),
+##                                                   byref(self.gridSystem.vel),
+##                                                   byref(self.gridSystem.acc),
+##                                                   byref(self.gridSystem.rad),
+##                                                   i, j)
+                                self.accGravSingle(self.gridSystem.mass,
+                                                   self.gridSystem.pos,
+                                                   self.gridSystem.vel,
+                                                   self.gridSystem.acc,
+                                                   self.gridSystem.rad,
                                                    i, j)
-#                                self.accGravSingle(self.gridSystem.mass, self.gridSystem.pos,
-#                                                   self.gridSystem.vel, self.gridSystem.acc,self.gridSystem.rad, i, j)
                 self.calVelPosCuda()
                 self.gridSystem.resetAcc()
                 
@@ -163,5 +167,3 @@ class soPhysics:
                         self.gridSystem.pos[i][0]+=self.dt*self.gridSystem.vel[i][0]
                         self.gridSystem.pos[i][2]+=self.dt*self.gridSystem.vel[i][1]
                         self.gridSystem.pos[i][1]+=self.dt*self.gridSystem.vel[i][2]
-              
-
