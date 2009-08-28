@@ -6,6 +6,12 @@ from numpy import ndarray
 mod = drv.SourceModule("""
 
 
+__global__ void doubler(float *pos)
+{
+    int idx = threadIdx.x+ threadIdx.y*3;
+
+    pos[idx] *= 2;
+}
 __global__ void getdeltas(float** dest, float** ithpos, float** jthpos)
 //__global__ void getdeltas(float* dest[3], float* ithpos[3], float* jthpos[3])
 {
@@ -94,25 +100,35 @@ __global__ void accelerateAll(float* mass, float* pos[3], float* vel[3], float* 
 """)
 
 getdeltas = mod.get_function("getdeltas")
-pos = ndarray([3,3], numpy.float32)
-#dest = ndarray([3,1], numpy.float32)
-#posj = ndarray([3,1], numpy.float32)
-pos[0][0]=6
-pos[0][1]=6
-pos[0][2]=6
-pos[1][0]=6
-pos[1][1]=6
-pos[1][2]=6
-pos[2][0]=6
-pos[2][1]=6
-pos[2][2]=6
+doubler = mod.get_function("doubler")
+posi = ndarray([3,3], numpy.float32)
+posj = ndarray([3,1], numpy.float32)
+posd = ndarray([3,1], numpy.float32)
+posi[0][0]=6
+posi[0][1]=6
+posi[0][2]=6
+posi[1][0]=6
+posi[1][1]=6
+posi[1][2]=6
+posi[2][0]=6
+posi[2][1]=6
+posi[2][2]=6
+posj[0]=3
+posj[1]=3
+posj[2]=3
+posd[0]=0
+posd[1]=0
+posd[2]=0
 
 print "shape",posi.shape
 print posi
 #posj = array([0.0,0.0,0.0]).astype(numpy.float32)
 #dest = array([(0.0,0.0,0.0)]).astype(numpy.float32)
-allgpu = cuda.mem_alloc(posi)
-getdeltas(drv.Out(dest), drv.In(posi), drv.In(posj),block = (1,1,1))
+allgpu = pycuda.driver.mem_alloc(posi.nbytes)#+posj.nbytes+posd.nbytes)
+pycuda.driver.memcpy_htod(allgpu, posi)
+doubler(posi, block = (3,3,1))
+print posi
+#getdeltas(drv.Out(posd), drv.In(posi), drv.In(posj),block = (1,1,1))
 #a = numpy.random.randn(400).astype(numpy.float32)
 #print a
 #b = numpy.random.randn(400).astype(numpy.float32)
@@ -123,5 +139,5 @@ getdeltas(drv.Out(dest), drv.In(posi), drv.In(posj),block = (1,1,1))
 #        block=(400,1,1))
 #
 
-print dest
+#print dest
 #print dest-a*b
