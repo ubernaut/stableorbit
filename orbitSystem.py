@@ -117,10 +117,14 @@ class System(object):
         
         def buildSol(self):
                 self.bodies=[]
-                body_data=["body",1,0,0,0,0,0,0,0,0,0]
+                body_data=["Sol",1,0,0,0,0,0,0,0,0,0]
                 self.bodies.append(Body(body_data))
-                body_data=["Earth",0.000003,0,1,0,0,0,0,0,0,0]
+                body_data=["Earth",0.000003,0,1,0,.04,0,0,0,0,0]
                 self.bodies.append(Body(body_data))
+                #mercury data mass 3.3022 * 10**23 //kg
+                #sun  = 1.9891 * 10**30 kg = 1 
+                #body_data=["Mercury",]
+                
                 
 	def build(self):
 		for i in range(0,self.bodyCount):
@@ -260,6 +264,12 @@ class cSystem(Structure):
         
         
 class GridSystem(object):
+        def convert(data):
+                tempDATA = []
+                for i in data:
+                        tempDATA.append([float(j) for j in i.split()])
+                return array(tempDATA)
+
         def __init__(self, bodies=[]):
                 self.count = len(bodies)
                 N = self.count

@@ -1,21 +1,17 @@
 import pycuda.autoinit
 import pycuda.driver as drv
 import numpy
-from numpy import array
+from numpy import ndarray
 
 mod = drv.SourceModule("""
 
-__global__ void multiply_them(float *dest, float *a, float *b)
-{
-  const int i = threadIdx.x;
-  dest[i] = a[i] * b[i];
-}
 
-__global__ void getdeltas(float* dest[3], float* ithpos[3], float* jthpos[3])
+__global__ void getdeltas(float** dest, float** ithpos, float** jthpos)
+//__global__ void getdeltas(float* dest[3], float* ithpos[3], float* jthpos[3])
 {
     //float tempdest[3]={0,0,0}
 
-    
+    int idx = threadIdx.x;
     *(dest)[0] = *(jthpos)[0] - *(ithpos)[0];
     *(dest)[1] = *(jthpos)[1] - *(ithpos)[1];
     *(dest)[2] = *(jthpos)[2] - *(ithpos)[2];
@@ -97,21 +93,35 @@ __global__ void accelerateAll(float* mass, float* pos[3], float* vel[3], float* 
 }
 """)
 
-multiply_them = mod.get_function("multiply_them")
-
 getdeltas = mod.get_function("getdeltas")
+pos = ndarray([3,3], numpy.float32)
+#dest = ndarray([3,1], numpy.float32)
+#posj = ndarray([3,1], numpy.float32)
+pos[0][0]=6
+pos[0][1]=6
+pos[0][2]=6
+pos[1][0]=6
+pos[1][1]=6
+pos[1][2]=6
+pos[2][0]=6
+pos[2][1]=6
+pos[2][2]=6
 
-dxarray = array([(0.0,0.0,0.0)])
-
-a = numpy.random.randn(400).astype(numpy.float32)
+print "shape",posi.shape
+print posi
+#posj = array([0.0,0.0,0.0]).astype(numpy.float32)
+#dest = array([(0.0,0.0,0.0)]).astype(numpy.float32)
+allgpu = cuda.mem_alloc(posi)
+getdeltas(drv.Out(dest), drv.In(posi), drv.In(posj),block = (1,1,1))
+#a = numpy.random.randn(400).astype(numpy.float32)
 #print a
-b = numpy.random.randn(400).astype(numpy.float32)
+#b = numpy.random.randn(400).astype(numpy.float32)
 #print b
-dest = numpy.zeros_like(a)
-multiply_them(
-        drv.Out(dest), drv.In(a), drv.In(b),
-        block=(400,1,1))
-
+#dest = numpy.zeros_like(a)
+#multiply_them(
+#        drv.Out(dest), drv.In(a), drv.In(b),
+#        block=(400,1,1))
+#
 
 print dest
-print dest-a*b
+#print dest-a*b

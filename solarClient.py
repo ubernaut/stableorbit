@@ -143,8 +143,12 @@ class solarClient(object):
         run()
         
     def runLocal(self):
-        print "launching disconnected"
-        self.generateSystem()
+        print "run sol? y/n"
+        genvar = raw_input()
+        if genvar == 'y':
+            self.runSol()
+        else:
+            self.generateSystem()
         self.launchSystem() 
 
 #Uncomment the following line to retrieve "system6" from the server
