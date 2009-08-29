@@ -4,14 +4,12 @@ import numpy
 from numpy import ndarray
 
 mod = drv.SourceModule("""
+  __global__ void doublify(float *a)
+  {
+    int idx = threadIdx.x + threadIdx.y*4;
+    a[idx] *= 2;
+  }
 
-
-__global__ void doubler(float *pos)
-{
-    int idx = threadIdx.x+ threadIdx.y*3;
-
-    pos[idx] *= 2;
-}
 __global__ void getdeltas(float** dest, float** ithpos, float** jthpos)
 //__global__ void getdeltas(float* dest[3], float* ithpos[3], float* jthpos[3])
 {
@@ -55,9 +53,7 @@ __global__ void accGravSingle(float* mass, float* pos[3], float* vel[3], float* 
                 *(acc+jth)[1] +=grav_y*mass[ith];
                 *(acc+jth)[2] +=grav_z*mass[ith];   
 }
-
-
-                
+   
 __global__ void calVelPos(float* mass, float* pos[3], float* vel[3], float* acc[3], float* rad, int count, float dt)
 {
 	int i;
@@ -80,7 +76,6 @@ __global__ void calVelPos(float* mass, float* pos[3], float* vel[3], float* acc[
 __global__ void oncePerBody(float* mass, float* pos[3], float* vel[3], float* acc[3], float* rad, int count, float dt, float i)
 {
     const int xthread = threadIdx.x;
-    
     int j =0;
     for (j=0; j<i;j++)
     {
@@ -98,36 +93,55 @@ __global__ void accelerateAll(float* mass, float* pos[3], float* vel[3], float* 
 //calVelPos(mass, pos, vel, acc, rad, count, dt);
 }
 """)
+def doublify():
 
-getdeltas = mod.get_function("getdeltas")
-doubler = mod.get_function("doubler")
-posi = ndarray([3,3], numpy.float32)
-posj = ndarray([3,1], numpy.float32)
-posd = ndarray([3,1], numpy.float32)
-posi[0][0]=6
-posi[0][1]=6
-posi[0][2]=6
-posi[1][0]=6
-posi[1][1]=6
-posi[1][2]=6
-posi[2][0]=6
-posi[2][1]=6
-posi[2][2]=6
-posj[0]=3
-posj[1]=3
-posj[2]=3
-posd[0]=0
-posd[1]=0
-posd[2]=0
+    a = numpy.random.randn(4,4)
+    a = a.astype(numpy.float32)
+    print "a: "
+    print a
+    
+    a_gpu = pycuda.driver.mem_alloc(a.nbytes)
+    pycuda.driver.memcpy_htod(a_gpu, a)
 
-print "shape",posi.shape
-print posi
+
+    func = mod.get_function("doublify")
+    func(a_gpu, block=(4,4,1))
+    
+    a_doubled = numpy.empty_like(a)
+
+    pycuda.driver.memcpy_dtoh(a_doubled, a_gpu)
+    print a_doubled
+    print a
+
+doublify()    
+##getdeltas = mod.get_function("getdeltas")
+##doubler = mod.get_function("doubler")
+##posi = ndarray([3,3], numpy.float32)
+##posj = ndarray([3,1], numpy.float32)
+##posd = ndarray([3,1], numpy.float32)
+##posi[0][0]=6
+##posi[0][1]=6
+##posi[0][2]=6
+##posi[1][0]=6
+##posi[1][1]=6
+##posi[1][2]=6
+##posi[2][0]=6
+##posi[2][1]=6
+##posi[2][2]=6
+##posj[0]=3
+##posj[1]=3
+##posj[2]=3
+##posd[0]=0
+##posd[1]=0
+##posd[2]=0
+#print "shape",posi.shape
+#print posi
 #posj = array([0.0,0.0,0.0]).astype(numpy.float32)
 #dest = array([(0.0,0.0,0.0)]).astype(numpy.float32)
-allgpu = pycuda.driver.mem_alloc(posi.nbytes)#+posj.nbytes+posd.nbytes)
-pycuda.driver.memcpy_htod(allgpu, posi)
-doubler(posi, block = (3,3,1))
-print posi
+#allgpu = pycuda.driver.mem_alloc(posi.nbytes)#+posj.nbytes+posd.nbytes)
+#pycuda.driver.memcpy_htod(allgpu, posi)
+#doubler(posi, block = (3,3,1))
+#print posi
 #getdeltas(drv.Out(posd), drv.In(posi), drv.In(posj),block = (1,1,1))
 #a = numpy.random.randn(400).astype(numpy.float32)
 #print a
