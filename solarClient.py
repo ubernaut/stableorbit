@@ -107,7 +107,7 @@ class solarClient(object):
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        bodycount = 150
+        bodycount = 50
         bodyDistance=3
         bodySpeed=0.1
         self.mySystem = System(sysCount, starcount,
