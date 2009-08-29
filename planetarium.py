@@ -93,7 +93,7 @@ class Universe(DirectObject):
                 if self.evaluator.gridSystem.names[i]!="player":
                         body.sphere = loader.loadModelCopy("models/planet_sphere")			
                         body.sphere.reparentTo(body.node)
-                        scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/100)+.01
+                        scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/100)+.003
                         body.sphere.setScale(scaleRate)
                         self.evaluator.gridSystem.rad[i]=scaleRate
                                 

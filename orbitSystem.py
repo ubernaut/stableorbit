@@ -108,7 +108,7 @@ class System(object):
 	
 	def getPlanet(self, body_data):
 #                body_data.append("body_"+len(self.bodies))
-                body_data.append(random.uniform(.001,.05))
+                body_data.append(random.uniform(.000001,.01))
                 for j in range(0,2):
                         body_data.append(random.uniform(-self.bodyDistance,self.bodyDistance))
                 body_data.append(0.0)

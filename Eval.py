@@ -167,9 +167,8 @@ class soPhysics:
                         print "collision i ",ith," j ",jth
                         print "rad ",rad2
                         grav_mag = 0
-                        self.collisionDetected(player, names,
-                                               mass, pos, vel,
-                                               acc, rad, ith, jth)
+                        self.collisionDetected(player, names, mass, pos,
+                                               vel, acc, rad, ith, jth)
 
                               
    
