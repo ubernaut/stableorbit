@@ -63,7 +63,7 @@ class Universe(DirectObject):
 		self.mouseBody = Body()
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
-		self.player.mass = .000000001
+		self.player.mass = .00000000001
 		self.player.position.x=1
 		self.player.position.y=0
 		self.player.position.z=0
@@ -98,27 +98,27 @@ class Universe(DirectObject):
                         self.evaluator.gridSystem.rad[i]=scaleRate
                                 
                         body.mass=self.evaluator.gridSystem.mass[i]
-                        if body.mass< 0.1:                       
+                        if body.mass< 0.01:                       
                                 body.texture = loader.loadTexture("models/neptune.jpg")
-                        elif body.mass >= 0.1 and body.mass < .2:
+                        elif body.mass >= 0.01 and body.mass < .02:
                                 body.texture = loader.loadTexture("models/pluto.jpg")
-                        elif body.mass >= .2 and body.mass < .3:
+                        elif body.mass >= .02 and body.mass < .03:
                                 body.texture = loader.loadTexture("models/venus.jpg")
-                        elif body.mass >= .3 and body.mass < .4:
+                        elif body.mass >= .03 and body.mass < .04:
                                 body.texture = loader.loadTexture("models/earthmoon.jpg")
-                        elif body.mass >= .4 and body.mass < .5:
+                        elif body.mass >= .04 and body.mass < .05:
                                 body.texture = loader.loadTexture("models/mars.jpg")
-                        elif body.mass >= .5 and body.mass < .6:
+                        elif body.mass >= .05 and body.mass < .06:
                                 body.texture = loader.loadTexture("models/pluto.jpg")
-                        elif body.mass >= .6 and body.mass < .7:
+                        elif body.mass >= .06 and body.mass < .07:
                                 body.texture = loader.loadTexture("models/saturn.jpg")
-                        elif body.mass >= .7 and body.mass < .8:
+                        elif body.mass >= .07 and body.mass < .08:
                                 body.texture = loader.loadTexture("models/jupiter.jpg")
-                        elif body.mass >= .8 and body.mass < .9:
+                        elif body.mass >= .08 and body.mass < .09:
                                 body.texture = loader.loadTexture("models/mercury.jpg")
-                        elif body.mass >= .9 and body.mass < 2:
+                        elif body.mass >= .09 and body.mass < .1:
                                 body.texture = loader.loadTexture("models/mars.jpg")
-                        elif body.mass >= 2:
+                        elif body.mass >= .1:
                                 body.texture = loader.loadTexture("models/sun.jpg")
                         else:
                                 body.texture = loader.loadTexture("models/mars.jpg")
@@ -165,6 +165,7 @@ class Universe(DirectObject):
                 if(len(self.player.bodies)<10):
                         self.player.bodies.append(abody)
                         self.evaluator.system.bodies.append(abody)
+                        self.evaluator.accelerateCuda()
                         abody.node = render.attachNewNode(abody.name)
                         abody.model = loader.loadModelCopy("models/planet_sphere")			
                         abody.model.reparentTo(abody.node)
@@ -190,7 +191,7 @@ class Universe(DirectObject):
                         abody.texture = loader.loadTexture("models/sun.jpg")
                 abody.model.setScale(.003)
                 abody.radius=.003
-                i = self.evaluator.gridSystem.count - 1
+                i = self.evaluator.gridSystem.getPlayerIndex()
                 self.evaluator.gridSystem.rad[i]=0.03
                 abody.node.setPos(self.evaluator.gridSystem.pos[i][0],
                                   self.evaluator.gridSystem.pos[i][1],
@@ -256,19 +257,18 @@ class Universe(DirectObject):
                         
 	def accelerate(self):                                  
                 print "accelerating ship"
-                i = self.evaluator.gridSystem.count - 1
-                self.evaluator.gridSystem.printBody(i)
-                self.evaluator.gridSystem.printBody(0)
+                i = self.evaluator.gridSystem.getPlayerIndex()
+                
                 self.evaluator.gridSystem.acc[i][0]+=self.dX/50
                 self.evaluator.gridSystem.acc[i][1]+=self.dY/50
-                self.evaluator.gridSystem.acc[i][2]+=self.dZ/50                                  
+                self.evaluator.gridSystem.acc[i][2]+=self.dZ/50
+                self.evaluator.gridSystem.printBody(i)
                 return
         
         def stop(self):
-                i = self.evaluator.gridSystem.count - 1
+                i = self.evaluator.gridSystem.player
                 print "stopping ship", i
                 self.evaluator.gridSystem.printBody(i)
-                self.evaluator.gridSystem.printBody(0)
                 self.evaluator.gridSystem.vel[i][0]=0.0
                 self.evaluator.gridSystem.vel[i][1]=0.0
                 self.evaluator.gridSystem.vel[i][2]=0.0
@@ -276,9 +276,8 @@ class Universe(DirectObject):
         
         def brake(self):
                 print "slowing ship"
-                i = self.evaluator.gridSystem.count - 1
+                i = self.evaluator.gridSystem.player
                 self.evaluator.gridSystem.printBody(i)
-                self.evaluator.gridSystem.printBody(0)
                 self.evaluator.gridSystem.acc[i][0]-=self.dX/50
                 self.evaluator.gridSystem.acc[i][1]-=self.dY/50
                 self.evaluator.gridSystem.acc[i][2]-=self.dZ/50
@@ -357,7 +356,7 @@ class Universe(DirectObject):
                         self.dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
                 base.camera.setHpr(abody.orientation.x,
                                    abody.orientation.y,abody.orientation.z)
-                cpos=self.evaluator.gridSystem.count-1
+                cpos=self.evaluator.gridSystem.getPlayerIndex()
 
                 base.camera.setPos(self.evaluator.gridSystem.pos[cpos][0]-self.dX,
                                    self.evaluator.gridSystem.pos[cpos][1]-self.dY,

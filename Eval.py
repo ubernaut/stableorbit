@@ -53,13 +53,13 @@ from ctypes import *
 G=2.93558*10**-4
 epsilon = 0.01
 class soPhysics:
-	def __init__(self,aSystem, maxMark=10000, dt=.02):
+	def __init__(self,aSystem, maxMark=100000, dt=.02):
 		self.dt=dt
 		self.system = aSystem
 		self.gridSystem = orbitSystem.GridSystem(aSystem.bodies)
 		self.maxMark=maxMark
 		self.fitness=self.system.evaluate()
-		self.sumFit=self.system.evaluate()
+		self.sumFit=self.fitness#self.system.evaluate()
 		self.t=0
 		self.count=1
 		self.collisions=[]
@@ -68,40 +68,55 @@ class soPhysics:
 
 	def collisionDetected(self, player, names, mass,
                               pos, vel, acc, rad, ith, jth):
-                if names[ith] == "player":
-                        pos[ith][2] += 10
+                print "i: ",ith,"j: ",jth
+                if names[ith] == "player"and ith!=0 and player == ith:
+                        print "player hit: ", ith
+                        pos[ith][2] += 3
                         vel[ith][0]=0
                         vel[ith][1]=0
                         vel[ith][2]=0
-                if names[jth] == "player":
-                        pos[jth][2] += 10
-                        vel[jth][0]*=0
-                        vel[jth][1]*=0
-                        vel[jth][2]*=0
+                if names[jth] == "player" and jth!=0 and player == jth:
+                        print "player hit: ", jth
+                        pos[jth][2] += 3
+                        vel[jth][0]=0
+                        vel[jth][1]=0
+                        vel[jth][2]=0
+                if (names[jth]!="player" and
+                    names[ith]!="player" and
+                    player != ith and
+                    player != jth):#and
+                    #ith != 0 and
+                    #jth != 0):
+                        print "combining ", ith," and ",jth
+                        self.combineBodies(player, names, mass, pos,
+                                           vel, acc, rad, ith, jth)
 
-                #else:
-                        #combineBodies(body1, body2)
+        def combineBodies(self, player, names, mass,
+                              pos, vel, acc, rad, ith, jth):
+                print "combining bodies i: ",ith,"j: ",jth
+                self.gridSystem.printBody(ith)
+                self.gridSystem.printBody(jth)
                 
-                        
+                pos[jth][0] = (pos[ith][0]*mass[ith] + pos[jth][0]*mass[jth])/((mass[ith]+mass[jth]))
+                pos[jth][1] = (pos[ith][1]*mass[ith] + pos[jth][1]*mass[jth])/((mass[ith]+mass[jth]))
+                pos[jth][2] = (pos[ith][2]*mass[ith] + pos[jth][2]*mass[jth])/((mass[ith]+mass[jth]))
+                
+                vel[jth][0] = (((mass[ith]*vel[ith][0])+
+                                     (mass[jth]*vel[jth][0])/#2))
+                                     ((mass[ith]+mass[jth]))))
+                vel[jth][1] = (((mass[ith]*vel[ith][1])+
+                                     (mass[jth]*vel[jth][1])/#2))
+                                     ((mass[ith]+mass[jth]))))
+                vel[jth][2] = (((mass[ith]*vel[ith][2])+
+                                     (mass[jth]*vel[jth][2])/#2))
+                                     ((mass[ith]+mass[jth]))))
+                mass[jth] = mass[ith] + mass[jth]
+                pos[ith][0]+=10
+                pos[ith][1]+=10
+                pos[ith][2]+=10
+                names[ith]= "DELETE"
+#                self.gridSystem.collisions.append(ith)
 
-
-        def combineBodies(self, body1, body2):
-                body3 = Body()
-                body3.mass = body1.mass + body2.mass
-                body3.position.x = body1.position.x + body2.position.x/2
-                body3.position.y = body1.position.y
-                body3.position.z = body1.position.z
-                body3.velocity.x = (((body1.mass*body1.velocity.x)+
-                                     (body2.mass*body2.velocity.x)/
-                                     (body1.mass+body2.mass)))
-                body3.velocity.y = (((body1.mass*body1.velocity.y)+
-                                     (body2.mass*body2.velocity.y)/
-                                     (body1.mass+body2.mass)))
-                body3.velocity.z = (((body1.mass*body1.velocity.z)+
-                                     (body2.mass*body2.velocity.z)/
-                                     (body1.mass+body2.mass)))
-                return body3
-                        
 	def evaluateStep(self):
                 self.accelerate()
                 for body in self.system.bodies:
@@ -128,31 +143,36 @@ class soPhysics:
                 d_x = pos[jth][0] - pos[ith][0]
                 d_y = pos[jth][1] - pos[ith][1]
                 d_z = pos[jth][2] - pos[ith][2]
+                #if d_z >0:
+                #        print "ith ",ith, "jth ",jth
                 radius = d_x**2 + d_y**2 + d_z**2
                 rad2 = math.sqrt(radius)
                 grav_mag = 0.0;
                 
                 if (rad2 > rad[ith]+rad[jth]):
                         grav_mag = G/((radius+epsilon)**(3.0/2.0))
+                        grav_x=grav_mag*d_x
+                        grav_y=grav_mag*d_y
+                        grav_z=grav_mag*d_z
+                           
+                        acc[ith][0] +=grav_x*mass[jth]
+                        acc[ith][1] +=grav_y*mass[jth]
+                        acc[ith][2] +=grav_z*mass[jth]
+                        
+                        acc[jth][0] +=grav_x*mass[ith]
+                        acc[jth][1] +=grav_y*mass[ith]
+                        acc[jth][2] +=grav_z*mass[ith]
                 else:
+                        
                         print "collision i ",ith," j ",jth
+                        print "rad ",rad2
+                        grav_mag = 0
                         self.collisionDetected(player, names,
                                                mass, pos, vel,
                                                acc, rad, ith, jth)
-                        print rad2
-                        grav_mag = 0
+
                               
-                grav_x=grav_mag*d_x
-                grav_y=grav_mag*d_y
-                grav_z=grav_mag*d_z
-                   
-                acc[ith][0] +=grav_x*mass[jth]
-                acc[ith][1] +=grav_y*mass[jth]
-                acc[ith][2] +=grav_z*mass[jth]
-                
-                acc[jth][0] +=grav_x*mass[ith]
-                acc[jth][1] +=grav_y*mass[ith]
-                acc[jth][2] +=grav_z*mass[ith]   
+   
                 
 	def accelerateCuda(self):
                 G=2.93558*10**-4
@@ -175,13 +195,17 @@ class soPhysics:
                                                    i, j)
                 self.calVelPosCuda()
                 self.gridSystem.resetAcc()
+                for i in range(0,self.gridSystem.count):
+                        if self.gridSystem.names[i]=="DELETE":
+                                self.gridSystem.removeBody(i)
+                #self.gridSystem.collisions = []
                 
         def calVelPosCuda(self):
                 for i in range(0,self.gridSystem.count):
                         self.gridSystem.vel[i][0]+=self.dt*self.gridSystem.acc[i][0]
-                        self.gridSystem.vel[i][2]+=self.dt*self.gridSystem.acc[i][1]
-                        self.gridSystem.vel[i][1]+=self.dt*self.gridSystem.acc[i][2]
+                        self.gridSystem.vel[i][1]+=self.dt*self.gridSystem.acc[i][1]
+                        self.gridSystem.vel[i][2]+=self.dt*self.gridSystem.acc[i][2]
 
                         self.gridSystem.pos[i][0]+=self.dt*self.gridSystem.vel[i][0]
-                        self.gridSystem.pos[i][2]+=self.dt*self.gridSystem.vel[i][1]
-                        self.gridSystem.pos[i][1]+=self.dt*self.gridSystem.vel[i][2]
+                        self.gridSystem.pos[i][1]+=self.dt*self.gridSystem.vel[i][1]
+                        self.gridSystem.pos[i][2]+=self.dt*self.gridSystem.vel[i][2]

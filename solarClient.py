@@ -107,9 +107,9 @@ class solarClient(object):
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        bodycount = 16
+        bodycount = 150
         bodyDistance=3
-        bodySpeed=0.05
+        bodySpeed=0.1
         self.mySystem = System(sysCount, starcount,
                                bodycount, bodyDistance,
                                bodySpeed)
@@ -122,7 +122,7 @@ class solarClient(object):
         except:
             print "couldn't get one"
             self.galaxy.stars[4*len(self.galaxy.stars)/5] 
-        self.Evaluator = soPhysics(self.mySystem, 1000, .02)
+        self.Evaluator = soPhysics(self.mySystem, 10000, .02)
         print "number of bodies:"
         print len(self.mySystem.bodies)
         
@@ -144,7 +144,7 @@ class solarClient(object):
         
     def runLocal(self):
         print "run sol? y/n"
-        genvar = raw_input()
+        genvar = 'n'#raw_input()
         if genvar == 'y':
             self.runSol()
         else:

@@ -5,6 +5,8 @@ import math
 import sys
 import os
 import copy
+import Eval
+from Eval import soPhysics
 #import psyco
 #psyco.full()
 #load from xml
@@ -95,7 +97,7 @@ class System(object):
                         body.position.y += self.star.body.position.y
                         body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
-                body_data.append(random.uniform(1,10))
+                body_data.append(random.uniform(10,30))
                 for j in range(0,2):
                         body_data.append(random.uniform(-.1,.1))
                 body_data.append(0.0)
@@ -106,7 +108,7 @@ class System(object):
 	
 	def getPlanet(self, body_data):
 #                body_data.append("body_"+len(self.bodies))
-                body_data.append(random.uniform(.01,.5))
+                body_data.append(random.uniform(.001,.05))
                 for j in range(0,2):
                         body_data.append(random.uniform(-self.bodyDistance,self.bodyDistance))
                 body_data.append(0.0)
@@ -115,6 +117,8 @@ class System(object):
                 body_data.append(0.0)
                 return body_data
         
+		#self.fitness=self.system.evaluate()
+		#self.sumFit=fitness
         def buildSol(self):
                 self.bodies=[]
                 body_data=["Sol",1,0,0,0,0,0,0,0,0,0]
@@ -145,7 +149,8 @@ class System(object):
                 otherBodies = []
                 otherBodies.append(self.bodies[0])
                 otherBodies.append(aBody)
-                while self.evaluateBodies(otherBodies)>1:
+                fitness = self.evaluateN(otherBodies)
+                while abs(fitness)>1:
                         print "testing configuration"
                         body_data = []
                         body_data.append("body_X")
@@ -154,6 +159,7 @@ class System(object):
                         otherBodies = []
                         otherBodies.append(self.bodies[0])
                         otherBodies.append(aBody)
+                        fitness=self.evaluateN(otherBodies)
                 self.bodies.append(aBody)
                 return aBody
                 
@@ -176,7 +182,7 @@ class System(object):
 		oldPosition =copy.deepcopy(self.bodies[whichBody].position)
 		if whichBody < self.starCount:
 			self.bodies[whichBody].mass += alphaMass * random.uniform(-self.bodies[whichBody].mass/2,5)
-			self.bodies[whichBody].position.x+= alphaPosition * (random.uniform(-.000001,.000001))
+			self.bodies[whichBody8].position.x+= alphaPosition * (random.uniform(-.000001,.000001))
 			self.bodies[whichBody].velocity.x+= alphaVelocity * (random.uniform(-.000001,.000001))
 			self.bodies[whichBody].position.y+= alphaPosition * (random.uniform(-.000001,.000001))
 			self.bodies[whichBody].velocity.y+= alphaVelocity * (random.uniform(-.000001,.000001))
@@ -223,6 +229,12 @@ class System(object):
 			return abs(kinetic/potential)
 		except:
 			return 100
+	def evaluateN(self, somebodies):
+                tempSys = System()
+                tempSys.bodies = somebodies
+                tempEval = Eval.soPhysics(tempSys,1000000,.01)
+                return tempEval.sumFit
+                        
 	def evaluateBodies(self, someBodies):
 		kinetic=0.0
 		potential=0.0
@@ -282,6 +294,7 @@ class GridSystem(object):
                 self.vel = [[0.0,0.0,0.0]]
                 self.acc = [[0.0,0.0,0.0]]
                 self.allocated =1
+                self.collisions = []
                 for i in range (0,self.count):
                         self.addSpace()
                 i = 0
@@ -312,12 +325,16 @@ class GridSystem(object):
                         self.printBody(i)
         def getPlayerIndex(self):
                 i=0
+                lasti = 0
                 for name in self.names:
                         if name == "player":
                                 self.player = i
+                                lasti=i
                                 return i
+                                #print "player found at ",i                                
                         else:
                                 i+=1
+                return i
                 
 
         def printBody(self, i):
@@ -337,19 +354,25 @@ class GridSystem(object):
                 self.ori[dest]=self.ori[source]
                 self.vel[dest]=self.vel[source]
                 self.acc[dest]=self.acc[source]
+                self.names[source]="OLD"
+                
                 
         def removeBody(self, i):
+                print "removing body ",i
+                self.printBody(i)
                 if i == self.count -1:
-                        self.names[i]=""
-                        self.mass[i]=0.0
-                        self.rad[i]=0.0
-                        self.pos[i]=[0.0,0.0,0.0]
-                        self.ori[i]=[0.0,0.0,0.0]
-                        self.vel[i]=[0.0,0.0,0.0]
-                        self.acc[i]=[0.0,0.0,0.0]
+                        print "remove last item"
+##                        self.names[i]=""
+##                        self.mass[i]=0.0
+##                        self.rad[i]=0.0
+##                        self.pos[i]=[10.0,0.0,0.0]
+##                        self.ori[i]=[0.0,0.0,0.0]
+##                        self.vel[i]=[0.0,0.0,0.0]
+##                        self.acc[i]=[0.0,0.0,0.0]
                 else:
                         self.moveBody(self.count-1, i)
                 self.count -=1
+                self.getPlayerIndex()
                         
                         
         def resetAcc(self):
