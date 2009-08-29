@@ -66,12 +66,24 @@ class soPhysics:
 		#self.gridSys = GridSystem(self.system.bodies)
 		#self.accGravSingle = mod.get_function("accGravSingle")
 
-	def collisionDetected(self, body1, body2):
-                if body1.name == "player":
-                        body1.position.z += 1
-                        body1.velocity.x*=0.125
-                        body1.velocity.y*=0.125
-                        body1.velocity.z*=0.125
+	def collisionDetected(self, player, names, mass,
+                              pos, vel, acc, rad, ith, jth):
+                if names[ith] == "player":
+                        pos[ith][2] += 10
+                        vel[ith][0]=0
+                        vel[ith][1]=0
+                        vel[ith][2]=0
+                if names[jth] == "player":
+                        pos[jth][2] += 10
+                        vel[jth][0]*=0
+                        vel[jth][1]*=0
+                        vel[jth][2]*=0
+
+                #else:
+                        #combineBodies(body1, body2)
+                
+                        
+
 
         def combineBodies(self, body1, body2):
                 body3 = Body()
@@ -111,7 +123,8 @@ class soPhysics:
 		self.avgStability = self.sumFit/self.count
 		return self.avgStability
 	
-	def accGravSingle(self, mass, pos, vel, acc, rad, ith, jth):
+	def accGravSingle(self, player, names, mass,
+                          pos, vel, acc, rad, ith, jth):
                 d_x = pos[jth][0] - pos[ith][0]
                 d_y = pos[jth][1] - pos[ith][1]
                 d_z = pos[jth][2] - pos[ith][2]
@@ -123,6 +136,9 @@ class soPhysics:
                         grav_mag = G/((radius+epsilon)**(3.0/2.0))
                 else:
                         print "collision i ",ith," j ",jth
+                        self.collisionDetected(player, names,
+                                               mass, pos, vel,
+                                               acc, rad, ith, jth)
                         print rad2
                         grav_mag = 0
                               
@@ -149,7 +165,9 @@ class soPhysics:
 ##                                                   byref(self.gridSystem.acc),
 ##                                                   byref(self.gridSystem.rad),
 ##                                                   i, j)
-                                self.accGravSingle(self.gridSystem.mass,
+                                self.accGravSingle(self.gridSystem.player,
+                                                   self.gridSystem.names,
+                                                   self.gridSystem.mass,
                                                    self.gridSystem.pos,
                                                    self.gridSystem.vel,
                                                    self.gridSystem.acc,
