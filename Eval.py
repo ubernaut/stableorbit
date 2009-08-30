@@ -68,7 +68,7 @@ class soPhysics:
 
 	def collisionDetected(self, player, names, mass,
                               pos, vel, acc, rad, ith, jth):
-                print "i: ",ith,"j: ",jth
+                #print "i: ",ith,"j: ",jth
                 if names[ith] == "player"and ith!=0 and player == ith:
                         print "player hit: ", ith
                         pos[ith][2] += 3
@@ -87,9 +87,10 @@ class soPhysics:
                     player != jth):#and
                     #ith != 0 and
                     #jth != 0):
-                        print "combining ", ith," and ",jth
-                        self.combineBodies(player, names, mass, pos,
-                                           vel, acc, rad, ith, jth)
+                        if(jth!=0 and ith !=0):
+                                print "combining ", ith," and ",jth
+                                self.combineBodies(player, names, mass, pos,
+                                                   vel, acc, rad, ith, jth)
 
         def combineBodies(self, player, names, mass,
                               pos, vel, acc, rad, ith, jth):
@@ -115,7 +116,7 @@ class soPhysics:
                 pos[ith][1]+=10
                 pos[ith][2]+=10
                 names[ith]= "DELETE"
-#                self.gridSystem.collisions.append(ith)
+                self.gridSystem.collisions.append(ith)
 
 	def evaluateStep(self):
                 self.accelerate()
@@ -164,8 +165,8 @@ class soPhysics:
                         acc[jth][2] +=grav_z*mass[ith]
                 else:
                         
-                        print "collision i ",ith," j ",jth
-                        print "rad ",rad2
+                        #print "collision i ",ith," j ",jth
+                        #print "rad ",rad2
                         grav_mag = 0
                         self.collisionDetected(player, names, mass, pos,
                                                vel, acc, rad, ith, jth)

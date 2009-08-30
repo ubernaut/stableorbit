@@ -88,44 +88,48 @@ class Universe(DirectObject):
                         star.body.sphere.reparentTo(star.body.node)
                         star.body.sphere.setScale(self.starScale)
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
+        def setTexture(self, body, i):
+                if body.mass< 0.001:                       
+                        body.texture = loader.loadTexture("models/neptune.jpg")
+                elif body.mass >= 0.001 and body.mass < .002:
+                        body.texture = loader.loadTexture("models/pluto.jpg")
+                elif body.mass >= .002 and body.mass < .003:
+                        body.texture = loader.loadTexture("models/venus.jpg")
+                elif body.mass >= .003 and body.mass < .004:
+                        body.texture = loader.loadTexture("models/earthmoon.jpg")
+                elif body.mass >= .004 and body.mass < .005:
+                        body.texture = loader.loadTexture("models/mars.jpg")
+                elif body.mass >= .005 and body.mass < .006:
+                        body.texture = loader.loadTexture("models/pluto.jpg")
+                elif body.mass >= .006 and body.mass < .007:
+                        body.texture = loader.loadTexture("models/saturn.jpg")
+                elif body.mass >= .007 and body.mass < .008:
+                        body.texture = loader.loadTexture("models/jupiter.jpg")
+                elif body.mass >= .008 and body.mass < .009:
+                        body.texture = loader.loadTexture("models/mercury.jpg")
+                elif body.mass >= .009 and body.mass < .01:
+                        body.texture = loader.loadTexture("models/mars.jpg")
+                elif body.mass >= .1:
+                        body.texture = loader.loadTexture("models/sun.jpg")
+                else:
+                        body.texture = loader.loadTexture("models/mars.jpg")
+                body.sphere.setTexture(body.texture,1)
+
         def loadSinglePlanet(self, body,i):
                 body.node = render.attachNewNode(body.name)
                 if self.evaluator.gridSystem.names[i]!="player":
                         body.sphere = loader.loadModelCopy("models/planet_sphere")			
                         body.sphere.reparentTo(body.node)
-                        scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/100)+.003
-                        body.sphere.setScale(scaleRate)
-                        self.evaluator.gridSystem.rad[i]=scaleRate
-                                
-                        body.mass=self.evaluator.gridSystem.mass[i]
-                        if body.mass< 0.01:                       
-                                body.texture = loader.loadTexture("models/neptune.jpg")
-                        elif body.mass >= 0.01 and body.mass < .02:
-                                body.texture = loader.loadTexture("models/pluto.jpg")
-                        elif body.mass >= .02 and body.mass < .03:
-                                body.texture = loader.loadTexture("models/venus.jpg")
-                        elif body.mass >= .03 and body.mass < .04:
-                                body.texture = loader.loadTexture("models/earthmoon.jpg")
-                        elif body.mass >= .04 and body.mass < .05:
-                                body.texture = loader.loadTexture("models/mars.jpg")
-                        elif body.mass >= .05 and body.mass < .06:
-                                body.texture = loader.loadTexture("models/pluto.jpg")
-                        elif body.mass >= .06 and body.mass < .07:
-                                body.texture = loader.loadTexture("models/saturn.jpg")
-                        elif body.mass >= .07 and body.mass < .08:
-                                body.texture = loader.loadTexture("models/jupiter.jpg")
-                        elif body.mass >= .08 and body.mass < .09:
-                                body.texture = loader.loadTexture("models/mercury.jpg")
-                        elif body.mass >= .09 and body.mass < .1:
-                                body.texture = loader.loadTexture("models/mars.jpg")
-                        elif body.mass >= .1:
-                                body.texture = loader.loadTexture("models/sun.jpg")
-                        else:
-                                body.texture = loader.loadTexture("models/mars.jpg")
-                        body.sphere.setTexture(body.texture,1)
+                        self.scalebody( i)
+##                        scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/100)+.01
+##                        body.sphere.setScale(scaleRate)
+##                        self.evaluator.gridSystem.rad[i]=scaleRate                                
+##                        body.mass=self.evaluator.gridSystem.mass[i]
+##                        self.setTexture(body, i)
                         body.node.setPos(self.evaluator.gridSystem.pos[i][0],
                                          self.evaluator.gridSystem.pos[i][1],
                                          self.evaluator.gridSystem.pos[i][2])
+
                 else:
                         self.loadPlayer(body)
 
@@ -231,8 +235,12 @@ class Universe(DirectObject):
 		if self.starting: 
 			dt=dt/2.0
 			self.starting=False
+		#self.reloadPlanets()
 		self.setAllPositions()
 		return Task.cont
+	
+
+                        
 	def tiltLeft(self):
                 print "left"
                 self.player.orientation.z-=10
@@ -259,9 +267,9 @@ class Universe(DirectObject):
                 print "accelerating ship"
                 i = self.evaluator.gridSystem.getPlayerIndex()
                 
-                self.evaluator.gridSystem.acc[i][0]+=self.dX/50
-                self.evaluator.gridSystem.acc[i][1]+=self.dY/50
-                self.evaluator.gridSystem.acc[i][2]+=self.dZ/50
+                self.evaluator.gridSystem.acc[i][0]+=self.dX/5
+                self.evaluator.gridSystem.acc[i][1]+=self.dY/5
+                self.evaluator.gridSystem.acc[i][2]+=self.dZ/5
                 self.evaluator.gridSystem.printBody(i)
                 return
         
@@ -278,9 +286,9 @@ class Universe(DirectObject):
                 print "slowing ship"
                 i = self.evaluator.gridSystem.player
                 self.evaluator.gridSystem.printBody(i)
-                self.evaluator.gridSystem.acc[i][0]-=self.dX/50
-                self.evaluator.gridSystem.acc[i][1]-=self.dY/50
-                self.evaluator.gridSystem.acc[i][2]-=self.dZ/50
+                self.evaluator.gridSystem.acc[i][0]-=self.dX/5
+                self.evaluator.gridSystem.acc[i][1]-=self.dY/5
+                self.evaluator.gridSystem.acc[i][2]-=self.dZ/5
                 
 	def handleMouse2(self):
                 print "deccelerating ship"
@@ -363,6 +371,9 @@ class Universe(DirectObject):
                                    self.evaluator.gridSystem.pos[cpos][2]-self.dZ)
 
         def setAllPositions(self):
+                for j in self.evaluator.gridSystem.collisions:
+                        self.scalebody(j)
+                self.evaluator.gridSystem.collisoins=[]
                 i=0
                 for body in self.evaluator.system.bodies:
                         self.set_body_position(body,
@@ -370,7 +381,15 @@ class Universe(DirectObject):
                                                self.evaluator.gridSystem.pos[i][1],
                                                self.evaluator.gridSystem.pos[i][2])
                         i+=1
-                        
+
+        def scalebody(self, i):
+                body = self.evaluator.system.bodies[i]
+                scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/50)+.005
+                body.sphere.setScale(scaleRate)
+                self.evaluator.gridSystem.rad[i]=scaleRate                                
+                body.mass=self.evaluator.gridSystem.mass[i]
+                self.setTexture(body, i)
+
 	def set_body_position(self,body,x,y,z):
                 body.node.setPos(x,y,z) 
                 body.node.setHpr(body.orientation.x, body.orientation.y, body.orientation.z)

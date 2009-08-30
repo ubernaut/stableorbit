@@ -66,7 +66,8 @@ class Galaxy(object):
                         
                         
 class Star(object):
-        def __init__(self, xPos=30000, yPos=0, zPos=0, aName="default", aPlayer="cos"):
+        def __init__(self, xPos=30000, yPos=0, zPos=0,
+                     aName="default", aPlayer="cos"):
                 self.body = Body(["body",1,xPos,yPos,zPos,0,0,0,0,0,0])
                 self.name = aName
                 self.player = aPlayer

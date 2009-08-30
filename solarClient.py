@@ -109,7 +109,7 @@ class solarClient(object):
         starcount=1
         bodycount = 100
         bodyDistance=2
-        bodySpeed=0.05
+        bodySpeed=.1
         self.mySystem = System(sysCount, starcount,
                                bodycount, bodyDistance,
                                bodySpeed)
