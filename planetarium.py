@@ -374,6 +374,13 @@ class Universe(DirectObject):
                 for j in self.evaluator.gridSystem.collisions:
                         self.scalebody(j)
                 self.evaluator.gridSystem.collisoins=[]
+##                for k in self.evaluator.gridSystem.removed:
+##                        abody = Body(self.evaluator.system.getDirectedPlanet())
+##                        self.evaluator.gridSystem.insertBody(abody,k)
+##                        self.loadSinglePlanet(abody, k)
+                self.evaluator.gridSystem.removed=[]
+
+                
                 i=0
                 for body in self.evaluator.system.bodies:
                         self.set_body_position(body,

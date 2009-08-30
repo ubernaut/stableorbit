@@ -69,18 +69,18 @@ class soPhysics:
 	def collisionDetected(self, player, names, mass,
                               pos, vel, acc, rad, ith, jth):
                 #print "i: ",ith,"j: ",jth
-                if names[ith] == "player"and ith!=0 and player == ith:
-                        print "player hit: ", ith
-                        pos[ith][2] += 3
-                        vel[ith][0]=0
-                        vel[ith][1]=0
-                        vel[ith][2]=0
-                if names[jth] == "player" and jth!=0 and player == jth:
-                        print "player hit: ", jth
-                        pos[jth][2] += 3
-                        vel[jth][0]=0
-                        vel[jth][1]=0
-                        vel[jth][2]=0
+##                if names[ith] == "player"and ith!=0 and player == ith:
+##                        print "player hit: ", ith
+##                        pos[ith][2] += 3
+##                        vel[ith][0]=0
+##                        vel[ith][1]=0
+##                        vel[ith][2]=0
+##                if names[jth] == "player" and jth!=0 and player == jth:
+##                        print "player hit: ", jth
+##                        pos[jth][2] += 3
+##                        vel[jth][0]=0
+##                        vel[jth][1]=0
+##                        vel[jth][2]=0
                 if (names[jth]!="player" and
                     names[ith]!="player" and
                     player != ith and
@@ -116,7 +116,8 @@ class soPhysics:
                 pos[ith][1]+=10
                 pos[ith][2]+=10
                 names[ith]= "DELETE"
-                self.gridSystem.collisions.append(ith)
+                self.gridSystem.collisions.append(jth)
+                self.gridSystem.removed.append(jth)
 
 	def evaluateStep(self):
                 self.accelerate()

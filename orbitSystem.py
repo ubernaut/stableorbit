@@ -75,7 +75,7 @@ class Star(object):
 
 class System(object):
 	def __init__(self, seed=0, starcount=1,
-                     bodycount=2, abodyDistance=3, abodySpeed=0.05):
+                     bodycount=1, abodyDistance=2, abodySpeed=0.05):
                 random.seed = seed
                 self.seed = seed
                 self.star = Star()
@@ -107,7 +107,9 @@ class System(object):
 		body_data.append(0.0)
 		return body_data
 	
-        def getDirectedPlanet(self,body_data):
+        def getDirectedPlanet(self):
+                body_data=[]
+                body_data.append("body_X")
                 body_data.append(random.uniform(.000001,.01))
                 body_data.append(random.uniform(0,self.bodyDistance))
                 body_data.append(random.uniform(0,self.bodyDistance))
@@ -153,21 +155,15 @@ class System(object):
                 self.bodies.append(body)
 	def addSinglePlanet(self):
                 print "adding Body"
-                body_data = []
-                body_data.append("body_X")
-                body_data = self.getDirectedPlanet(body_data)
+                body_data = self.getDirectedPlanet()
                 aBody = Body(body_data)
                 otherBodies = []
                 otherBodies.append(self.bodies[0])
                 otherBodies.append(aBody)
                 fitness = self.evaluateN(otherBodies)
-                while abs(fitness)>1:
+                while fitness<.3 or fitness>.8:
                         print "testing configuration"
-                        body_data = []
-                        body_data.append("body_X")
-#                        body_data = self.getPlanet(body_data)
-                        body_data = self.getDirectedPlanet(body_data)
-                        aBody = Body(body_data)
+                        aBody = Body(self.getDirectedPlanet())
                         otherBodies = []
                         otherBodies.append(self.bodies[0])
                         otherBodies.append(aBody)
@@ -307,30 +303,15 @@ class GridSystem(object):
                 self.acc = [[0.0,0.0,0.0]]
                 self.allocated =1
                 self.collisions = []
+                self.removed=[]
                 for i in range (0,self.count):
                         self.addSpace()
                 i = 0
                 for body in bodies:
                         if body.name == "player":
                                 self.player = i
-                        self.names[i] = body.name
-                        self.mass[i] = body.mass
-                        self.rad[i] = body.radius
-                        self.pos[i][0] = body.position.x
-                        self.pos[i][1] = body.position.y
-                        self.pos[i][2] = body.position.z
-
-                        self.ori[i][0] = body.orientation.x
-                        self.ori[i][1] = body.orientation.y
-                        self.ori[i][2] = body.orientation.z
-
-                        self.vel[i][0] = body.velocity.x
-                        self.vel[i][1] = body.velocity.y
-                        self.vel[i][2] = body.velocity.z
-                        
-                        self.acc[i][0] = body.acceleration.x
-                        self.acc[i][1] = body.acceleration.y
-                        self.acc[i][2] = body.acceleration.z                        
+                        self.insertBody(body, i)
+                     
                         i+=1
                 
                 for i in range (0,self.count):
@@ -347,6 +328,34 @@ class GridSystem(object):
                         else:
                                 i+=1
                 return i
+
+        def insertBody(self,body, i):
+                self.names[i] = body.name
+                self.mass[i] = body.mass
+                self.rad[i] = body.radius
+                self.pos[i][0] = body.position.x
+                self.pos[i][1] = body.position.y
+                self.pos[i][2] = body.position.z
+
+                self.ori[i][0] = body.orientation.x
+                self.ori[i][1] = body.orientation.y
+                self.ori[i][2] = body.orientation.z
+
+                self.vel[i][0] = body.velocity.x
+                self.vel[i][1] = body.velocity.y
+                self.vel[i][2] = body.velocity.z
+                
+                self.acc[i][0] = body.acceleration.x
+                self.acc[i][1] = body.acceleration.y
+                self.acc[i][2] = body.acceleration.z   
+##                self.names[i]=aBody.name
+##                self.mass[i]=aBody.mass
+##                self.rad[i]=aBody.radius
+##                self.pos[i]=aBody.position
+##                self.ori[i]=aBody.orientation
+##                self.vel[i]=aBody.velocity
+##                self.acc[i]=aBody.acceleration
+
                 
 
         def printBody(self, i):
@@ -374,13 +383,7 @@ class GridSystem(object):
                 self.printBody(i)
                 if i == self.count -1:
                         print "remove last item"
-##                        self.names[i]=""
-##                        self.mass[i]=0.0
-##                        self.rad[i]=0.0
-##                        self.pos[i]=[10.0,0.0,0.0]
-##                        self.ori[i]=[0.0,0.0,0.0]
-##                        self.vel[i]=[0.0,0.0,0.0]
-##                        self.acc[i]=[0.0,0.0,0.0]
+
                 else:
                         self.moveBody(self.count-1, i)
                 self.count -=1
