@@ -100,10 +100,10 @@ class System(object):
 	def getStar(self, body_data):
                 body_data.append(random.uniform(10,30))
                 for j in range(0,2):
-                        body_data.append(random.uniform(-.1,.1))
+                        body_data.append(0.0)
                 body_data.append(0.0)
 		for j in range(0,2):
-			body_data.append(random.uniform(-0.0,0.0))
+			body_data.append(0.0)
 		body_data.append(0.0)
 		return body_data
 	

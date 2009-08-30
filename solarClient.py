@@ -107,21 +107,25 @@ class solarClient(object):
         self.scoreThreshold =1;
         self.score = 1000
         starcount=1
-        bodycount = 150
-        bodyDistance=2
+        
+       # bodycount = raw_input()
+
+        #if bodycount=="":
+        bodycount = 200
+        bodyDistance=1.5
         bodySpeed=.05
         self.mySystem = System(sysCount, starcount,
                                bodycount, bodyDistance,
                                bodySpeed)
-        try:
-            print "trying to get a star"
-            self.connectToServer()
-            self.mySystem.star = cPickle.loads(self.server.getNextStar())
-            print "got one"
+        #try:
+  #          print "trying to get a star"
+ #           self.connectToServer()
+ #           self.mySystem.star = cPickle.loads(self.server.getNextStar())
+ #           print "got one"
             
-        except:
-            print "couldn't get one"
-            self.galaxy.stars[4*len(self.galaxy.stars)/5] 
+        #except:
+#        print "couldn't get one"
+        self.galaxy.stars[4*len(self.galaxy.stars)/5] 
         self.Evaluator = soPhysics(self.mySystem, 10000, .02)
         print "number of bodies:"
         print len(self.mySystem.bodies)
