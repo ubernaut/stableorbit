@@ -107,6 +107,16 @@ class System(object):
 		body_data.append(0.0)
 		return body_data
 	
+        def getDirectedPlanet(self,body_data):
+                body_data.append(random.uniform(.000001,.01))
+                body_data.append(random.uniform(0,self.bodyDistance))
+                body_data.append(random.uniform(0,self.bodyDistance))
+                body_data.append(0.0)
+                body_data.append(random.uniform(0,self.bodySpeed))
+                body_data.append(random.uniform(-self.bodyDistance,0))
+                body_data.append(0.0)
+                return body_data
+                
 	def getPlanet(self, body_data):
 #                body_data.append("body_"+len(self.bodies))
                 body_data.append(random.uniform(.000001,.01))
@@ -145,7 +155,7 @@ class System(object):
                 print "adding Body"
                 body_data = []
                 body_data.append("body_X")
-                body_data = self.getPlanet(body_data)
+                body_data = self.getDirectedPlanet(body_data)
                 aBody = Body(body_data)
                 otherBodies = []
                 otherBodies.append(self.bodies[0])
@@ -155,7 +165,8 @@ class System(object):
                         print "testing configuration"
                         body_data = []
                         body_data.append("body_X")
-                        body_data = self.getPlanet(body_data)
+#                        body_data = self.getPlanet(body_data)
+                        body_data = self.getDirectedPlanet(body_data)
                         aBody = Body(body_data)
                         otherBodies = []
                         otherBodies.append(self.bodies[0])

@@ -63,7 +63,7 @@ class Universe(DirectObject):
 		self.mouseBody = Body()
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
-		self.player.mass = .00000000001
+		self.player.mass = 0
 		self.player.position.x=1
 		self.player.position.y=0
 		self.player.position.z=0
@@ -193,8 +193,8 @@ class Universe(DirectObject):
                         abody.texture = loader.loadTexture("models/texturemap.png")
                 elif abody.name == "mouse":
                         abody.texture = loader.loadTexture("models/sun.jpg")
-                abody.model.setScale(.003)
-                abody.radius=.003
+                abody.model.setScale(.001)
+                abody.radius=.001
                 i = self.evaluator.gridSystem.getPlayerIndex()
                 self.evaluator.gridSystem.rad[i]=0.03
                 abody.node.setPos(self.evaluator.gridSystem.pos[i][0],
