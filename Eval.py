@@ -83,14 +83,11 @@ class soPhysics:
 ##                        vel[jth][2]=0
                 if (names[jth]!="player" and
                     names[ith]!="player" and
-                    player != ith and
-                    player != jth):#and
-                    #ith != 0 and
-                    #jth != 0):
-                        if(jth!=0 and ith !=0):
-                                print "combining ", ith," and ",jth
-                                self.combineBodies(player, names, mass, pos,
-                                                   vel, acc, rad, ith, jth)
+                    ith != 0 and jth != 0):
+                        print "combining ", ith," and ",jth
+                        self.combineBodies(player, names, mass, pos,
+                                           vel, acc, rad, ith, jth)
+
 
         def combineBodies(self, player, names, mass,
                               pos, vel, acc, rad, ith, jth):
@@ -118,6 +115,7 @@ class soPhysics:
                 names[ith]= "DELETE"
                 self.gridSystem.collisions.append(jth)
                 self.gridSystem.removed.append(jth)
+                self.gridSystem.getPlayerIndex()
 
 	def evaluateStep(self):
                 self.accelerate()
@@ -193,7 +191,7 @@ class soPhysics:
                                                    self.gridSystem.vel,
                                                    self.gridSystem.acc,
                                                    self.gridSystem.rad,
-                                                   i, j)
+                                                   i, j) 
                 self.calVelPosCuda()
                 self.gridSystem.resetAcc()
                 for i in range(0,self.gridSystem.count):

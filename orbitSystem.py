@@ -98,7 +98,7 @@ class System(object):
                         body.position.y += self.star.body.position.y
                         body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
-                body_data.append(random.uniform(10,30))
+                body_data.append(random.uniform(1,10))
                 for j in range(0,2):
                         body_data.append(0.0)
                 body_data.append(0.0)
@@ -161,7 +161,7 @@ class System(object):
                 otherBodies.append(self.bodies[0])
                 otherBodies.append(aBody)
                 fitness = self.evaluateN(otherBodies)
-                while fitness<.3 or fitness>.8:
+                while fitness<.3 or fitness>1:
                         print "testing configuration"
                         aBody = Body(self.getDirectedPlanet())
                         otherBodies = []
@@ -379,15 +379,16 @@ class GridSystem(object):
                 
                 
         def removeBody(self, i):
-                print "removing body ",i
-                self.printBody(i)
-                if i == self.count -1:
-                        print "remove last item"
+                if i != self.player:
+                        print "removing body ",i
+                        self.printBody(i)
+                        if i == self.count -1:
+                                print "remove last item"
 
-                else:
-                        self.moveBody(self.count-1, i)
-                self.count -=1
-                self.getPlayerIndex()
+                        else:
+                                self.moveBody(self.count-1, i)
+                        self.count -=1
+                        self.getPlayerIndex()
                         
                         
         def resetAcc(self):

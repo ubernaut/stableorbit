@@ -51,7 +51,7 @@ class Universe(DirectObject):
                 self.hudScale = 1
                 self.objectScale=.01
                 self.starScale = 10
-                self.skyScale=200000
+                self.skyScale=50000
 		self.dt=.02
 		self.starting=True
 		self.mouseX = 0
@@ -267,9 +267,9 @@ class Universe(DirectObject):
                 print "accelerating ship"
                 i = self.evaluator.gridSystem.getPlayerIndex()
                 
-                self.evaluator.gridSystem.acc[i][0]+=self.dX/5
-                self.evaluator.gridSystem.acc[i][1]+=self.dY/5
-                self.evaluator.gridSystem.acc[i][2]+=self.dZ/5
+                self.evaluator.gridSystem.acc[i][0]+=self.dX
+                self.evaluator.gridSystem.acc[i][1]+=self.dY
+                self.evaluator.gridSystem.acc[i][2]+=self.dZ
                 self.evaluator.gridSystem.printBody(i)
                 return
         
@@ -286,9 +286,9 @@ class Universe(DirectObject):
                 print "slowing ship"
                 i = self.evaluator.gridSystem.player
                 self.evaluator.gridSystem.printBody(i)
-                self.evaluator.gridSystem.acc[i][0]-=self.dX/5
-                self.evaluator.gridSystem.acc[i][1]-=self.dY/5
-                self.evaluator.gridSystem.acc[i][2]-=self.dZ/5
+                self.evaluator.gridSystem.acc[i][0]-=self.dX
+                self.evaluator.gridSystem.acc[i][1]-=self.dY
+                self.evaluator.gridSystem.acc[i][2]-=self.dZ
                 
 	def handleMouse2(self):
                 print "deccelerating ship"
