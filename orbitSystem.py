@@ -115,9 +115,22 @@ class System(object):
                 body_data.append(random.uniform(0,self.bodyDistance))
                 body_data.append(0.0)
                 body_data.append(random.uniform(0,self.bodySpeed))
-                body_data.append(random.uniform(-self.bodyDistance,0))
+                body_data.append(random.uniform(-self.bodySpeed,0))
                 body_data.append(0.0)
                 return body_data
+        
+        def getOtherDirectedPlanet(self):
+                body_data=[]
+                body_data.append("body_X")
+                body_data.append(random.uniform(.000001,.01))
+                body_data.append(random.uniform(-self.bodyDistance,0))
+                body_data.append(random.uniform(-self.bodyDistance,0))
+                body_data.append(0.0)
+                body_data.append(random.uniform(self.bodySpeed,0))
+                body_data.append(random.uniform(-self.bodySpeed,0))
+                body_data.append(0.0)
+                return body_data
+                
                 
 	def getPlanet(self, body_data):
 #                body_data.append("body_"+len(self.bodies))
