@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import xmlrpclib
 import orbitSystem
 import Eval
@@ -111,9 +112,9 @@ class solarClient(object):
        # bodycount = raw_input()
 
         #if bodycount=="":
-        bodycount = 200
-        bodyDistance=1
-        bodySpeed=.05
+        bodycount = 32
+        bodyDistance=.33
+        bodySpeed=.1
         self.mySystem = System(sysCount, starcount,
                                bodycount, bodyDistance,
                                bodySpeed)

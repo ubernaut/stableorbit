@@ -82,8 +82,8 @@ class soPhysics:
 ##                        vel[jth][1]=0
 ##                        vel[jth][2]=0
                 if (names[jth]!="player" and
-                    names[ith]!="player" and
-                    ith != 0 and jth != 0):
+                    names[ith]!="player"):# and
+                    #ith != 0 and jth != 0):
                         print "combining ", ith," and ",jth
                         self.combineBodies(player, names, mass, pos,
                                            vel, acc, rad, ith, jth)
@@ -167,8 +167,8 @@ class soPhysics:
                         #print "collision i ",ith," j ",jth
                         #print "rad ",rad2
                         grav_mag = 0
-                        self.collisionDetected(player, names, mass, pos,
-                                               vel, acc, rad, ith, jth)
+##                        self.collisionDetected(player, names, mass, pos,
+##                                               vel, acc, rad, ith, jth)
 
                               
    

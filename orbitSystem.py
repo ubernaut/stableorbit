@@ -98,7 +98,7 @@ class System(object):
                         body.position.y += self.star.body.position.y
                         body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
-                body_data.append(random.uniform(1,10))
+                body_data.append(random.uniform(.4,1))
                 for j in range(0,2):
                         body_data.append(0.0)
                 body_data.append(0.0)
@@ -106,31 +106,57 @@ class System(object):
 			body_data.append(0.0)
 		body_data.append(0.0)
 		return body_data
-	
-        def getDirectedPlanet(self):
+
+	def getSymPlanets(self):
                 body_data=[]
                 body_data.append("body_X")
                 body_data.append(random.uniform(.000001,.01))
-                body_data.append(random.uniform(0,self.bodyDistance))
-                body_data.append(random.uniform(0,self.bodyDistance))
-                body_data.append(0.0)
-                body_data.append(random.uniform(0,self.bodySpeed))
-                body_data.append(random.uniform(-self.bodySpeed,0))
-                body_data.append(0.0)
-                return body_data
-        
-        def getOtherDirectedPlanet(self):
-                body_data=[]
-                body_data.append("body_X")
-                body_data.append(random.uniform(.000001,.01))
-                body_data.append(random.uniform(-self.bodyDistance,0))
-                body_data.append(random.uniform(-self.bodyDistance,0))
-                body_data.append(0.0)
-                body_data.append(random.uniform(self.bodySpeed,0))
-                body_data.append(random.uniform(-self.bodySpeed,0))
-                body_data.append(0.0)
-                return body_data
+                #body_data.append(0.0)
                 
+                if quadrantVar > 0:
+                        body_data.append(random.uniform(0,self.bodyDistance))
+                        body_data.append(random.uniform(0,self.bodyDistance))
+                        body_data.append(0.0)
+                        body_data.append(random.uniform(0,self.bodySpeed))
+                        body_data.append(random.uniform(-self.bodySpeed,0))
+                        body_data.append(0.0)
+                        
+                if quadrantVar< 0:
+                        body_data.append(random.uniform(-self.bodyDistance,0))
+                        body_data.append(random.uniform(-self.bodyDistance,0))
+                        body_data.append(0.0)
+                        body_data.append(random.uniform(-self.bodySpeed,0))
+                        body_data.append(random.uniform(0,self.bodySpeed))
+                        body_data.append(0.0)
+                
+        def getDirectedPlanet(self):
+                quadrantVar =1# random.uniform(-1,1)       
+                body_data=[]
+                body_data.append("body_X")
+                body_data.append(random.uniform(.000001,.01))
+                #body_data.append(0.0)
+                
+                if quadrantVar > 0:
+                        body_data.append(random.uniform(0,self.bodyDistance))
+                        body_data.append(random.uniform(0,self.bodyDistance))
+                        body_data.append(random.uniform(0,self.bodyDistance/64))
+                if quadrantVar< 0:
+                        body_data.append(random.uniform(-self.bodyDistance,0))
+                        body_data.append(random.uniform(-self.bodyDistance,0))
+                        body_data.append(random.uniform(-self.bodyDistance/64,0))
+                
+                if quadrantVar > 0:
+                        body_data.append(random.uniform(0,self.bodySpeed))
+                        body_data.append(random.uniform(-self.bodySpeed,0))
+                        body_data.append(random.uniform(0,self.bodySpeed/32))
+                if quadrantVar < 0:
+                        body_data.append(random.uniform(-self.bodySpeed,0))
+                        body_data.append(random.uniform(0,self.bodySpeed))
+                        body_data.append(random.uniform(-self.bodySpeed/32),0)
+                
+                
+                
+                return body_data
                 
 	def getPlanet(self, body_data):
 #                body_data.append("body_"+len(self.bodies))
@@ -166,22 +192,39 @@ class System(object):
                 body_data = self.getStar(["star"])
                 body = Body(body_data)
                 self.bodies.append(body)
+        def reverseBody(self, adata):
+                bdata = adata
+                bdata[2]= 0 - adata[2]
+                bdata[3]= 0 - adata[3]
+                bdata[4]= 0 - adata[4]
+                bdata[5]= 0 - adata[5]
+                bdata[6]= 0 - adata[6]
+                bdata[7]= 0 - adata[7]
+                return bdata
+                
 	def addSinglePlanet(self):
                 print "adding Body"
                 body_data = self.getDirectedPlanet()
                 aBody = Body(body_data)
+                bBody = Body(self.reverseBody(body_data))
                 otherBodies = []
                 otherBodies.append(self.bodies[0])
                 otherBodies.append(aBody)
+                otherBodies.append(bBody)
                 fitness = self.evaluateN(otherBodies)
-                while fitness<.3 or fitness>1:
+                while fitness<.1 or fitness>.2:
                         print "testing configuration"
-                        aBody = Body(self.getDirectedPlanet())
+                        adata = self.getDirectedPlanet()
+                        aBody = Body(adata)
+                        bdata = self.reverseBody(adata)
+                        bBody = Body(bdata)
                         otherBodies = []
                         otherBodies.append(self.bodies[0])
                         otherBodies.append(aBody)
+                        otherBodies.append(bBody)
                         fitness=self.evaluateN(otherBodies)
                 self.bodies.append(aBody)
+                self.bodies.append(bBody)
                 return aBody
                 
 	def addPlanet(self):

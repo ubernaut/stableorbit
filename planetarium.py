@@ -45,7 +45,7 @@ class Universe(DirectObject):
                 #messenger.toggleVerbose()
                 self.stars=starList
                 self.mouselook=True
-                self.zoom = 4
+                self.zoom = 1.5
                 self.mapMode = False
                 self.evaluator = neweval
                 self.hudScale = 1
@@ -64,7 +64,7 @@ class Universe(DirectObject):
 		self.mouseBody.name = "mouse"
 		self.player.name = "player"
 		self.player.mass = 0
-		self.player.position.x=1
+		self.player.position.x=0
 		self.player.position.y=0
 		self.player.position.z=0
 		self.player.bodies=[]
@@ -73,6 +73,7 @@ class Universe(DirectObject):
                 #self.evaluator.system.moveToStar()
                 self.loadPlanets()
                 self.console = console
+                self.toggleConsole()
                 if len(starList)>0:
                         self.loadStars()
 		base.camLens.setFar(170000000000000000000000000000000000000)
@@ -90,29 +91,29 @@ class Universe(DirectObject):
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
         def setTexture(self, body, i):
                 if body.mass< 0.001:                       
-                        body.texture = loader.loadTexture("models/neptune.jpg")
-                elif body.mass >= 0.001 and body.mass < .002:
                         body.texture = loader.loadTexture("models/pluto.jpg")
+                elif body.mass >= 0.001 and body.mass < .002:
+                        body.texture = loader.loadTexture("models/mercury.jpg")
                 elif body.mass >= .002 and body.mass < .003:
                         body.texture = loader.loadTexture("models/venus.jpg")
-                elif body.mass >= .003 and body.mass < .004:
+                elif body.mass >= .003 and body.mass < .006:
                         body.texture = loader.loadTexture("models/earthmoon.jpg")
-                elif body.mass >= .004 and body.mass < .005:
+                elif body.mass >= .006 and body.mass < .009:
                         body.texture = loader.loadTexture("models/mars.jpg")
-                elif body.mass >= .005 and body.mass < .006:
-                        body.texture = loader.loadTexture("models/pluto.jpg")
-                elif body.mass >= .006 and body.mass < .007:
-                        body.texture = loader.loadTexture("models/saturn.jpg")
-                elif body.mass >= .007 and body.mass < .008:
-                        body.texture = loader.loadTexture("models/jupiter.jpg")
-                elif body.mass >= .008 and body.mass < .009:
-                        body.texture = loader.loadTexture("models/mercury.jpg")
                 elif body.mass >= .009 and body.mass < .01:
-                        body.texture = loader.loadTexture("models/mars.jpg")
-                elif body.mass >= .1:
+                        body.texture = loader.loadTexture("models/uranus.jpg")
+                elif body.mass >= .01 and body.mass < .03:
+                        body.texture = loader.loadTexture("models/saturn.jpg")
+                elif body.mass >= .03 and body.mass < .05:
+                        body.texture = loader.loadTexture("models/neptune.jpg")
+                elif body.mass >= .05 and body.mass < .1:
+                        body.texture = loader.loadTexture("models/saturn.jpg")
+                elif body.mass >= .1 and body.mass < .4:
+                        body.texture = loader.loadTexture("models/jupiter.jpg")
+                elif body.mass >= .4:
                         body.texture = loader.loadTexture("models/sun.jpg")
-                else:
-                        body.texture = loader.loadTexture("models/mars.jpg")
+                #else:
+                        #body.texture = loader.loadTexture("models/mars.jpg")
                 body.sphere.setTexture(body.texture,1)
 
         def loadSinglePlanet(self, body,i):
@@ -391,7 +392,7 @@ class Universe(DirectObject):
 
         def scalebody(self, i):
                 body = self.evaluator.system.bodies[i]
-                scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/50)+.005
+                scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/50)+.001
                 body.sphere.setScale(scaleRate)
                 self.evaluator.gridSystem.rad[i]=scaleRate                                
                 body.mass=self.evaluator.gridSystem.mass[i]
