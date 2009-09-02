@@ -98,7 +98,7 @@ class System(object):
                         body.position.y += self.star.body.position.y
                         body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
-                body_data.append(random.uniform(.4,1))
+                body_data.append(random.uniform(.1,.3))
                 for j in range(0,2):
                         body_data.append(0.0)
                 body_data.append(0.0)
@@ -212,7 +212,7 @@ class System(object):
                 otherBodies.append(aBody)
                 otherBodies.append(bBody)
                 fitness = self.evaluateN(otherBodies)
-                while fitness<.1 or fitness>.2:
+                while fitness<.1 or fitness>1:
                         print "testing configuration"
                         adata = self.getDirectedPlanet()
                         aBody = Body(adata)

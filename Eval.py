@@ -167,8 +167,8 @@ class soPhysics:
                         #print "collision i ",ith," j ",jth
                         #print "rad ",rad2
                         grav_mag = 0
-##                        self.collisionDetected(player, names, mass, pos,
-##                                               vel, acc, rad, ith, jth)
+                        self.collisionDetected(player, names, mass, pos,
+                                               vel, acc, rad, ith, jth)
 
                               
    
@@ -178,12 +178,7 @@ class soPhysics:
 		epsilon = 0.01
 		for i in range(0,self.gridSystem.count):
 			for j in range(0,i):
-##                                self.accGravSingle(byref(self.gridSystem.mass),
-##                                                   byref(self.gridSystem.pos),
-##                                                   byref(self.gridSystem.vel),
-##                                                   byref(self.gridSystem.acc),
-##                                                   byref(self.gridSystem.rad),
-##                                                   i, j)
+
                                 self.accGravSingle(self.gridSystem.player,
                                                    self.gridSystem.names,
                                                    self.gridSystem.mass,
