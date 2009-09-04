@@ -67,6 +67,7 @@ class Universe(DirectObject):
 		self.player.position.x=0
 		self.player.position.y=0
 		self.player.position.z=0
+		self.player.orientation.y=90
 		self.player.bodies=[]
 		self.evaluator.system.bodies.append(self.player)
                 self.evaluator= Eval.soPhysics(neweval.system)                
@@ -74,10 +75,14 @@ class Universe(DirectObject):
                 self.loadPlanets()
                 self.console = console
                 self.toggleConsole()
-                if len(starList)>0:
-                        self.loadStars()
+                
+                #if len(starList)>0:
+                #        self.loadStars()
 		base.camLens.setFar(170000000000000000000000000000000000000)
+         	self.mouselook=False
+		
 		taskMgr.add(self.move,"move")
+
 		
 
         
@@ -213,6 +218,8 @@ class Universe(DirectObject):
                 self.accept("`", self.toggleConsole)
                 self.accept("wheel_right", self.tiltLeft)
                 self.accept("wheel_left", self.tiltRight)
+#                self.accept("mouse6", self.tiltLeft)
+#                self.accept("mouse7", self.tiltRight)
                 self.accept("w", self.tiltLeft)
                 self.accept("r", self.tiltRight)
                 self.accept("mouse2", self.handlemouse2Click)
@@ -338,9 +345,12 @@ class Universe(DirectObject):
                 return
         
 	def updateMouse(self, abody):
-                if (base.mouseWatcherNode.hasMouse() and self.mouselook):
-                        newX = base.mouseWatcherNode.getMouseX()
-                        newY = base.mouseWatcherNode.getMouseY()                        
+                if (True):
+                        newX=self.mouseX
+                        newY=self.mouseY
+                        if self.mouselook and base.mouseWatcherNode.hasMouse():
+                                newX = base.mouseWatcherNode.getMouseX()
+                                newY = base.mouseWatcherNode.getMouseY()                        
                         deltaX = self.mouseX - newX
                         deltaY = self.mouseY - newY
                         self.mouseX = newX
@@ -366,7 +376,7 @@ class Universe(DirectObject):
                 base.camera.setHpr(abody.orientation.x,
                                    abody.orientation.y,abody.orientation.z)
                 cpos=self.evaluator.gridSystem.getPlayerIndex()
-
+                #base.camera.printPos()
                 base.camera.setPos(self.evaluator.gridSystem.pos[cpos][0]-self.dX,
                                    self.evaluator.gridSystem.pos[cpos][1]-self.dY,
                                    self.evaluator.gridSystem.pos[cpos][2]-self.dZ)
