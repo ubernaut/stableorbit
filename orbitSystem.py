@@ -98,7 +98,7 @@ class System(object):
                         body.position.y += self.star.body.position.y
                         body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
-                body_data.append(random.uniform(.1,.3))
+                body_data.append(random.uniform(.3,.5))
                 for j in range(0,2):
                         body_data.append(0.0)
                 body_data.append(0.0)
@@ -385,6 +385,10 @@ class GridSystem(object):
                                 i+=1
                 return i
 
+        def append(self, body):
+                print "appending: ", self.count
+                print "allocated: ", self.allocated
+                
         def insertBody(self,body, i):
                 self.names[i] = body.name
                 self.mass[i] = body.mass

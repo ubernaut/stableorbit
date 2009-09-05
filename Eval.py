@@ -114,7 +114,7 @@ class soPhysics:
                 pos[ith][2]+=10
                 names[ith]= "DELETE"
                 self.gridSystem.collisions.append(jth)
-                self.gridSystem.removed.append(jth)
+                self.gridSystem.removed.append(ith)
                 self.gridSystem.getPlayerIndex()
 
 	def evaluateStep(self):

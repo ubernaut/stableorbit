@@ -60,16 +60,19 @@ class Universe(DirectObject):
                 self.dY=0
                 self.dZ=0
                 self.player = Body()
-		self.mouseBody = Body()
-		self.mouseBody.name = "mouse"
+##		self.mouseBody = Body()
+##		self.mouseBody.name = "mouse"
 		self.player.name = "player"
 		self.player.mass = 0
 		self.player.position.x=0
 		self.player.position.y=0
 		self.player.position.z=0
 		self.player.orientation.y=90
-		self.player.bodies=[]
-		self.evaluator.system.bodies.append(self.player)
+		self.accRate =2
+#		self.player.bodies=[]
+#		self.evaluator.system.bodies.append(self.player)
+		neweval.system.bodies.append(self.player)
+
                 self.evaluator= Eval.soPhysics(neweval.system)                
                 #self.evaluator.system.moveToStar()
                 self.loadPlanets()
@@ -78,6 +81,8 @@ class Universe(DirectObject):
                 
                 #if len(starList)>0:
                 #        self.loadStars()
+                base.camLens.setNear(0.01)
+  #              base.camLens.setFar(50000)
 		base.camLens.setFar(170000000000000000000000000000000000000)
          	self.mouselook=False
 		
@@ -123,7 +128,7 @@ class Universe(DirectObject):
 
         def loadSinglePlanet(self, body,i):
                 body.node = render.attachNewNode(body.name)
-                if self.evaluator.gridSystem.names[i]!="player":
+                if self.evaluator.gridSystem.names[i]!="player" and body.name != "player":
                         body.sphere = loader.loadModelCopy("models/planet_sphere")			
                         body.sphere.reparentTo(body.node)
                         self.scalebody( i)
@@ -138,11 +143,22 @@ class Universe(DirectObject):
 
                 else:
                         self.loadPlayer(body)
-
+        def detachNode(self, i):
+                #count = len(self.evaluator.system.bodies)-1
+                print "detaching node: ",i#count
+                self.evaluator.system.bodies[i].node.detachNode()
 	def loadPlanets(self):
+                
+                pval = self.evaluator.gridSystem.player
+                print "player: ",pval
+                print self.evaluator.gridSystem.getPlayerIndex()
                 i=0
                 for body in self.evaluator.system.bodies:
-                        self.loadSinglePlanet(body,i)
+                        if i ==pval:
+                                print "player at: ",i 
+                                self.loadPlayer(self.player)
+                        if i != pval:
+                                self.loadSinglePlanet(body,i)
                         i+=1
                 self.sky = loader.loadModel("models/solar_sky_sphere")                               
                 self.sky_tex = loader.loadTexture("models/startex.jpg")
@@ -152,16 +168,18 @@ class Universe(DirectObject):
 
                 
         def scaleUp(self):
-                self.starScale*= 1.01
-                print self.starScale
-                for star in self.stars:
-                        star.body.sphere.setScale(self.starScale)
+                self.accRate*= 1.01
+                print "accRate increasing",self.accRate
+##                print self.starScale
+##                for star in self.stars:
+##                        star.body.sphere.setScale(self.starScale)
                         
         def scaleDown(self):
-                self.starScale*= .99
-                print self.starScale
-                for star in self.stars:
-                        star.body.sphere.setScale(self.starScale)
+                self.accRate*= .99
+                print "accRate decreasing",self.accRate
+##                print self.starScale
+##                for star in self.stars:
+##                        star.body.sphere.setScale(self.starScale)
                                                 
 	def toggleConsole(self):
                 print "toggle console"
@@ -199,10 +217,10 @@ class Universe(DirectObject):
                         abody.texture = loader.loadTexture("models/texturemap.png")
                 elif abody.name == "mouse":
                         abody.texture = loader.loadTexture("models/sun.jpg")
-                abody.model.setScale(.001)
-                abody.radius=.001
+                abody.model.setScale(.00005)
+                abody.radius=.00005
                 i = self.evaluator.gridSystem.getPlayerIndex()
-                self.evaluator.gridSystem.rad[i]=0.03
+                self.evaluator.gridSystem.rad[i]=0.01
                 abody.node.setPos(self.evaluator.gridSystem.pos[i][0],
                                   self.evaluator.gridSystem.pos[i][1],
                                   self.evaluator.gridSystem.pos[i][2])
@@ -385,7 +403,9 @@ class Universe(DirectObject):
                 for j in self.evaluator.gridSystem.collisions:
                         self.scalebody(j)
                 self.evaluator.gridSystem.collisoins=[]
-##                for k in self.evaluator.gridSystem.removed:
+
+                for k in self.evaluator.gridSystem.removed:
+                        self.detachNode(k)
 ##                        abody = Body(self.evaluator.system.getDirectedPlanet())
 ##                        self.evaluator.gridSystem.insertBody(abody,k)
 ##                        self.loadSinglePlanet(abody, k)
@@ -402,6 +422,9 @@ class Universe(DirectObject):
 
         def scalebody(self, i):
                 body = self.evaluator.system.bodies[i]
+                if body.name == "player":
+                        print "rescaling: ",i," ",body.name
+                        raw_input()
                 scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/50)+.001
                 body.sphere.setScale(scaleRate)
                 self.evaluator.gridSystem.rad[i]=scaleRate                                
