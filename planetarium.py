@@ -45,7 +45,7 @@ class Universe(DirectObject):
                 #messenger.toggleVerbose()
                 self.stars=starList
                 self.mouselook=True
-                self.zoom = 1.5
+                self.zoom = .33
                 self.mapMode = False
                 self.evaluator = neweval
                 self.hudScale = 1
@@ -66,7 +66,7 @@ class Universe(DirectObject):
 		self.player.mass = 0
 		self.player.position.x=0
 		self.player.position.y=0
-		self.player.position.z=0
+		self.player.position.z=-0.04
 		self.player.orientation.y=90
 		self.accRate =2
 #		self.player.bodies=[]
