@@ -50,7 +50,7 @@ class Universe(DirectObject):
                 self.evaluator = neweval
                 self.hudScale = 1
                 self.objectScale=.01
-                self.starScale = 10
+                self.starScale = .1
                 self.skyScale=50000
 		self.dt=.02
 		self.starting=True
