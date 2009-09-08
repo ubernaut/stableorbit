@@ -91,9 +91,9 @@ class Universe(DirectObject):
         def loadLights(self):
                 plight = PointLight('plight')
                 plight.setColor(VBase4(1, 1, 1, 1))
-                plnp = render.attachNewNode(plight)
-                plnp.setPos(0, 0, 0)
-                render.setLight(plnp)
+                self.plnp = render.attachNewNode(plight)
+                self.plnp.setPos(0, 0, 0)
+                render.setLight(self.plnp)
 
 
         
@@ -131,6 +131,7 @@ class Universe(DirectObject):
                         sunMaterial =Material()
                         sunMaterial.setTwoside(True)
                         sunMaterial.setEmission(VBase4(1,1,1,1))
+                        body.name = "star"
                         body.node.setMaterial(sunMaterial)
                 #else:
                         #body.texture = loader.loadTexture("models/mars.jpg")
@@ -442,5 +443,8 @@ class Universe(DirectObject):
                 self.setTexture(body, i)
 
 	def set_body_position(self,body,x,y,z):
+                if body.name == "star":
+                        #print "moving light"
+                        self.plnp.setPos(x,y,z)                        
                 body.node.setPos(x,y,z) 
                 body.node.setHpr(body.orientation.x, body.orientation.y, body.orientation.z)
