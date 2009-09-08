@@ -50,7 +50,7 @@ class Universe(DirectObject):
                 self.evaluator = neweval
                 self.hudScale = 1
                 self.objectScale=.01
-                self.starScale = .1
+                self.starScale = 1
                 self.skyScale=50000
 		self.dt=.02
 		self.starting=True
@@ -100,8 +100,12 @@ class Universe(DirectObject):
         def loadStars(self):
                 print "loading stars"
                 for star in self.stars:
+                                               
                         star.body.node = render.attachNewNode(star.body.name)
-                        star.body.sphere = loader.loadModelCopy("models/dodecahedron")			
+                        star.body.sphere = loader.loadModelCopy("models/dodecahedron")
+                        sunMaterial =Material()
+                        sunMaterial.setEmission(VBase4(1,1,1,1))
+                        star.body.node.setMaterial(sunMaterial)
                         star.body.sphere.reparentTo(star.body.node)
                         star.body.sphere.setScale(self.starScale)
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
