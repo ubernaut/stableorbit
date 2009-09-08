@@ -9,6 +9,7 @@ import math
 from orbitSystem import Body
 from orbitSystem import System
 import interactiveConsole
+from direct.filter.CommonFilters import CommonFilters
 from pandac.PandaModules import loadPrcFileData
 from pandac.PandaModules import *
 def config():
@@ -75,6 +76,11 @@ class Universe(DirectObject):
 
                 self.evaluator= soPhysics.soPhysics(neweval.system)                
                 #self.evaluator.system.moveToStar()
+                self.filters = CommonFilters(base.win, base.cam)
+                self.filterok = self.filters.setBloom(blend=(1,1,1,1), desat=-0.5, intensity=1.0, size="small")
+                self.glowSize=1
+
+
                 self.loadPlanets()
                 self.console = console
                 self.toggleConsole()
@@ -85,6 +91,7 @@ class Universe(DirectObject):
   #              base.camLens.setFar(50000)
 		base.camLens.setFar(170000000000000000000000000000000000000)
          	self.mouselook=False
+         	#render.setShaderAuto()
 		self.loadLights()
 		taskMgr.add(self.move,"move")
 
@@ -95,15 +102,13 @@ class Universe(DirectObject):
                 self.plnp.setPos(0, 0, 0)
                 render.setLight(self.plnp)
 
-                ambientLight = AmbientLight( 'ambientLight' )
-                ambientLight.setColor( Vec4( 0.1, 0.1, 0.1, 1 ) )
+                self.ambientLight = AmbientLight( 'ambientLight' )
+                self.ambientLight.setColor( Vec4( 0.1, 0.1, 0.1, 1 ) )
                 
-                ambientLightNP = render.attachNewNode( ambientLight.upcastToPandaNode() )
-                render.setLight(ambientLightNP)
+                self.ambientLightNP = render.attachNewNode( self.ambientLight.upcastToPandaNode() )
+                render.setLight(self.ambientLightNP)
 
-
-
-        
+       
         def loadStars(self):
                 print "loading stars"
                 for star in self.stars:
@@ -138,12 +143,16 @@ class Universe(DirectObject):
                 elif body.mass >= .1 and body.mass < .4:
                         body.texture = loader.loadTexture("models/jupiter.jpg")
                 elif body.mass >= .4:
+                        
                         body.texture = loader.loadTexture("models/sun.jpg")
                         sunMaterial =Material()
                         sunMaterial.setTwoside(True)
                         sunMaterial.setEmission(VBase4(1,1,1,1))
                         body.name = "star"
+                        body.node.setShaderAuto()
                         body.node.setMaterial(sunMaterial)
+                        
+                        
                 #else:
                         #body.texture = loader.loadTexture("models/mars.jpg")
                 body.sphere.setTexture(body.texture,1)
