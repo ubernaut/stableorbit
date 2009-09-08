@@ -79,8 +79,8 @@ class Universe(DirectObject):
                 self.console = console
                 self.toggleConsole()
                 
-                #if len(starList)>0:
-                #        self.loadStars()
+                if len(starList)>0:
+                        self.loadStars()
                 base.camLens.setNear(0.01)
   #              base.camLens.setFar(50000)
 		base.camLens.setFar(170000000000000000000000000000000000000)
@@ -94,6 +94,13 @@ class Universe(DirectObject):
                 self.plnp = render.attachNewNode(plight)
                 self.plnp.setPos(0, 0, 0)
                 render.setLight(self.plnp)
+
+                ambientLight = AmbientLight( 'ambientLight' )
+                ambientLight.setColor( Vec4( 0.1, 0.1, 0.1, 1 ) )
+                
+                ambientLightNP = render.attachNewNode( ambientLight.upcastToPandaNode() )
+                render.setLight(ambientLightNP)
+
 
 
         
