@@ -98,7 +98,7 @@ class System(object):
                         body.position.y += self.star.body.position.y
                         body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
-                body_data.append(random.uniform(.1,.3))
+                body_data.append(random.uniform(.3,.8))
                 for j in range(0,2):
                         body_data.append(0.0)
                 body_data.append(0.0)

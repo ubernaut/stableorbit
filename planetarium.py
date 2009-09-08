@@ -4,13 +4,13 @@ import os
 import random
 import dircache
 import orbitSystem
-import Eval
+import soPhysics
 import math
 from orbitSystem import Body
 from orbitSystem import System
 import interactiveConsole
 from pandac.PandaModules import loadPrcFileData
-
+from pandac.PandaModules import *
 def config():
         loadPrcFileData("", "window-title stableorbit")
         print "Enter 'f' 'Enter' for fullscreen or just 'Enter' for windowed"
@@ -73,7 +73,7 @@ class Universe(DirectObject):
 #		self.evaluator.system.bodies.append(self.player)
 		neweval.system.bodies.append(self.player)
 
-                self.evaluator= Eval.soPhysics(neweval.system)                
+                self.evaluator= soPhysics.soPhysics(neweval.system)                
                 #self.evaluator.system.moveToStar()
                 self.loadPlanets()
                 self.console = console
@@ -85,10 +85,16 @@ class Universe(DirectObject):
   #              base.camLens.setFar(50000)
 		base.camLens.setFar(170000000000000000000000000000000000000)
          	self.mouselook=False
-		
+		self.loadLights()
 		taskMgr.add(self.move,"move")
 
-		
+        def loadLights(self):
+                plight = PointLight('plight')
+                plight.setColor(VBase4(1, 1, 1, 1))
+                plnp = render.attachNewNode(plight)
+                plnp.setPos(0, 0, 0)
+                render.setLight(plnp)
+
 
         
         def loadStars(self):
@@ -122,6 +128,10 @@ class Universe(DirectObject):
                         body.texture = loader.loadTexture("models/jupiter.jpg")
                 elif body.mass >= .4:
                         body.texture = loader.loadTexture("models/sun.jpg")
+                        sunMaterial =Material()
+                        sunMaterial.setTwoside(True)
+                        sunMaterial.setEmission(VBase4(1,1,1,1))
+                        body.node.setMaterial(sunMaterial)
                 #else:
                         #body.texture = loader.loadTexture("models/mars.jpg")
                 body.sphere.setTexture(body.texture,1)
