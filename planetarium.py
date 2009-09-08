@@ -147,6 +147,7 @@ class Universe(DirectObject):
                         body.texture = loader.loadTexture("models/sun.jpg")
                         sunMaterial =Material()
                         sunMaterial.setTwoside(True)
+#                        sunMaterial.setColor(VBase4(1,1,1,1))
                         sunMaterial.setEmission(VBase4(1,1,1,1))
                         body.name = "star"
                         body.node.setShaderAuto()
