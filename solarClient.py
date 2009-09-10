@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import xmlrpclib
 import orbitSystem
-import soPhysics
+import Eval
 import cPickle
 from orbitSystem import Body
 from orbitSystem import System
 from orbitSystem import Galaxy
-from soPhysics import soPhysics
+from Eval import soPhysics
 
 class solarClient(object):
     def __init__(self, xString='http://bamdastard.kicks-ass.net:8000',
@@ -112,8 +112,8 @@ class solarClient(object):
        # bodycount = raw_input()
 
         #if bodycount=="":
-        bodycount =64
-        bodyDistance=.166
+        bodycount =128
+        bodyDistance=.33
         bodySpeed=.05
         self.mySystem = System(sysCount, starcount,
                                bodycount, bodyDistance,
@@ -156,4 +156,13 @@ class solarClient(object):
             self.generateSystem()
         self.launchSystem() 
 
-
+#Uncomment the following line to retrieve "system6" from the server
+#defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system20.sys")
+#Uncomment the following line if you want the client to run offline
+#defaultClient = solarClient("local")
+#defaultClient = solarClient("runSol")
+#This is the default configuration which attempts to retrieve a system from
+#the server. Failure will cause the client to launch locally in disconnected mode
+#defaultClient = solarClient("192.168.0.101:8000", "normal")
+#defaultClient = solarClient()
+#defaultClient.clientLoop()

@@ -51,7 +51,7 @@ class Universe(DirectObject):
                 self.evaluator = neweval
                 self.hudScale = 1
                 self.objectScale=.01
-                self.starScale = 1
+                self.starScale = 10
                 self.skyScale=50000
 		self.dt=.02
 		self.starting=True
@@ -75,7 +75,7 @@ class Universe(DirectObject):
 		neweval.system.bodies.append(self.player)
 
                 self.evaluator= soPhysics.soPhysics(neweval.system)                
-                #self.evaluator.system.moveToStar()
+                self.evaluator.system.moveToStar()
                 self.filters = CommonFilters(base.win, base.cam)
                 self.filterok = self.filters.setBloom(blend=(1,1,1,1), desat=-0.5, intensity=1.0, size="small")
                 self.glowSize=1

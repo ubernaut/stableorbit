@@ -10,6 +10,19 @@ from Eval import soPhysics
 #import psyco
 #psyco.full()
 #load from xml
+
+class Hydrogen(object):
+        def __init__(self):
+                self.pressure = 1 #mass/volume
+                self.radius = 1
+                self.mass = 1
+                self.temperature = 0
+                self.color = "green"
+                self.time= 0
+                self.surfTension = 0 
+##class Metal(object):
+##        s
+  
 class Body(object):
 	def __init__ (self,body_data=[]):
                 if body_data == []:
@@ -98,7 +111,7 @@ class System(object):
                         body.position.y += self.star.body.position.y
                         body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
-                body_data.append(random.uniform(.5,.8))
+                body_data.append(random.uniform(1,2))
                 for j in range(0,2):
                         body_data.append(0.0)
                 body_data.append(0.0)
