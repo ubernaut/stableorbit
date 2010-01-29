@@ -24,7 +24,9 @@ class soPlayer(object):
         self.health =100
 
 class soSession(object):
-    def __init__(self, args=["fullscreen 0","win-size 1300 800"]):
+    def __init__(self, args=["fullscreen 0","win-size 1300 800",
+                             "sofig-blank", "sofig-noconsole",
+                             "sofig-noshaders", "sofig-bodycount 32"]):
         print "Creating Session"
         #self.config = soConfig(configName)
         self.pandaFigs=args
@@ -38,7 +40,8 @@ class soSession(object):
 #        figlist = self.config.getConfig("pandafig")
 #        print "figs:",figlist
         for fig in self.pandaFigs:
-             loadPrcFileData("", fig)
+            if not "sofig" in fig:
+                loadPrcFileData("", fig)
 x=soSession()
             
             

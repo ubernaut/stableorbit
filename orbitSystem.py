@@ -22,7 +22,42 @@ class Hydrogen(object):
                 self.surfTension = 0 
 ##class Metal(object):
 ##        s
-  
+class Material(object):
+        def __init__(self, arg=""):
+                if arg == "":
+                        self.metal()
+                if arg == "metal":
+                        self.metal()
+                if arg == "mineral":
+                        self.mineral()
+                if arg == "hcompound":
+                        self.hcompound()
+                if arg == "hydrogen":
+                        self.hydrogen()
+                if arg == "helium":
+                        slef.helium()
+
+        def metal(self):
+                self.name="metal"
+                self.condtemp = 1000
+                self.atomicweight = 55
+        def mineral(self):
+                self.name="mineral"
+                self.condtemp = 500
+                self.atomicweight = 25
+        def hcompound(self):
+                self.name="hcompound"
+                self.condtemp=150
+                self.atomicweight = 10
+        def hydrogen(self):
+                self.name = "hydrogen"
+                self.condtemp = 50
+                self.atomicweight = 1
+        def helium(self):
+                self.name = "helium"
+                self.condtemp = 100
+                self.atomicweight = 4
+                
 class Body(object):
 	def __init__ (self,body_data=[]):
                 if body_data == []:
@@ -38,9 +73,14 @@ class Body(object):
 		self.radius=.03
 	
 	def __del__(self):
+                del self.name
+                del self.mass
 		del self.position
 		del self.velocity
-		del self.acceleration       
+		del self.acceleration
+		del self.orientation
+		del self.angVelocity
+		del self.radius
                 
 class Point(object):
         def __init__(self, position_data=[0,0,0]):

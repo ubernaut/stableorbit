@@ -147,7 +147,7 @@ class solarClient(object):
                                                  self.console)
         run()
         
-    def runLocal(self):
+    def runLocal(self, sofigs=""):
         print "run sol? y/n"
         genvar = 'n'#raw_input()
         if genvar == 'y':
