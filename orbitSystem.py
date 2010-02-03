@@ -58,6 +58,17 @@ class Material(object):
                 self.condtemp = 100
                 self.atomicweight = 4
                 
+
+                
+class Planetoid(object):
+        def __init__(self, body_data=[], matbodies=[]):
+                self.body = Body(body_data)
+                if matbodies==[]:
+                        matbodies = []
+                        self.matbodies.append(MaterialBody())
+                else:
+                        self.matbodies = matbodies                
+                
 class Body(object):
 	def __init__ (self,body_data=[]):
                 if body_data == []:
@@ -81,7 +92,10 @@ class Body(object):
 		del self.orientation
 		del self.angVelocity
 		del self.radius
-                
+class MaterialBody(Body):
+        def __init__(self, body_data=[], material=""):
+                self.body = Body(bodydata)
+                self.material = Material(material)                
 class Point(object):
         def __init__(self, position_data=[0,0,0]):
                 self.x=float(position_data[0])
