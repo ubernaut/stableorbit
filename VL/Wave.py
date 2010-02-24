@@ -7,7 +7,23 @@ import os
 import copy
 import StarSystem
 from StarSystem import StarSystem
+class PhysicsLaw(object):
+    def runOneToOne(abody, bbody):
+        print "PhysicsLaw.runOneToOne"
+        return
 
+class Gravity(object):
+    def allVsAll(bodyList):
+        print "Gravity.allVsAll"
+        return
+    def someVsRest(someBods, restBods):
+        print "Gravity.someVsRest"
+        return
+    def oneVsOne(abody, bbody):
+        print "Gravity.oneVsOne"
+        d_x=abody.pos[0]
+        return
+        
 class Wave(object):
     def __init__(self, vel, lam):
         self.freq = vel/lam      
