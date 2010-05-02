@@ -1,4 +1,4 @@
-import orbitSystem
+import StarSystem
 #import solarClient
 #from solarClient import solarClient
 #import solarServer
@@ -51,6 +51,7 @@ class soSession(object):
                                      |OUTPUT_PYTHON|OUTPUT_IRC,
                                      locals() )
         self.configPanda()
+#        self.planetWindow = SoCore.SoCore(self.console)
         self.planetWindow = SoCore.SoCore(self.console)
         run()    
     def configPanda(self):

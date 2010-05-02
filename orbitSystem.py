@@ -133,11 +133,73 @@ class Galaxy(object):
                         
                         
 class Star(object):
-        def __init__(self, xPos=30000, yPos=0, zPos=0,
-                     aName="default", aPlayer="cos"):
+        def __init__(self, xPos=30000, yPos=0, zPos=0, player="duh", aName="default"):
                 self.body = Body(["body",1,xPos,yPos,zPos,0,0,0,0,0,0])
-                self.name = aName
-                self.player = aPlayer
+                self.color = [0.0,0.0,1.0]
+                self.mass = 16
+                self.radius = 6.6
+                self.temp= 33000
+                self.buildrandom()
+                #self.player = Player()
+        def buildrandom(self):
+                starrand = random.uniform(1,10000)
+                if (starrand > 7600):
+                        self.mtype()
+                if (starrand > 8800):
+                        self.ktype()
+                if (starrand > 9400):
+                        self.gtype()
+                if (starrand > 9700):
+                        self.ftype()
+                if (starrand > 9800):
+                        self.atype()
+                if (starrand > 9900):
+                        self.btype()
+                if (starrand > 9500):
+                        self.otype()
+                
+        def otype(self):
+                self.color = [1.0,0.0,0.0]
+#                self.color = [0.0,0.0,1.0,1.0]
+                self.mass = 16
+                self.radius = 6.6
+                self.temp= 33000
+        def btype(self):
+                self.color = [0.5,0.5,0.8,1.0]
+                #self.color = [1.0,0.0,0.0]
+                self.mass = 2.1
+                self.radius = 1.8
+                self.temp= 10,000
+        def atype(self):
+                self.color = [1.0,1.0,1.0,1.0]
+               #self.color = [1.0,0.0,0.0]
+                self.mass = 1.4
+                self.radius = 1.4
+                self.temp= 7500
+        def ftype(self):
+                self.color = [1.0,1.0,0.8,1.0]
+                self.color = [1.0,0.0,0.0]
+                self.mass = 1
+                self.radius = 1
+                self.temp= 6000
+        def gtype(self):
+#                self.color = [1.0,0.0,0.0]
+                self.color = [1.0,1.0,0.0,1.0]
+                self.mass = .8
+                self.radius = 0.9
+                self.temp= 5200
+        def ktype(self):
+                #self.color = [1.0,0.0,0.0]
+                self.color = [1.0,0.2,0.2,1.0]
+                self.mass = .7
+                self.radius = 0.5
+                self.temp= 3700
+        def mtype(self):
+                self.color = [1.0,0.0,0.0,1.0]
+                #self.color = [1.0,0.0,0.0]
+                self.mass = .2
+                self.radius = .2
+                self.temp= 2000
             
 
 class System(object):

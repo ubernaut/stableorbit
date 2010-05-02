@@ -163,7 +163,7 @@ class SoCore(DirectObject):
                 render.setLight(self.ambientLightNP)
         def addObject(self, abody):
                 abody.node = render.attachNewNode(abody.name)
-                if abody.name!="player" and abody.name != "player":
+                if abody.name!="player":
                         abody.sphere = loader.loadModelCopy("models/planet_sphere")			
                         abody.sphere.reparentTo(abody.node)
 #                        self.scalebody( i)

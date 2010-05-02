@@ -3,11 +3,11 @@ import dircache
 import os
 import random
 import dircache
-import orbitSystem
+import StarSystem
 import soPhysics
 import math
-from orbitSystem import Body
-from orbitSystem import System
+from StarSystem import Body
+from StarSystem import Galaxy
 import interactiveConsole
 from direct.filter.CommonFilters import CommonFilters
 from pandac.PandaModules import loadPrcFileData
@@ -44,7 +44,7 @@ import direct.directbase.DirectStart
 class Universe(DirectObject):
 	def __init__(self, console=[], shaders = True, neweval=[], starList=[] ):
                 #messenger.toggleVerbose()
-                self.stars=starList
+                self.stars = StarSystem.Galaxy()
                 self.mouselook=True
                 self.zoom = .33
                 self.mapMode = False
@@ -70,10 +70,10 @@ class Universe(DirectObject):
 		self.accRate =2
 #		self.player.bodies=[]
 #		self.evaluator.system.bodies.append(self.player)
-		if neweval !=[]:
-                        neweval.system.bodies.append(self.player)
-                        self.evaluator= soPhysics.soPhysics(neweval.system)                
-                        self.evaluator.system.moveToStar()
+#		if neweval !=[]:
+#                        neweval.system.bodies.append(self.player)
+#                        self.evaluator= soPhysics.soPhysics(neweval.system)                
+#                        self.evaluator.system.moveToStar()
 
                 if shaders == True:
                         self.filters = CommonFilters(base.win, base.cam)
@@ -86,12 +86,13 @@ class Universe(DirectObject):
                 self.console = console
                 self.toggleConsole()
                 
-                if len(starList)>0:
-                        self.loadStars()
+                
+                self.loadStars()
                 base.camLens.setNear(0.01)
   		base.camLens.setFar(170000000000000000000000000000000000000)
   		self.mouselook=False
-		self.loadLights()
+  		self.loadLights()
+		self.loadSky()
 		taskMgr.add(self.move,"move")
 
         def loadLights(self):
@@ -106,16 +107,24 @@ class Universe(DirectObject):
                 
                 self.ambientLightNP = render.attachNewNode( self.ambientLight.upcastToPandaNode() )
                 render.setLight(self.ambientLightNP)
+                
+        def loadSky(self):
+                self.sky = loader.loadModel("models/solar_sky_sphere")                               
+                self.sky_tex = loader.loadTexture("models/startex.jpg")
+                self.sky.setTexture(self.sky_tex, 1)
+                self.sky.setScale(self.skyScale)
+                self.sky.reparentTo(render)
+
 
        
         def loadStars(self):
                 print "loading stars"
-                for star in self.stars:                                               
+                for star in self.stars.stars:                                               
                         star.body.node = render.attachNewNode(star.body.name)
                         star.body.sphere = loader.loadModelCopy("models/dodecahedron")
                         sunMaterial =Material()
-                        sunMaterial.setEmission(VBase4(1,1,1,1))
-                        star.body.node.setMaterial(sunMaterial)
+#                        sunMaterial.setEmission(VBase4(star.color))
+                        star.body.node.setColor(VBase4(star.color))
                         star.body.sphere.reparentTo(star.body.node)
                         star.body.sphere.setScale(self.starScale)
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
@@ -190,12 +199,6 @@ class Universe(DirectObject):
                         if i != pval:
                                 self.loadSinglePlanet(body,i)
                         i+=1
-                self.sky = loader.loadModel("models/solar_sky_sphere")                               
-                self.sky_tex = loader.loadTexture("models/startex.jpg")
-                self.sky.setTexture(self.sky_tex, 1)
-                self.sky.setScale(self.skyScale)
-                self.sky.reparentTo(render)
-
                 
         def scaleUp(self):
                 self.accRate*= 1.01
@@ -285,14 +288,14 @@ class Universe(DirectObject):
 		self.accept("]",self.scaleUp)
 		self.accept("l",self.togglemouselook)
 		dt = self.dt
-		if not self.mapMode and self.evaluator != []:
-                        self.evaluator.accelerateCuda()
-		self.updateMouse(self.player)
+		#if not self.mapMode and self.evaluator != []:
+                 #       self.evaluator.accelerateCuda()
+		#self.updateMouse(self.player)
 		if self.starting: 
 			dt=dt/2.0
 			self.starting=False
 		#self.reloadPlanets()
-		self.setAllPositions()
+		#self.setAllPositions()
 		return Task.cont
 	
 
@@ -423,11 +426,11 @@ class Universe(DirectObject):
                         self.dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
                 base.camera.setHpr(abody.orientation.x,
                                    abody.orientation.y,abody.orientation.z)
-                cpos=self.evaluator.gridSystem.getPlayerIndex()
+               # cpos=self.evaluator.gridSystem.getPlayerIndex()
                 #base.camera.printPos()
-                base.camera.setPos(self.evaluator.gridSystem.pos[cpos][0]-self.dX,
-                                   self.evaluator.gridSystem.pos[cpos][1]-self.dY,
-                                   self.evaluator.gridSystem.pos[cpos][2]-self.dZ)
+               # base.camera.setPos(self.evaluator.gridSystem.pos[cpos][0]-self.dX,
+                #                   self.evaluator.gridSystem.pos[cpos][1]-self.dY,
+                #                   self.evaluator.gridSystem.pos[cpos][2]-self.dZ)
 
         def setAllPositions(self):
                 for j in self.evaluator.gridSystem.collisions:
