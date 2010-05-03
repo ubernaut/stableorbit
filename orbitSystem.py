@@ -143,20 +143,21 @@ class Star(object):
                 #self.player = Player()
         def buildrandom(self):
                 starrand = random.uniform(1,10000)
-                if (starrand > 7600):
+                if (starrand < 7600):
                         self.mtype()
-                if (starrand > 8800):
+                if (starrand < 8800  and starrand > 7600):
                         self.ktype()
-                if (starrand > 9400):
+                if (starrand < 9400 and starrand > 8800):
                         self.gtype()
-                if (starrand > 9700):
+                if (starrand < 9700 and starrand > 9400):
                         self.ftype()
-                if (starrand > 9800):
+                if (starrand < 9800 and starrand > 9900):
                         self.atype()
-                if (starrand > 9900):
+                if (starrand < 9900 and starrand > 9950):
                         self.btype()
-                if (starrand > 9500):
+                if (starrand < 9950):
                         self.otype()
+
                 
         def otype(self):
                 self.color = [1.0,0.0,0.0]

@@ -51,7 +51,7 @@ class Universe(DirectObject):
                 self.evaluator = neweval
                 self.hudScale = 1
                 self.objectScale=.01
-                self.starScale = 10
+                self.starScale = .5
                 self.skyScale=50000
 		self.dt=.02
 		self.starting=True
@@ -120,7 +120,7 @@ class Universe(DirectObject):
                         sunMaterial.setEmission(VBase4(star.color[0],star.color[1],star.color[2], 1))
                         star.body.node.setMaterial(sunMaterial)
                         star.body.sphere.reparentTo(star.body.node)
-                        star.body.sphere.setScale(self.starScale)
+                        star.body.sphere.setScale(self.starScale * star.radius)
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
         def setTexture(self, body, i):
                 if body.mass< 0.001:                       
