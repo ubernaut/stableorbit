@@ -1,2 +1,1 @@
-cd ..
-python\python.exe stableorbit\soSession.py
+ppython.exe soSession.py
