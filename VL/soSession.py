@@ -52,7 +52,7 @@ class soSession(object):
                                      locals() )
         self.configPanda()
 #        self.planetWindow = SoCore.SoCore(self.console)
-        self.planetWindow = SoCore.SoCore(self.console)
+        self.socore = SoCore.SoCore(self.console)
         run()    
     def configPanda(self):
 #        figlist = self.config.getConfig("pandafig")

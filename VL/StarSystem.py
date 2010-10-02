@@ -53,6 +53,7 @@ class Point(object):
                 self.x=float(position_data[0])
 		self.y=float(position_data[1])
 		self.z=float(position_data[2])
+		self.array=[self.x,self.y,self.z]
 	def reset(self):
 		self.x=0
 		self.y=0
@@ -73,6 +74,7 @@ class Body(object):
 		self.acceleration.reset()
 		self.radius=.03
 		self.color = self.material.color
+		self.temp=0.0
 	
 	def __del__(self):
                 del self.name
@@ -86,7 +88,7 @@ class Body(object):
                
 class Planetoid(object):
         def __init__(self, matbodies=[]):
-                self.body = Body(body_data)
+                self.body = Body()
                 if matbodies==[]:
                         matbodies = []
                         self.matbodies.append(Body())
@@ -96,78 +98,95 @@ class Planetoid(object):
                         
                         
 class Star(object):
-        def __init__(self, xPos=0, yPos=0, zPos=0, aName="default"):
+        def __init__(self, xPos=0, yPos=0, zPos=0, aName="default"):#, matquants[]):#, seed=0):
+##                random.seed(0)
+##                self.matquants=[]
+##                if (False):
+##                        self.matquants.append(random.uniform(1,2)) #iron
+##                        self.matquants.append(random.uniform(matquants[0],(2*matquants[0])))#minerals
+##                        self.matquants.append(random.uniform(matquants[1],(2*matquants[1])))#hydrogen compounds        
+##                        self.matquants.append(random.uniform(matquants[2],(2*matquants[2])))#helium
+##                        self.matquants.append(100-(matquants[0]+matquants[1]+matquants[2]))#hydrogen
                 self.body = Body(["star",1,xPos,yPos,zPos,0,0,0,0,0,0])
+##                self.matbodies=[]#matbodies
                 self.buildrandom()
-                self.name = aName
-                self.color = [0.0,0.0,1.0]
-                self.mass = 16
-                self.radius = 6.6
-                self.temp= 33000
+                self.body.name = aName
+                #self.body.color = [0.0,0.0,1.0]
+                #self.body.mass = self.mass
+                #self.radius = self.radius
                 #self.player = Player()
         def buildrandom(self):
                 starrand = random.uniform(1,10000)
-                if (starrand > 7600):
+                if (starrand < 7600):
                         self.mtype()
-                if (starrand > 8800):
+                if (starrand < 8800  and starrand > 7600):
                         self.ktype()
-                if (starrand > 9400):
+                if (starrand < 9400 and starrand > 8800):
                         self.gtype()
-                if (starrand > 9700):
+                if (starrand < 9700 and starrand > 9400):
                         self.ftype()
-                if (starrand > 9800):
+                if (starrand < 9800 and starrand > 9900):
                         self.atype()
-                if (starrand > 9900):
+                if (starrand < 9900 and starrand > 9950):
                         self.btype()
-                if (starrand > 9500):
+                if (starrand > 9950):
                         self.otype()
-                
         def otype(self):
-                self.color = [1.0,0.0,0.0]
-#                self.color = [0.0,0.0,1.0,1.0]
-                self.mass = 16
-                self.radius = 6.6
-                self.temp= 33000
+                self.body.color = [0.0,0.0,1.0]
+#                self.body.color = [0.0,0.0,1.0,1.0]
+                self.body.mass = 16
+                self.body.radius = 6.6
+                self.body.temp= 33000
+                self.body.type="o"
         def btype(self):
-                self.color = [0.5,0.5,0.8,1.0]
-                #self.color = [1.0,0.0,0.0]
-                self.mass = 2.1
-                self.radius = 1.8
-                self.temp= 10,000
+                self.body.color = [0.5,0.5,0.8,1.0]
+                #self.body.color = [1.0,0.0,0.0]
+                self.body.mass = 2.1
+                self.body.radius = 1.8
+                self.body.temp= 10,000
+                self.body.type="b"
         def atype(self):
-                self.color = [1.0,1.0,1.0,1.0]
-               #self.color = [1.0,0.0,0.0]
-                self.mass = 1.4
-                self.radius = 1.4
-                self.temp= 7500
+                self.body.color = [1.0,1.0,1.0,1.0]
+               #self.body.color = [1.0,0.0,0.0]
+                self.body.mass = 1.4
+                self.body.radius = 1.4
+                self.body.temp= 7500
+                self.body.type="a"
         def ftype(self):
-                self.color = [1.0,1.0,0.8,1.0]
-                self.color = [1.0,0.0,0.0]
-                self.mass = 1
-                self.radius = 1
-                self.temp= 6000
+                self.body.color = [1.0,1.0,0.8,1.0]
+                self.body.color = [1.0,0.0,0.0]
+                self.body.mass = 1
+                self.body.radius = 1
+                self.body.temp= 6000
+                self.body.type="f"
         def gtype(self):
-#                self.color = [1.0,0.0,0.0]
-                self.color = [1.0,1.0,0.0,1.0]
-                self.mass = .8
-                self.radius = 0.9
-                self.temp= 5200
+#                self.body.color = [1.0,0.0,0.0]
+                self.body.color = [1.0,1.0,0.0,1.0]
+                self.body.mass = .8
+                self.body.radius = 0.9
+                self.body.temp= 5200
+                self.body.type="g"
+                self.body.tex=""
         def ktype(self):
-                #self.color = [1.0,0.0,0.0]
-                self.color = [1.0,0.2,0.2,1.0]
-                self.mass = .7
-                self.radius = 0.5
-                self.temp= 3700
+                #self.body.color = [1.0,0.0,0.0]
+                self.body.color = [1.0,0.2,0.2,1.0]
+                self.body.mass = .7
+                self.body.radius = 0.5
+                self.body.temp= 3700
+                self.body.type="k"
         def mtype(self):
-                self.color = [1.0,0.0,0.0,1.0]
-                #self.color = [1.0,0.0,0.0]
-                self.mass = .2
-                self.radius = .2
-                self.temp= 2000
+                self.body.color = [1.0,0.0,0.0,1.0]
+                #self.body.color = [1.0,0.0,0.0]
+                self.body.mass = .2
+                self.body.radius = .2
+                self.body.temp= 2000
+                self.body.type="m"
+                    
 
             
 class StarSystem(object):
-        def ___init__(self,arg="Sol"): #args should be star, and materials
+                    
+        def __init__(self,arg="Random"):
                 self.id = 0
                 self.mass = 0
                 self.stars = []
@@ -179,36 +198,62 @@ class StarSystem(object):
                 self.coord = [0,0,0]
                 self.players=[]
                 if(arg=="Sol"):
-                    self.loadSol()
+                        self.buildSol()
+                if(arg=="Random"):
+                        self.genSys()
+                if(arg=="fromStar"):
+                        return
+                return
+        
+                        
 
-        def genSys(self):
-                self.stars.append(Star())
+        def genFromStar(self, star):
+                self.stars=[]
+                self.stars.append(star)
+                self.body =star.body
+                self.name = "star"#star.name
+                
+        def genSys(self, star=Star()):
+                self.stars.append(star)
                 
             
-        def loadSol(self):
-                self.stars.append(Planetoid([Body()]))
+        def buildSol(self):
+                sol = Star()
+                sol.gtype()
+                sol.mass =1
+                sol.radius = .0093
+                sol.body=Body(["Sol",1,0,0,0,0,0,0,0,0,0])
+                self.stars.append(sol)
+                earth = Planetoid([Body(["Earth",0.000003,1,0,0,0,0,0,0,0,0])])
+                earth.matbodies[0].radius=0.000042
+                                  
                       
 class Galaxy(object):
         def __init__(self):
-                self.stars = []
+                self.starsystems = []
                 self.theta = 0
                 self.dTheta = .05
                 self.maxTheta = 10
                 self.alpha = 2000
                 self.beta = 0.25               
                 self.e = 2.71828182845904523536
-                self.starDensity = 1
+                self.starDensity = 10
                 while self.theta< self.maxTheta:
                         self.theta+=self.dTheta
                         randRange = 2000/(1+self.theta/2)
-                        self.starDensity = 10/(1+self.theta/2)
+                        self.starDensity = int(round(10/(1+self.theta/2)))
                         for i in range(0,self.starDensity):
                                 xPos = self.alpha*(self.e**(self.beta*self.theta))*math.cos(self.theta)
                                 yPos = self.alpha*(self.e**(self.beta*self.theta))*math.sin(self.theta)
                                 xPos+=random.uniform(-randRange,randRange)
                                 yPos+=random.uniform(-randRange,randRange)
                                 zPos = random.uniform(-randRange,randRange)
-                                newStar = Star(xPos,yPos,zPos, i)
-                                newStar2 = Star(-xPos,-yPos,-zPos, 2*i)
-                                self.stars.append(newStar)
-                                self.stars.append(newStar2)
+                                
+                                newStarSys=StarSystem("fromStar")
+                                newStarSys.genFromStar(Star(xPos,yPos,zPos, i))
+                                newStarSys2=StarSystem("fromStar")
+                                newStarSys2.genFromStar(Star(-xPos,-yPos,-zPos, -i))                                                       
+                                self.starsystems.append(newStarSys)
+                                self.starsystems.append(newStarSys2)
+                self.localSystem = self.starsystems[0]
+

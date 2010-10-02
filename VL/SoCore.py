@@ -8,6 +8,7 @@ import soPhysics
 import math
 from StarSystem import Body
 from StarSystem import StarSystem
+from StarSystem import Galaxy
 import interactiveConsole
 from direct.filter.CommonFilters import CommonFilters
 from pandac.PandaModules import loadPrcFileData
@@ -100,7 +101,7 @@ class SoPlayer(object):
 		self.player.position.y=0
 		self.player.position.z=-0.04
 		self.player.orientation.y=90
-		self.starsys=StarSystem()
+#		self.starsys=StarSystem()
 	def handleinput():
                 return
         
@@ -123,11 +124,17 @@ class SoCore(DirectObject):
 		self.input=SoInput()
                 base.camLens.setNear(0.01)
   		base.camLens.setFar(170000000000000000000000000000000000000)
-  		self.loadLights()
   		self.loadPlayer(self.player.player)
-  		self.load_body(Body())
   		self.console=console
+  		self.galaxy=Galaxy()
+  		self.loadSky()
+  		self.loadGalaxy()
+  		self.loadStarSystem(self.galaxy.localSystem)
+  		self.loadLights()
   		taskMgr.add(self.move,"move")
+
+  		#self.galaxy=StarSystem.Galaxy()
+  		
 #  	def steptime():
 #                self.input.handleinput()
 #                return
@@ -151,13 +158,15 @@ class SoCore(DirectObject):
         
         def loadLights(self):
                 plight = PointLight('plight')
-                plight.setColor(VBase4(1, 1, 1, 1))
+                plight.setColor(VBase4(.8, .8, .8, 1))
                 self.plnp = render.attachNewNode(plight)
-                self.plnp.setPos(0, 0, 0)
+                self.plnp.setPos(self.galaxy.localSystem.stars[0].body.position.x,
+                                 self.galaxy.localSystem.stars[0].body.position.y,
+                                 self.galaxy.localSystem.stars[0].body.position.z)
                 render.setLight(self.plnp)
 
                 self.ambientLight = AmbientLight( 'ambientLight' )
-                self.ambientLight.setColor( Vec4( 0.91, 0.91, 0.91, 1 ) )
+                self.ambientLight.setColor( Vec4( 0.1, 0.1, 0.1, 1 ) )
                 
                 self.ambientLightNP = render.attachNewNode( self.ambientLight.upcastToPandaNode() )
                 render.setLight(self.ambientLightNP)
@@ -333,19 +342,66 @@ class SoCore(DirectObject):
                 return
         def loadSol(self):
                 abody = Body()
+        def loadGalaxy(self,galaxy=None):
+                for astarsys in self.galaxy.starsystems:
+                        self.loadStarInSky(astarsys.stars[0])
+        def loadStarInSky(self,star):
+                star.body.node = render.attachNewNode("star")
+                star.body.model = loader.loadModelCopy("models/dodecahedron")
+                sunMaterial =Material()
+                star.body.model.setColor(VBase4(star.body.color[0],
+                                               star.body.color[1],
+                                               star.body.color[2], 1))
+                sunMaterial.setEmission(VBase4(star.body.color[0],
+                                               star.body.color[1],
+                                               star.body.color[2], 1))
+                star.body.node.setMaterial(sunMaterial)
+                star.body.model.reparentTo(star.body.node)
+                star.body.model.setScale(star.body.radius*2)
+                star.body.node.setPos(star.body.position.x,
+                                      star.body.position.y,
+                                      star.body.position.z)
+        def loadStarSystem(self, astarsys):
+                
+                for starSys in self.galaxy.starsystems:
+                        starSys.stars[0].body.position.x-=astarsys.stars[0].body.position.x
+                        starSys.stars[0].body.position.y-=astarsys.stars[0].body.position.y
+                        starSys.stars[0].body.position.z-=astarsys.stars[0].body.position.z
+                        self.set_body_position(starSys.stars[0].body)
+                self.galaxy.localSystem=astarsys
+                self.galaxy.localSystem.stars[0].body.model.setScale(
+                        self.galaxy.localSystem.stars[0].body.radius*.0093)
+                #self.player.player.position.x = astarsys.stars[0].body.position.x
+                #self.player.player.position.y = astarsys.stars[0].body.position.y 
+                #self.player.player.position.z = astarsys.stars[0].body.position.z
+                #self.set_body_position(self.player.player) 
+               
+                        
+                
+        def loadSky(self):
+                self.sky = loader.loadModel("models/solar_sky_sphere")                               
+                self.sky_tex = loader.loadTexture("models/startex.jpg")
+                self.sky.setTexture(self.sky_tex, 1)
+                self.sky.setScale(50000)
+                self.sky.reparentTo(render)
         def load_body(self, abody):
                 #self.player.bodies.append(abody)
                 #self.evaluator.system.bodies.append(abody)
                 #self.evaluator.accelerateCuda()
-                abody.node = render.attachNewNode(abody.name)
+                abody.node = render.attachNewNode("body")
                 abody.model = loader.loadModelCopy("models/planet_sphere")			
                 abody.model.reparentTo(abody.node)
                 #abody.texture =
                 self.scalebody(abody)
                 abody.model.setColor(abody.material.color[0],abody.material.color[1],abody.material.color[2],abody.material.color[3])#Texture("models/sun.jpg")
-                abody.model.setScale(abody.radius)
+                abody.model.setScale(abody.radius*.5)
                 abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
                 return
+        
+        def unload_body(self, abody):
+                abody.node.detachNode()
+                return
+        
         def scalebody(self, abody):
                 #abody = self.evaluator.system.bodies[i]
                 if abody.name == "player":
@@ -357,8 +413,8 @@ class SoCore(DirectObject):
 
 
 	def set_body_position(self,abody):
-                if abody.name == "star":
+                #if abody.name == "star":
                         #print "moving light"
-                        self.plnp.setPos(x,y,z)                        
+                #        self.plnp.setPos(x,y,z)
                 abody.node.setPos(abody.position.x,abody.position.y,abody.position.z) 
                 abody.node.setHpr(abody.orientation.x, abody.orientation.y, abody.orientation.z)
