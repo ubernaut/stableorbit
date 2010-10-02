@@ -329,7 +329,7 @@ class Universe(DirectObject):
                 self.evaluator.gridSystem.acc[i][0]+=self.dX
                 self.evaluator.gridSystem.acc[i][1]+=self.dY
                 self.evaluator.gridSystem.acc[i][2]+=self.dZ
-                self.evaluator.gridSystem.printBody(i)
+                #self.evaluator.gridSystem.printBody(i)
                 return
         
         def stop(self):

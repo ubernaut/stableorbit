@@ -34,6 +34,7 @@ class soSession(object):
         #self.config = soConfig(configName)
         self.pandaFigs=args
         #self.loadSession()
+        self.configPanda()
         self.launchSystem()
     def loadSession(self):
         self.client = solarClient()

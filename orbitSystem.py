@@ -570,10 +570,10 @@ class GridSystem(object):
                 
         def removeBody(self, i):
                 if i != self.player:
-                        print "removing body ",i
-                        self.printBody(i)
+                        #print "removing body ",i
+                        #self.printBody(i)
                         if i == self.count -1:
-                                print "remove last item"
+                                foo=1#print "remove last item"
 
                         else:
                                 self.moveBody(self.count-1, i)

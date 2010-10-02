@@ -361,6 +361,15 @@ class SoCore(DirectObject):
                 star.body.node.setPos(star.body.position.x,
                                       star.body.position.y,
                                       star.body.position.z)
+        def unloadStarSystem(self,astarsys):
+                for starSys in self.galaxy.starsystems:
+                        starSys.stars[0].body.position.x+=astarsys.stars[0].body.position.x
+                        starSys.stars[0].body.position.y+=astarsys.stars[0].body.position.y
+                        starSys.stars[0].body.position.z+=astarsys.stars[0].body.position.z
+                        self.set_body_position(starSys.stars[0].body)
+                astarsys.stars[0].body.model.setScale(
+                        self.galaxy.localSystem.stars[0].body.radius*600)
+        
         def loadStarSystem(self, astarsys):
                 
                 for starSys in self.galaxy.starsystems:

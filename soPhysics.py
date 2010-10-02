@@ -41,16 +41,16 @@ class soPhysics:
                 if (names[jth]!="player" and
                     names[ith]!="player"):# and
                     #ith != 0 and jth != 0):
-                        print "combining ", ith," and ",jth
+                        #print "combining ", ith," and ",jth
                         self.combineBodies(player, names, mass, pos,
                                            vel, acc, rad, ith, jth)
 
 
         def combineBodies(self, player, names, mass,
                               pos, vel, acc, rad, ith, jth):
-                print "combining bodies i: ",ith,"j: ",jth
-                self.gridSystem.printBody(ith)
-                self.gridSystem.printBody(jth)
+                #print "combining bodies i: ",ith,"j: ",jth
+                #self.gridSystem.printBody(ith)
+                #self.gridSystem.printBody(jth)
                 
                 pos[jth][0] = (pos[ith][0]*mass[ith] + pos[jth][0]*mass[jth])/((mass[ith]+mass[jth]))
                 pos[jth][1] = (pos[ith][1]*mass[ith] + pos[jth][1]*mass[jth])/((mass[ith]+mass[jth]))
@@ -66,13 +66,17 @@ class soPhysics:
                                      (mass[jth]*vel[jth][2])/#2))
                                      ((mass[ith]+mass[jth]))))
                 mass[jth] = mass[ith] + mass[jth]
-                pos[ith][0]+=10
-                pos[ith][1]+=10
-                pos[ith][2]+=10
-                names[ith]= "DELETE"
-                self.gridSystem.collisions.append(jth)
-                self.gridSystem.removed.append(ith)
-                self.gridSystem.getPlayerIndex()
+                mass[ith] = 0.00000000000000000000000000000000000000000000000001
+                pos[ith][0]=10
+                pos[ith][1]=10
+                pos[ith][2]=10
+                vel[ith][0]=0
+                vel[ith][1]=0
+                vel[ith][2]=0
+                names[ith]= "DELETED"
+                #self.gridSystem.collisions.append(jth)
+                #self.gridSystem.removed.append(ith)
+                #self.gridSystem.getPlayerIndex()
 
 	def evaluateStep(self):
                 self.accelerate()
@@ -146,9 +150,9 @@ class soPhysics:
                                                    i, j) 
                 self.calVelPosCuda()
                 self.gridSystem.resetAcc()
-                for i in range(0,self.gridSystem.count):
-                        if self.gridSystem.names[i]=="DELETE":
-                                self.gridSystem.removeBody(i)
+                #for i in range(0,self.gridSystem.count):
+                #        if self.gridSystem.names[i]=="DELETE":
+                #                self.gridSystem.removeBody(i)
                 #self.gridSystem.collisions = []
                 
         def calVelPosCuda(self):
