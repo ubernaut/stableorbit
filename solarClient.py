@@ -3,6 +3,7 @@ import xmlrpclib
 import orbitSystem
 import Eval
 import cPickle
+
 from orbitSystem import Body
 from orbitSystem import System
 from orbitSystem import Galaxy
@@ -62,6 +63,7 @@ class solarClient(object):
         self.server = xmlrpclib.Server(self.xString)
         self.connected=True
         
+        
     def retrieveGalaxy(self):
         if self.connected == False:
             self.connectToServer()
@@ -112,9 +114,9 @@ class solarClient(object):
        # bodycount = raw_input()
 
         #if bodycount=="":
-        bodycount = 16
-        bodyDistance=.17
-        bodySpeed=.05
+        bodycount = 64
+        bodyDistance=.2
+        bodySpeed=.02
         self.mySystem = System(sysCount, starcount,
                                bodycount, bodyDistance,
                                bodySpeed)

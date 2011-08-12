@@ -228,7 +228,7 @@ class System(object):
                         body.position.y += self.star.body.position.y
                         body.position.z += self.star.body.position.z
 	def getStar(self, body_data):
-                body_data.append(random.uniform(1,2))
+                body_data.append(random.uniform(.4,1))
                 for j in range(0,2):
                         body_data.append(0.0)
                 body_data.append(0.0)
@@ -240,7 +240,7 @@ class System(object):
 	def getSymPlanets(self):
                 body_data=[]
                 body_data.append("body_X")
-                body_data.append(random.uniform(.000001,.01))
+                body_data.append(random.uniform(.000001,.4))
                 #body_data.append(0.0)
                 
                 if quadrantVar > 0:

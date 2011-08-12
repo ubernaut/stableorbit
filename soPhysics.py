@@ -56,27 +56,23 @@ class soPhysics:
                 pos[jth][1] = (pos[ith][1]*mass[ith] + pos[jth][1]*mass[jth])/((mass[ith]+mass[jth]))
                 pos[jth][2] = (pos[ith][2]*mass[ith] + pos[jth][2]*mass[jth])/((mass[ith]+mass[jth]))
                 
-                vel[jth][0] = (((mass[ith]*vel[ith][0])+
-                                     (mass[jth]*vel[jth][0])/#2))
-                                     ((mass[ith]+mass[jth]))))
-                vel[jth][1] = (((mass[ith]*vel[ith][1])+
-                                     (mass[jth]*vel[jth][1])/#2))
-                                     ((mass[ith]+mass[jth]))))
-                vel[jth][2] = (((mass[ith]*vel[ith][2])+
-                                     (mass[jth]*vel[jth][2])/#2))
-                                     ((mass[ith]+mass[jth]))))
+                vel[jth][0] = (((mass[ith]*vel[ith][0])+(mass[jth]*vel[jth][0])/((mass[ith]+mass[jth]))))
+                vel[jth][1] = (((mass[ith]*vel[ith][1])+(mass[jth]*vel[jth][1])/((mass[ith]+mass[jth]))))
+                vel[jth][2] = (((mass[ith]*vel[ith][2])+(mass[jth]*vel[jth][2])/((mass[ith]+mass[jth]))))
+
                 mass[jth] = mass[ith] + mass[jth]
                 mass[ith] = 0.00000000000000000000000000000000000000000000000001
                 pos[ith][0]=10
                 pos[ith][1]=10
                 pos[ith][2]=10
+
                 vel[ith][0]=0
                 vel[ith][1]=0
                 vel[ith][2]=0
                 names[ith]= "DELETED"
-                #self.gridSystem.collisions.append(jth)
-                #self.gridSystem.removed.append(ith)
-                #self.gridSystem.getPlayerIndex()
+                self.gridSystem.collisions.append(jth)
+                self.gridSystem.removed.append(ith)
+                self.gridSystem.getPlayerIndex()
 
 	def evaluateStep(self):
                 self.accelerate()
@@ -128,8 +124,8 @@ class soPhysics:
                         #print "collision i ",ith," j ",jth
                         #print "rad ",rad2
                         grav_mag = 0
-                        #self.collisionDetected(player, names, mass, pos,
-                        #                       vel, acc, rad, ith, jth)
+                        self.collisionDetected(player, names, mass, pos,
+                                               vel, acc, rad, ith, jth)
 
                               
    
@@ -138,22 +134,23 @@ class soPhysics:
                 G=2.93558*10**-4
 		epsilon = 0.01
 		for i in range(0,self.gridSystem.count):
-			for j in range(0,i):
-
-                                self.accGravSingle(self.gridSystem.player,
-                                                   self.gridSystem.names,
-                                                   self.gridSystem.mass,
-                                                   self.gridSystem.pos,
-                                                   self.gridSystem.vel,
-                                                   self.gridSystem.acc,
-                                                   self.gridSystem.rad,
-                                                   i, j) 
+                        if(self.gridSystem.names[i] != 'DELETED'):
+                                for j in range(0,i):
+                                        if(self.gridSystem.names[j] != 'DELETED'):
+                                                self.accGravSingle(self.gridSystem.player,
+                                                                   self.gridSystem.names,
+                                                                   self.gridSystem.mass,
+                                                                   self.gridSystem.pos,
+                                                                   self.gridSystem.vel,
+                                                                   self.gridSystem.acc,
+                                                                   self.gridSystem.rad,
+                                                                   i, j) 
                 self.calVelPosCuda()
                 self.gridSystem.resetAcc()
-                #for i in range(0,self.gridSystem.count):
-                #        if self.gridSystem.names[i]=="DELETE":
-                #                self.gridSystem.removeBody(i)
-                #self.gridSystem.collisions = []
+                for i in range(0,self.gridSystem.count):
+                        if self.gridSystem.names[i]=="DELETED":
+                                self.gridSystem.removeBody(i)
+                self.gridSystem.collisions = []
                 
         def calVelPosCuda(self):
                 for i in range(0,self.gridSystem.count):
