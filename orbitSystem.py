@@ -120,7 +120,7 @@ class Galaxy(object):
                         self.theta+=self.dTheta
                         randRange = 2000/(1+self.theta/2)
                         self.starDensity = 10/(1+self.theta/2)
-                        for i in range(0,self.starDensity):
+                        for i in range(0,int(self.starDensity)):
                                 xPos = self.alpha*(self.e**(self.beta*self.theta))*math.cos(self.theta)
                                 yPos = self.alpha*(self.e**(self.beta*self.theta))*math.sin(self.theta)
                                 xPos+=random.uniform(-randRange,randRange)
