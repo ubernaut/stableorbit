@@ -1,7 +1,7 @@
 import orbitSystem
 import solarClient
 from solarClient import solarClient
-import solarServer
+import solarServer#
 import os
 import cPickle
 import sys
@@ -24,7 +24,7 @@ class soPlayer(object):
         self.health =100
 
 class soSession(object):
-    def __init__(self, args=["fullscreen 0","win-size 1300 800",
+    def __init__(self, args=["fullscreen 1","win-size 1024 768",
                              "sofig-blank", "sofig-noconsole",
                              "sofig-noshaders", "sofig-bodycount 32"]):
         print "Creating Session"

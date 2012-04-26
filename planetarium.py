@@ -15,7 +15,7 @@ from pandac.PandaModules import *
 def config():
         loadPrcFileData("", "window-title stableorbit")
         print "Enter 'f' 'Enter' for fullscreen or just 'Enter' for windowed"
-        fullVar = raw_input()
+        fullVar = "f"#raw_input()
         if(fullVar=="f"):        
                 loadPrcFileData("", "fullscreen 1")
         print "Enter '1' for 1200x600"
@@ -51,7 +51,7 @@ class Universe(DirectObject):
                 self.evaluator = neweval
                 self.hudScale = 1
                 self.objectScale=.01
-                self.starScale = .5
+                self.starScale = .1
                 self.skyScale=50000
 		self.dt=.02
 		self.starting=True
@@ -87,7 +87,7 @@ class Universe(DirectObject):
                 
                 if len(starList)>0:
                         self.loadStars()
-                base.camLens.setNear(0.05)
+                base.camLens.setNear(0.01)
                 base.camLens.setFar(100000)
 #		base.camLens.setFar(170000000000000000000000000000000000000)
          	self.mouselook=False
