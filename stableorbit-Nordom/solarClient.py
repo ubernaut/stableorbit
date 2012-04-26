@@ -114,8 +114,8 @@ class solarClient(object):
        # bodycount = raw_input()
 
         #if bodycount=="":
-        bodycount = 16
-        bodyDistance=.6
+        bodycount = 32
+        bodyDistance=.4
         bodySpeed=.02
         self.mySystem = System(sysCount, starcount,
                                bodycount, bodyDistance,

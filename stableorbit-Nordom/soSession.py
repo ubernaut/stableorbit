@@ -24,7 +24,7 @@ class soPlayer(object):
         self.health =100
 
 class soSession(object):
-    def __init__(self, args=["fullscreen 0","win-size 1280 720",
+    def __init__(self, args=["fullscreen 0","win-size 1366 768",
                              "sofig-blank", "sofig-noconsole",
                              "sofig-noshaders", "sofig-bodycount 32"]):
         print "Creating Session"
