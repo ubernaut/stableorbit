@@ -87,9 +87,9 @@ class Universe(DirectObject):
                 
                 if len(starList)>0:
                         self.loadStars()
-                base.camLens.setNear(0.01)
-  #              base.camLens.setFar(50000)
-		base.camLens.setFar(170000000000000000000000000000000000000)
+                base.camLens.setNear(0.05)
+                base.camLens.setFar(100000)
+#		base.camLens.setFar(170000000000000000000000000000000000000)
          	self.mouselook=False
          	#render.setShaderAuto()
 		self.loadLights()
