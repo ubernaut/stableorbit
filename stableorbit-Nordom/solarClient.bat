@@ -1,0 +1,1 @@
+C:\Panda3D-1.6.2\python\python.exe soSession.py
