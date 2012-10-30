@@ -10,6 +10,7 @@ from OpenGL.GLU import *
 
 #helper modules
 import glutil
+import numpy
 from vector import Vec
 
 #OpenCL code
@@ -17,7 +18,7 @@ import part2
 import initialize
 
 #number of particles
-num = 10000
+num = 20000
 #time step for integration
 dt = .0005
 
@@ -35,6 +36,7 @@ class Part2Main(window.Window):
         self.initrans = Vec([0., 0., -2.])
         self.width=1200
         self.height=800
+        self.zoomRate = 1
 
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
@@ -42,7 +44,21 @@ class Part2Main(window.Window):
             self.rotate.x += dy * .2
             self.rotate.y += dx * .2
         elif buttons & window.mouse.RIGHT:
-            self.translate.z -= dy * .01 
+            self.translate.z -= dy * .01
+            
+    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        print scroll_y
+        print scroll_x
+        print self.zoomRate
+        print self.translate.z
+        if (scroll_y==1):
+            self.zoomRate = self.zoomRate * 1.1
+            self.translate.z -= self.zoomRate
+        else:
+            if (self.zoomRate >=0.1):
+                self.zoomRate = self.zoomRate * 0.9
+            self.translate.z += self.zoomRate
+        
 
     def set3d(self):
         glViewport(0, 0, self.width,self.height)

@@ -5,29 +5,36 @@ import timing
 timings = timing.Timing()
 
 @timings
+
+    
 def fountain_np(num):
     """numpy way of initializing data using ufuncs instead of loops"""
     import numpy
     pos = numpy.ndarray((num, 4), dtype=numpy.float32)
     col = numpy.ndarray((num, 4), dtype=numpy.float32)
     vel = numpy.ndarray((num, 4), dtype=numpy.float32)
+    varg=numpy.sin(numpy.arange(0., num) * 2.001 * numpy.pi / num)
 
-    pos[:,0] = numpy.sin(numpy.arange(0., num) * 2.001 * numpy.pi / num) 
-    pos[:,0] *= numpy.random.random_sample((num,)) * 7
+    pos[:,0] = varg 
+    pos[:,0] *= numpy.random.random_sample((num,)) * 2.5
     pos[:,1] = numpy.cos(numpy.arange(0., num) * 2.001 * numpy.pi / num) 
-    pos[:,1] *= numpy.random.random_sample((num,)) * 7
-    pos[:,2] = 0.
+    pos[:,1] *= numpy.random.random_sample((num,)) * 1
+    pos[:,2] = numpy.sin(numpy.arange(0., num) * 2.001 * numpy.pi / num)
+    pos[:,2] *= numpy.random.random_sample((num,)) * 1
     pos[:,3] = 1.
 
     col[:,0] = 0.
     col[:,1] = 1.
     col[:,2] = 0.
     col[:,3] = 1.
-
-    vel[:,0] = pos[:,0] * 2.
-    vel[:,1] = pos[:,1] * 2.
-    vel[:,2] = pos[:,1] * 2.
-    vel[:,3] = 0. #numpy.random.random_sample((num, ))
+    #posvec=pos[:,]
+    #print posvec
+    #vcross=numpy.cross(pos[:,],[0,0,1])
+    #print vcross
+    vel[:,0] = 64*-pos[:,1]#30*-pos[:,1]* (1 / numpy.sqrt(pos[:,0]*pos[:,0]+ pos[:,1]*pos[:,1] +.1))
+    vel[:,1] = 64*pos[:,0]#30*pos[:,0] * (1 / numpy.sqrt(pos[:,0]*pos[:,0]+ pos[:,1]*pos[:,1] +.1))
+    vel[:,2] = 0#64*(pos[:,0]*pos[:,1])
+    vel[:,3] = 0.#numpy.random.random_sample((num, ))
 
     return pos, col, vel
     
