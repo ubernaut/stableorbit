@@ -1,2 +1,1 @@
-ppython.exe soSession.py
-
+ppython.exe soSession.py 
