@@ -8,14 +8,14 @@ import soPhysics
 import math
 from orbitSystem import Body
 from orbitSystem import System
-import interactiveConsole
+#import interactiveConsole
 from direct.filter.CommonFilters import CommonFilters
 from pandac.PandaModules import loadPrcFileData
 from pandac.PandaModules import *
 def config():
         loadPrcFileData("", "window-title stableorbit")
         print "Enter 'f' 'Enter' for fullscreen or just 'Enter' for windowed"
-        fullVar = "f"#raw_input()
+        fullVar = raw_input()
         if(fullVar=="f"):        
                 loadPrcFileData("", "fullscreen 1")
         print "Enter '1' for 1200x600"
@@ -87,7 +87,7 @@ class Universe(DirectObject):
                 
                 if len(starList)>0:
                         self.loadStars()
-                base.camLens.setNear(0.01)
+                base.camLens.setNear(0.05)
                 base.camLens.setFar(100000)
 #		base.camLens.setFar(170000000000000000000000000000000000000)
          	self.mouselook=False
@@ -216,7 +216,8 @@ class Universe(DirectObject):
                                                 
 	def toggleConsole(self):
                 print "toggle console"
-                self.console.toggle()
+                if(self.console !=[]):
+                        self.console.toggle()
 
         def addPlanet(self):
                 self.loadSinglePlanet(self.evaluator.system.addSinglePlanet())                

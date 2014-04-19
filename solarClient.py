@@ -114,7 +114,7 @@ class solarClient(object):
        # bodycount = raw_input()
 
         #if bodycount=="":
-        bodycount = 16
+        bodycount = 64
         bodyDistance=.6
         bodySpeed=.02
         self.mySystem = System(sysCount, starcount,
@@ -136,17 +136,16 @@ class solarClient(object):
     def launchSystem(self):
         print "launching planetarium.. .  .    .        ."
         import planetarium        
-        import interactiveConsole.interactiveConsole
-        from interactiveConsole.interactiveConsole import(
-            pandaConsole, INPUT_CONSOLE, INPUT_GUI,
-            OUTPUT_PYTHON, OUTPUT_IRC)
-        
-        self.console = pandaConsole( INPUT_CONSOLE|INPUT_GUI
-                                     |OUTPUT_PYTHON|OUTPUT_IRC,
-                                     locals() )
+##        import interactiveConsole.interactiveConsole
+##        from interactiveConsole.interactiveConsole import(
+##            pandaConsole, INPUT_CONSOLE, INPUT_GUI,
+##            OUTPUT_PYTHON, OUTPUT_IRC)
+##        
+##        self.console = pandaConsole( INPUT_CONSOLE|INPUT_GUI
+##                                     |OUTPUT_PYTHON|OUTPUT_IRC,
+##                                     locals() )
         self.planetWindow = planetarium.Universe(self.Evaluator,
-                                                 self.galaxy.stars,
-                                                 self.console)
+                                                 self.galaxy.stars)
         run()
         
     def runLocal(self, sofigs=""):

@@ -1,1 +1,0 @@
-ppython.exe soSession.py 

@@ -1,7 +1,7 @@
 import orbitSystem
 import solarClient
 from solarClient import solarClient
-import solarServer
+import solarServer#
 import os
 import cPickle
 import sys
