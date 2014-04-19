@@ -149,23 +149,33 @@ class Universe(DirectObject):
                         body.texture = loader.loadTexture("models/neptune.jpg")
                 elif body.mass >= .05 and body.mass < .1:
                         body.texture = loader.loadTexture("models/saturn.jpg")
-                elif body.mass >= .1 and body.mass < .4:
+                elif body.mass >= .1 and body.mass < .2:
                         body.texture = loader.loadTexture("models/jupiter.jpg")
-                elif body.mass >= .4:
-                        
-                        body.texture = loader.loadTexture("models/darksun.jpg")
+                else :
+                        print body.mass
                         sunMaterial =Material()
                         sunMaterial.setTwoside(True)
-                        #body.setColor(VBase4(1,1,1,1))
-                        sunMaterial.setEmission(VBase4(1,1,1,1))
                         body.name = "star"
+                        #body.setColor(VBase4(1,1,1,1))
+                        #self.p.start(parent = body.node, renderParent = body.node)
+                        if body.mass >=.7 and body.mass < 1.0:    #M type                            
+                                body.texture = loader.loadTexture("models/Mstar.jpg")                                
+                                sunMaterial.setEmission(VBase4(1,.6,.6,1))                                            
+                        elif body.mass >= 1.0 and body.mass < 1.5:  #K type
+                                body.texture = loader.loadTexture("models/Kstar.jpg")                                
+                                sunMaterial.setEmission(VBase4(1,.6,.6,1))
+                        elif body.mass >= 1.0 and body.mass < 1.5:  #G type
+                                body.texture = loader.loadTexture("models/GMstar.jpg")                                
+                                sunMaterial.setEmission(VBase4(1,.6,.6,1))
+
+                        #elif body.mass >= 1.5 and body.mass < 1.5:  #G type
+                                #body.texture = loader.loadTexture("models/Mstar.jpg")                                
+                                #sunMaterial.setEmission(VBase4(1,.6,.6,1))
+                        else:
+                                body.texture = loader.loadTexture("models/Ostar.jpg")                                
+                                sunMaterial.setEmission(VBase4(.8,.8,1,1))
                         body.node.setShaderAuto()
                         body.node.setMaterial(sunMaterial)
-                        #self.p.start(parent = body.node, renderParent = body.node)
-                        
-                        
-                #else:
-                        #body.texture = loader.loadTexture("models/mars.jpg")
                 body.sphere.setTexture(body.texture,1)
 
         def loadSinglePlanet(self, body,i):
