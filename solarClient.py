@@ -115,7 +115,7 @@ class solarClient(object):
 
         #if bodycount=="":
         bodycount = 16
-        bodyDistance=.6
+        bodyDistance=.3
         bodySpeed=.02
         self.mySystem = System(sysCount, starcount,
                                bodycount, bodyDistance,
@@ -129,24 +129,16 @@ class solarClient(object):
         #except:
 #        print "couldn't get one"
         self.galaxy.stars[4*len(self.galaxy.stars)/5] 
-        self.Evaluator = soPhysics(self.mySystem, 10000, .02)
+        self.Evaluator = soPhysics(self.mySystem, 1000, .02)
         print "number of bodies:"
         print len(self.mySystem.bodies)
         
     def launchSystem(self):
         print "launching planetarium.. .  .    .        ."
         import planetarium        
-        import interactiveConsole.interactiveConsole
-        from interactiveConsole.interactiveConsole import(
-            pandaConsole, INPUT_CONSOLE, INPUT_GUI,
-            OUTPUT_PYTHON, OUTPUT_IRC)
         
-        self.console = pandaConsole( INPUT_CONSOLE|INPUT_GUI
-                                     |OUTPUT_PYTHON|OUTPUT_IRC,
-                                     locals() )
         self.planetWindow = planetarium.Universe(self.Evaluator,
-                                                 self.galaxy.stars,
-                                                 self.console)
+                                                 self.galaxy.stars)
         run()
         
     def runLocal(self, sofigs=""):

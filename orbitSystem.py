@@ -111,7 +111,7 @@ class Galaxy(object):
                 self.stars = []
                 self.theta = 0
                 self.dTheta = .05
-                self.maxTheta = 10
+                self.maxTheta = 5
                 self.alpha = 2000
                 self.beta = 0.25               
                 self.e = 2.71828182845904523536

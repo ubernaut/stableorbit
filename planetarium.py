@@ -8,8 +8,8 @@ import soPhysics
 import math
 from orbitSystem import Body
 from orbitSystem import System
-import interactiveConsole
-from direct.filter.CommonFilters import CommonFilters
+#import interactiveConsole
+#from direct.filter.CommonFilters import CommonFilters
 from pandac.PandaModules import loadPrcFileData
 from pandac.PandaModules import *
 def config():
@@ -47,11 +47,12 @@ class Universe(DirectObject):
                 self.stars=starList
                 self.mouselook=True
                 self.zoom = .33
+                self.convDis = .33
                 self.mapMode = False
                 self.evaluator = neweval
                 self.hudScale = 1
                 self.objectScale=.01
-                self.starScale = .1
+                self.starScale = .5
                 self.skyScale=50000
 		self.dt=.02
 		self.starting=True
@@ -64,11 +65,15 @@ class Universe(DirectObject):
 ##		self.mouseBody = Body()
 ##		self.mouseBody.name = "mouse"
 		self.player.name = "player"
-		self.player.mass = 0
-		self.player.position.x=0
-		self.player.position.y=0
-		self.player.position.z=-0.04
-		self.player.orientation.y=90
+		self.player.mass = .00001
+		self.player.position.x=.3
+		self.player.position.y=.3
+		self.player.position.z=.3
+		
+#		self.player.orientation.x=300
+                self.player.orientation.x=-45
+		self.player.orientation.y=-145
+		self.player.orientation.z=0
 		self.accRate =2
 #		self.player.bodies=[]
 #		self.evaluator.system.bodies.append(self.player)
@@ -76,8 +81,8 @@ class Universe(DirectObject):
 
                 self.evaluator= soPhysics.soPhysics(neweval.system)                
                 self.evaluator.system.moveToStar()
-                self.filters = CommonFilters(base.win, base.cam)
-                self.filterok = self.filters.setBloom(blend=(1,1,1,1), desat=-0.5, intensity=1.0, size="small")
+#                self.filters = CommonFilters(base.win, base.cam)
+#                self.filterok = self.filters.setBloom(blend=(1,1,1,1), desat=-0.5, intensity=1.0, size="small")
                 self.glowSize=1
 
 
@@ -88,7 +93,7 @@ class Universe(DirectObject):
                 if len(starList)>0:
                         self.loadStars()
                 base.camLens.setNear(0.01)
-                base.camLens.setFar(100000)
+                base.camLens.setFar(200000)
 #		base.camLens.setFar(170000000000000000000000000000000000000)
          	self.mouselook=False
          	#render.setShaderAuto()
@@ -216,7 +221,7 @@ class Universe(DirectObject):
                                                 
 	def toggleConsole(self):
                 print "toggle console"
-                self.console.toggle()
+                #self.console.toggle()
 
         def addPlanet(self):
                 self.loadSinglePlanet(self.evaluator.system.addSinglePlanet())                
@@ -251,6 +256,8 @@ class Universe(DirectObject):
                 elif abody.name == "mouse":
                         abody.texture = loader.loadTexture("models/sun.jpg")
                 abody.model.setScale(.00005)
+                       
+                        
                 abody.radius=.00005
                 i = self.evaluator.gridSystem.getPlayerIndex()
                 self.evaluator.gridSystem.rad[i]=0.01
@@ -271,8 +278,8 @@ class Universe(DirectObject):
                 self.accept("wheel_left", self.tiltRight)
 #                self.accept("mouse6", self.tiltLeft)
 #                self.accept("mouse7", self.tiltRight)
-                self.accept("w", self.tiltLeft)
-                self.accept("r", self.tiltRight)
+#                self.accept("w", self.tiltLeft)
+#                self.accept("r", self.tiltRight)
                 self.accept("mouse2", self.handlemouse2Click)
                 #self.accept("mouse3", self.handleRightMouseClick)
                 #self.accept("mouse1", self.handleLeftMouseClick)
@@ -308,6 +315,9 @@ class Universe(DirectObject):
                 self.player.orientation.z+=10
 	def togglemouselook(self):
                 print "toggling mouselook"
+                print "x: "+str(self.player.orientation.x)
+                print "y: "+str(self.player.orientation.y)
+                print "z: "+str(self.player.orientation.z)
                 if self.mouselook:
                         self.mouselook = False
                 else:
@@ -383,12 +393,14 @@ class Universe(DirectObject):
                 
 	def zoomIn(self):
                 self.zoom*=0.9
+                self.convDis*=0.9
                 print self.zoom
                 #self.scaleDown()
                 return
         
         def zoomOut(self):
                 self.zoom*=1.1
+                self.convDis*=1.1
                 print self.zoom
                 #self.scaleUp()
                 if self.zoom > 60000:
@@ -419,7 +431,7 @@ class Universe(DirectObject):
                                 abody.orientation.x -= (360*deltaX)
                         else:
                                 abody.orientation.x += (360*deltaX)
-                        
+
                         self.dZ = self.zoom*math.sin((-abody.orientation.y+180)*(math.pi / 180.0)) 
                         hyp = self.zoom*math.cos((-abody.orientation.y+180)*(math.pi / 180.0))
                         self.dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0)) 
@@ -428,9 +440,11 @@ class Universe(DirectObject):
                                    abody.orientation.y,abody.orientation.z)
                 cpos=self.evaluator.gridSystem.getPlayerIndex()
                 #base.camera.printPos()
+                
                 base.camera.setPos(self.evaluator.gridSystem.pos[cpos][0]-self.dX,
                                    self.evaluator.gridSystem.pos[cpos][1]-self.dY,
                                    self.evaluator.gridSystem.pos[cpos][2]-self.dZ)
+
 
         def setAllPositions(self):
                 for j in self.evaluator.gridSystem.collisions:
