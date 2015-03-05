@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<!-- saved from url=(0075)https://dl.dropboxusercontent.com/u/22541447/motorboating-pirates/index.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<style type="text/css">
+.shadowbox{
+	background:white;
+	border-radius: 10px;
+	border: outset 5px;
+	box-shadow: 18px 18px 18px black;
+	padding:5px;
+	margin:5px;
+}
+.2dcanvas{
+	box-shadow: 0px 0px 80px black inset;
+}
+	body{
+	background:lightblue;
+	}
+      .completions {
+        position: absolute;
+        z-index: 10;
+        overflow: hidden;
+        -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+        -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+        box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+      }
+      .completions select {
+        background: #fafafa;
+        outline: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font-family: monospace;
+      }
+      .CodeMirror {
+        border: 1px solid #eee;
+        background: white;
+      }
+  html { height: 100% }
+  body { height: 100%; margin: 0px; padding: 0px }
+#container {
+	background: #000;
+	width: 800px;
+	height: 300px;
+}
+
+</style>
+<script type="text/javascript" src="./index_files/js">
+</script>
+<script type="text/javascript" src="./index_files/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="./index_files/jquery.rotate.1-1.js"></script>
+<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/22541447/motorboating-pirates/lib/codemirror.css">
+<script src="./index_files/codemirror.js"></script>
+<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/22541447/motorboating-pirates/mode/javascript/javascript.css">
+<script src="./index_files/javascript.js"></script>
+<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/22541447/motorboating-pirates/css/docs.css">
+<script src="./index_files/Three.js"></script>
+<script type="text/javascript">
+$(function(){
+
+	$('#toggleHistoryButton').trigger('click');
+	$('#togglecanvas').trigger('click');
+	(function () {
+		  // Minimal event-handling wrapper.
+		  function stopEvent() {
+		    if (this.preventDefault) {this.preventDefault(); this.stopPropagation();}
+		    else {this.returnValue = false; this.cancelBubble = true;}
+		  }
+		  function addStop(event) {
+		    if (!event.stop) event.stop = stopEvent;
+		    return event;
+		  }
+		  function connect(node, type, handler) {
+		    function wrapHandler(event) {handler(addStop(event || window.event));}
+		    if (typeof node.addEventListener == "function")
+		      node.addEventListener(type, wrapHandler, false);
+		    else
+		      node.attachEvent("on" + type, wrapHandler);
+		  }
+
+		  function forEach(arr, f) {
+		    for (var i = 0, e = arr.length; i < e; ++i) f(arr[i]);
+		  }
+
+		  editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+		    lineNumbers: true,
+		    onKeyEvent: function(i, e) {
+		      // Hook into ctrl-space
+		      if (e.keyCode == 32 && (e.ctrlKey || e.metaKey) && !e.altKey) {
+		        e.stop();
+		        return startComplete();
+		      }
+		    }
+		  });
+
+		  function startComplete() {
+		    // We want a single cursor position.
+		    if (editor.somethingSelected()) return;
+		    // Find the token at the cursor
+		    var cur = editor.getCursor(false), token = editor.getTokenAt(cur), tprop = token;
+		    // If it's not a 'word-style' token, ignore the token.
+		    if (!/^[\w$_]*$/.test(token.string)) {
+		      token = tprop = {start: cur.ch, end: cur.ch, string: "", state: token.state,
+		                       className: token.string == "." ? "js-property" : null};
+		    }
+		    // If it is a property, find out what it is a property of.
+		    while (tprop.className == "js-property") {
+		      tprop = editor.getTokenAt({line: cur.line, ch: tprop.start});
+		      if (tprop.string != ".") return;
+		      tprop = editor.getTokenAt({line: cur.line, ch: tprop.start});
+		      if (!context) var context = [];
+		      context.push(tprop);
+		    }
+		    var completions = getCompletions(token, context);
+		    if (!completions.length) return;
+		    function insert(str) {
+		      editor.replaceRange(str, {line: cur.line, ch: token.start}, {line: cur.line, ch: token.end});
+		    }
+		    // When there is only one completion, use it directly.
+		    if (completions.length == 1) {insert(completions[0]); return true;}
+
+		    // Build the select widget
+		    var complete = document.createElement("div");
+		    complete.className = "completions";
+		    var sel = complete.appendChild(document.createElement("select"));
+		    sel.multiple = true;
+		    for (var i = 0; i < completions.length; ++i) {
+		      var opt = sel.appendChild(document.createElement("option"));
+		      opt.appendChild(document.createTextNode(completions[i]));
+		    }
+		    sel.firstChild.selected = true;
+		    sel.size = Math.min(10, completions.length);
+		    var pos = editor.cursorCoords();
+		    complete.style.left = pos.x + "px";
+		    complete.style.top = pos.yBot + "px";
+		    document.body.appendChild(complete);
+		    // Hack to hide the scrollbar.
+		    if (completions.length <= 10)
+		      complete.style.width = (sel.clientWidth - 1) + "px";
+
+		    var done = false;
+		    function close() {
+		      if (done) return;
+		      done = true;
+		      complete.parentNode.removeChild(complete);
+		    }
+		    function pick() {
+		      insert(sel.options[sel.selectedIndex].value);
+		      close();
+		      setTimeout(function(){editor.focus();}, 50);
+		    }
+		    connect(sel, "blur", close);
+		    connect(sel, "keydown", function(event) {
+		      var code = event.keyCode;
+		      // Enter and space
+		      if (code == 13 || code == 32) {event.stop(); pick();}
+		      // Escape
+		      else if (code == 27) {event.stop(); close(); editor.focus();}
+		      else if (code != 38 && code != 40) {close(); editor.focus(); setTimeout(startComplete, 50);}
+		    });
+		    connect(sel, "dblclick", pick);
+
+		    sel.focus();
+		    // Opera sometimes ignores focusing a freshly created node
+		    if (window.opera) setTimeout(function(){if (!done) sel.focus();}, 100);
+		    return true;
+		  }
+
+		  var stringProps = ("charAt charCodeAt indexOf lastIndexOf substring substr slice trim trimLeft trimRight " +
+		                     "toUpperCase toLowerCase split concat match replace search").split(" ");
+		  var arrayProps = ("length concat join splice push pop shift unshift slice reverse sort indexOf " +
+		                    "lastIndexOf every some filter forEach map reduce reduceRight ").split(" ");
+		  var funcProps = "prototype apply call bind".split(" ");
+		  var keywords = ("break case catch continue debugger default delete do else false finally for function " +
+		                  "if in instanceof new null return switch throw true try typeof var void while with").split(" ");
+
+		  function getCompletions(token, context) {
+		    var found = [], start = token.string;
+		    function maybeAdd(str) {
+		      if (str.indexOf(start) == 0) found.push(str);
+		    }
+		    function gatherCompletions(obj) {
+		      if (typeof obj == "string") forEach(stringProps, maybeAdd);
+		      else if (obj instanceof Array) forEach(arrayProps, maybeAdd);
+		      else if (obj instanceof Function) forEach(funcProps, maybeAdd);
+		      for (var name in obj) maybeAdd(name);
+		    }
+
+		    if (context) {
+		      // If this is a property, see if it belongs to some object we can
+		      // find in the current environment.
+		      var obj = context.pop(), base;
+		      if (obj.className == "js-variable")
+		        base = window[obj.string];
+		      else if (obj.className == "js-string")
+		        base = "";
+		      else if (obj.className == "js-atom")
+		        base = 1;
+		      while (base != null && context.length)
+		        base = base[context.pop().string];
+		      if (base != null) gatherCompletions(base);
+		    }
+		    else {
+		      // If not, just look in the window object and any local scope
+		      // (reading into JS mode internals to get at the local variables)
+		      for (var v = token.state.localVars; v; v = v.next) maybeAdd(v.name);
+		      gatherCompletions(window);
+		      forEach(keywords, maybeAdd);
+		    }
+		    return found;
+		  }
+		})();
+
+});
+
+
+
+
+function runit()
+{
+
+	var post_code=document.getElementById("post_code").value;
+	var pre_code=editor.getValue();//document.getElementById("code").value;
+	document.getElementById("post_code").value=post_code+"\n/*Execution Time: "+ new Date()+ "*/\n"+pre_code;
+
+	eval(editor.getValue());
+	$('#post_code').attr('scrollTop',$('#post_code').attr('scrollHeight'));
+}
+
+function toggleDiv(divId,toggleBtn){
+
+	var btvalue= $('#'+toggleBtn).attr('value');
+	if(btvalue=="-"){
+		$('#'+divId).hide();
+		$('#'+toggleBtn).val("+");
+	}
+	if(btvalue=="+"){
+		$('#'+divId).show();
+		$('#'+toggleBtn).val("-");
+	}
+}
+
+
+function toggleHistory(){
+
+	var btvalue= $('#toggleHistoryButton').attr('value');
+	if(btvalue=="-"){
+		$('#historyDiv').hide();
+		$('#toggleHistoryButton').val("+");
+	}
+	if(btvalue=="+"){
+		$('#historyDiv').show();
+		$('#toggleHistoryButton').val("-");
+	}
+}
+
+function handleKeyDown() {
+	keyDown(event.keyCode);
+}
+</script>
+<script type="text/javascript" src="./index_files/glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="./index_files/webgl-utils.js"></script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+    #ifdef GL_ES
+    precision highp float;
+    #endif
+
+    varying vec4 vColor;
+
+    void main(void) {
+        gl_FragColor = vColor;
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec4 aVertexColor;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec4 vColor;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vColor = aVertexColor;
+    }
+</script>
+
+
+
+</head>
+<body>
+<div id="container" class="shadowbox"></div>
+
+	<div id="inputDiv" class="inputDiv shadowbox" style="width:800px;">
+		<textarea rows="5" id="code" style="width: 800px; display: none;" onchange="resizeDiv(&#39;inputDiv&#39;)">
+
+	// set the scene size
+	var WIDTH = 800,
+	    HEIGHT = 300;
+
+	// set some camera attributes
+	var VIEW_ANGLE = 45,
+	    ASPECT = WIDTH / HEIGHT,
+	    NEAR = 0.1,
+	    FAR = 10000;
+
+	// get the DOM element to attach to
+	// - assume we've got jQuery to hand
+	var $container = $('#container');
+
+	// create a WebGL renderer, camera
+	// and a scene
+	var renderer = new THREE.WebGLRenderer();
+	var camera = new THREE.PerspectiveCamera(  VIEW_ANGLE,
+	                                ASPECT,
+	                                NEAR,
+	                                FAR  );
+	var scene = new THREE.Scene();
+
+	// the camera starts at 0,0,0 so pull it back
+	camera.position.z = 300;
+
+	// start the renderer
+	renderer.setSize(WIDTH, HEIGHT);
+
+	// attach the render-supplied DOM element
+	$container.append(renderer.domElement);
+
+	// create the sphere's material
+	var sphereMaterial = new THREE.MeshBasicMaterial(
+	{
+	    color: 0xCC0000,
+	    wireframe: true
+	});
+
+	// set up the sphere vars
+	var radius = 50, segments = 16, rings = 16;
+
+	// create a new mesh with sphere geometry -
+	// we will cover the sphereMaterial next!
+	var sphere = new THREE.Mesh(
+	   new THREE.SphereGeometry(radius, segments, rings),
+	   sphereMaterial);
+
+	// add the sphere to the scene
+	scene.add(sphere);
+
+	// create a point light
+	var pointLight = new THREE.PointLight( 0xFFFFFF );
+
+	// set its position
+	pointLight.position.x = 10;
+	pointLight.position.y = 50;
+	pointLight.position.z = 130;
+
+	// add to the scene
+	scene.add(pointLight);
+
+	// draw!
+	renderer.render(scene, camera);
+		</textarea><div class="CodeMirror"><div style="position: relative; height: 881px;"><pre style="position: relative; height: 0; visibility: hidden; overflow: hidden;"><span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span></pre><div style="position: relative; top: 0px;"><div class="CodeMirror-gutter" style="height: 400px;"><div class="CodeMirror-gutter-text"><pre>&nbsp;1</pre><pre>2</pre><pre>3</pre><pre>4</pre><pre>5</pre><pre>6</pre><pre>7</pre><pre>8</pre><pre>9</pre><pre>10</pre><pre>11</pre><pre>12</pre><pre>13</pre><pre>14</pre><pre>15</pre><pre>16</pre><pre>17</pre><pre>18</pre><pre>19</pre><pre>20</pre><pre>21</pre><pre>22</pre><pre>23</pre><pre>24</pre><pre>25</pre><pre>26</pre><pre>27</pre><pre>28</pre><pre>29</pre><pre>30</pre></div></div><div style="overflow: hidden; position: absolute; width: 0px; left: 0px; top: 0px;"><textarea style="height: 1px; position: absolute; width: 1px;" wrap="off"></textarea></div><div class="CodeMirror-lines"><div style="position: relative; margin-left: 27px;"><pre class="CodeMirror-cursor" style="top: 0px; left: 0px;">&nbsp;</pre><div><pre> </pre><pre> </pre><pre>	<span class="js-comment">// set the scene size</span></pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">WIDTH</span> = <span class="js-atom">800</span>,</pre><pre>	    <span class="js-variable">HEIGHT</span> = <span class="js-atom">300</span>;</pre><pre> </pre><pre>	<span class="js-comment">// set some camera attributes</span></pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">VIEW_ANGLE</span> = <span class="js-atom">45</span>,</pre><pre>	    <span class="js-variable">ASPECT</span> = <span class="js-variable">WIDTH</span> / <span class="js-variable">HEIGHT</span>,</pre><pre>	    <span class="js-variable">NEAR</span> = <span class="js-atom">0.1</span>,</pre><pre>	    <span class="js-variable">FAR</span> = <span class="js-atom">10000</span>;</pre><pre> </pre><pre>	<span class="js-comment">// get the DOM element to attach to</span></pre><pre>	<span class="js-comment">// - assume we've got jQuery to hand</span></pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">$container</span> = <span class="js-variable">$</span>(<span class="js-string">'#container'</span>);</pre><pre> </pre><pre>	<span class="js-comment">// create a WebGL renderer, camera</span></pre><pre>	<span class="js-comment">// and a scene</span></pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">renderer</span> = <span class="js-keyword">new</span> <span class="js-variable">THREE</span>.<span class="js-property">WebGLRenderer</span>();</pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">camera</span> = <span class="js-keyword">new</span> <span class="js-variable">THREE</span>.<span class="js-property">PerspectiveCamera</span>(  <span class="js-variable">VIEW_ANGLE</span>,</pre><pre>	                                <span class="js-variable">ASPECT</span>,</pre><pre>	                                <span class="js-variable">NEAR</span>,</pre><pre>	                                <span class="js-variable">FAR</span>  );</pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">scene</span> = <span class="js-keyword">new</span> <span class="js-variable">THREE</span>.<span class="js-property">Scene</span>();</pre><pre> </pre><pre>	<span class="js-comment">// the camera starts at 0,0,0 so pull it back</span></pre><pre>	<span class="js-variable">camera</span>.<span class="js-property">position</span>.<span class="js-property">z</span> = <span class="js-atom">300</span>;</pre><pre> </pre><pre>	<span class="js-comment">// start the renderer</span></pre><pre>	<span class="js-variable">renderer</span>.<span class="js-property">setSize</span>(<span class="js-variable">WIDTH</span>, <span class="js-variable">HEIGHT</span>);</pre></div></div></div></div></div></div>
+  		 <input name="submit" type="button" value="Run()" onclick="runit()" style="align:right;">
+
+	</div>
+<br>
+	<input type="button" id="toggleHistoryButton" value="+" onclick="toggleDiv(&#39;historyDiv&#39;,&#39;toggleHistoryButton&#39;);">History	<p>
+	</p><div id="historyDiv" class="historyDiv shadowbox" style="width: 800px; display: none;">
+		<textarea rows="5" id="post_code" style="width:800px;" onchange="resizeDiv(&#39;historyDiv&#39;)">
+		</textarea>
+	</div>
+
+
+
+</body></html>
