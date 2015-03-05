@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- saved from url=(0075)https://dl.dropboxusercontent.com/u/22541447/motorboating-pirates/index.htm -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <style type="text/css">
 .shadowbox{
 	background:white;
@@ -46,16 +46,16 @@
 }
 
 </style>
-<script type="text/javascript" src="./index_files/js">
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false">
 </script>
-<script type="text/javascript" src="./index_files/jquery-1.5.2.min.js"></script>
-<script type="text/javascript" src="./index_files/jquery.rotate.1-1.js"></script>
-<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/22541447/motorboating-pirates/lib/codemirror.css">
-<script src="./index_files/codemirror.js"></script>
-<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/22541447/motorboating-pirates/mode/javascript/javascript.css">
-<script src="./index_files/javascript.js"></script>
-<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/22541447/motorboating-pirates/css/docs.css">
-<script src="./index_files/Three.js"></script>
+<script type="text/javascript" src="index_files/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="index_files/jquery.rotate.1-1.js"></script>
+<link rel="stylesheet" href="index_files/codemirror.css">
+<script src="index_files/codemirror.js"></script>
+<link rel="stylesheet" href="index_files/javascript.css">
+<script src="index_files/javascript.js"></script>
+<link rel="stylesheet" href="index_files/docs.css">
+<script src="index_files/Three.js"></script>
 <script type="text/javascript">
 $(function(){
 
@@ -259,8 +259,8 @@ function handleKeyDown() {
 	keyDown(event.keyCode);
 }
 </script>
-<script type="text/javascript" src="./index_files/glMatrix-0.9.5.min.js"></script>
-<script type="text/javascript" src="./index_files/webgl-utils.js"></script>
+<script type="text/javascript" src="index_files/glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="index_files/webgl-utils.js"></script>
 
 <script id="shader-fs" type="x-shader/x-fragment">
     #ifdef GL_ES
@@ -292,11 +292,12 @@ function handleKeyDown() {
 
 
 </head>
-<body>
+<body  >
 <div id="container" class="shadowbox"></div>
 
-	<div id="inputDiv" class="inputDiv shadowbox" style="width:800px;">
-		<textarea rows="5" id="code" style="width: 800px; display: none;" onchange="resizeDiv(&#39;inputDiv&#39;)">
+	<div id="inputDiv" class="inputDiv shadowbox" style="width:800px;" >
+		<textarea rows="5"  id="code" style="width:800px;"  onchange="resizeDiv('inputDiv')">
+
 
 	// set the scene size
 	var WIDTH = 800,
@@ -362,17 +363,17 @@ function handleKeyDown() {
 
 	// draw!
 	renderer.render(scene, camera);
-		</textarea><div class="CodeMirror"><div style="position: relative; height: 881px;"><pre style="position: relative; height: 0; visibility: hidden; overflow: hidden;"><span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span></pre><div style="position: relative; top: 0px;"><div class="CodeMirror-gutter" style="height: 400px;"><div class="CodeMirror-gutter-text"><pre>&nbsp;1</pre><pre>2</pre><pre>3</pre><pre>4</pre><pre>5</pre><pre>6</pre><pre>7</pre><pre>8</pre><pre>9</pre><pre>10</pre><pre>11</pre><pre>12</pre><pre>13</pre><pre>14</pre><pre>15</pre><pre>16</pre><pre>17</pre><pre>18</pre><pre>19</pre><pre>20</pre><pre>21</pre><pre>22</pre><pre>23</pre><pre>24</pre><pre>25</pre><pre>26</pre><pre>27</pre><pre>28</pre><pre>29</pre><pre>30</pre></div></div><div style="overflow: hidden; position: absolute; width: 0px; left: 0px; top: 0px;"><textarea style="height: 1px; position: absolute; width: 1px;" wrap="off"></textarea></div><div class="CodeMirror-lines"><div style="position: relative; margin-left: 27px;"><pre class="CodeMirror-cursor" style="top: 0px; left: 0px;">&nbsp;</pre><div><pre> </pre><pre> </pre><pre>	<span class="js-comment">// set the scene size</span></pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">WIDTH</span> = <span class="js-atom">800</span>,</pre><pre>	    <span class="js-variable">HEIGHT</span> = <span class="js-atom">300</span>;</pre><pre> </pre><pre>	<span class="js-comment">// set some camera attributes</span></pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">VIEW_ANGLE</span> = <span class="js-atom">45</span>,</pre><pre>	    <span class="js-variable">ASPECT</span> = <span class="js-variable">WIDTH</span> / <span class="js-variable">HEIGHT</span>,</pre><pre>	    <span class="js-variable">NEAR</span> = <span class="js-atom">0.1</span>,</pre><pre>	    <span class="js-variable">FAR</span> = <span class="js-atom">10000</span>;</pre><pre> </pre><pre>	<span class="js-comment">// get the DOM element to attach to</span></pre><pre>	<span class="js-comment">// - assume we've got jQuery to hand</span></pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">$container</span> = <span class="js-variable">$</span>(<span class="js-string">'#container'</span>);</pre><pre> </pre><pre>	<span class="js-comment">// create a WebGL renderer, camera</span></pre><pre>	<span class="js-comment">// and a scene</span></pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">renderer</span> = <span class="js-keyword">new</span> <span class="js-variable">THREE</span>.<span class="js-property">WebGLRenderer</span>();</pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">camera</span> = <span class="js-keyword">new</span> <span class="js-variable">THREE</span>.<span class="js-property">PerspectiveCamera</span>(  <span class="js-variable">VIEW_ANGLE</span>,</pre><pre>	                                <span class="js-variable">ASPECT</span>,</pre><pre>	                                <span class="js-variable">NEAR</span>,</pre><pre>	                                <span class="js-variable">FAR</span>  );</pre><pre>	<span class="js-keyword">var</span> <span class="js-variable">scene</span> = <span class="js-keyword">new</span> <span class="js-variable">THREE</span>.<span class="js-property">Scene</span>();</pre><pre> </pre><pre>	<span class="js-comment">// the camera starts at 0,0,0 so pull it back</span></pre><pre>	<span class="js-variable">camera</span>.<span class="js-property">position</span>.<span class="js-property">z</span> = <span class="js-atom">300</span>;</pre><pre> </pre><pre>	<span class="js-comment">// start the renderer</span></pre><pre>	<span class="js-variable">renderer</span>.<span class="js-property">setSize</span>(<span class="js-variable">WIDTH</span>, <span class="js-variable">HEIGHT</span>);</pre></div></div></div></div></div></div>
+		</textarea>
   		 <input name="submit" type="button" value="Run()" onclick="runit()" style="align:right;">
 
 	</div>
-<br>
-	<input type="button" id="toggleHistoryButton" value="+" onclick="toggleDiv(&#39;historyDiv&#39;,&#39;toggleHistoryButton&#39;);">History	<p>
-	</p><div id="historyDiv" class="historyDiv shadowbox" style="width: 800px; display: none;">
-		<textarea rows="5" id="post_code" style="width:800px;" onchange="resizeDiv(&#39;historyDiv&#39;)">
+<br/>
+	<input type="button" id="toggleHistoryButton" value="-" onclick="toggleDiv('historyDiv','toggleHistoryButton');" >History	<p>
+	<div id="historyDiv" class="historyDiv shadowbox" style="width:800px;">
+		<textarea rows="5"  id="post_code" style="width:800px;"  onchange="resizeDiv('historyDiv')">
+
 		</textarea>
 	</div>
 
-
-
-</body></html>
+</body>
+</html>
