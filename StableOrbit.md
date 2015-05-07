@@ -1,0 +1,3 @@
+# Stableorbit #
+
+Stableorbit is a collection of programs used for generating and simulating solar systems. The most recent additions to the collection have been a client and a server (solarClient and solarServer). The client is 3D visualisation used for evaluating and viewing systems downloaded from the server. The server provides clients with the ability to retrieve previously generated systems and save newly generated ones. Both solarClient and solarServer work together as a distributed solar system generator and viewer.
