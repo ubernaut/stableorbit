@@ -4,10 +4,11 @@ import os
 import random
 import dircache
 import orbitSystem
-import soPhysics
+
 import math
 from orbitSystem import Body
 from orbitSystem import System
+from orbitSystem import soPhysics
 #import interactiveConsole
 from direct.filter.CommonFilters import CommonFilters
 from pandac.PandaModules import loadPrcFileData
@@ -16,7 +17,7 @@ def config():
         loadPrcFileData("", "window-title stableorbit")
         print "Enter 'f' 'Enter' for fullscreen or just 'Enter' for windowed"
         fullVar = "f"#raw_input()
-        if(fullVar=="f"):        
+        if(fullVar=="f"):
                 loadPrcFileData("", "fullscreen 1")
         print "Enter '1' for 1200x600"
         print "      '2' for 1440x900"
@@ -75,23 +76,23 @@ class Universe(DirectObject):
 #		self.evaluator.system.bodies.append(self.player)
 		neweval.system.bodies.append(self.player)
 
-                self.evaluator= soPhysics.soPhysics(neweval.system)                
+                self.evaluator= soPhysics(neweval.system)
                 self.evaluator.system.moveToStar()
                 self.filters = CommonFilters(base.win, base.cam)
                 self.filterok = self.filters.setBloom(blend=(1,1,1,1), desat=-0.5, intensity=1.0, size="small")
                 self.glowSize=1
-                
+
                 #base.enableParticles()
 		#self.p = ParticleEffect()
                 #self.p.loadConfig("sun2.ptf")
 
 
                 self.loadPlanets()
-                
+
                 #self.console = console
 
                 self.toggleConsole()
-                
+
                 if len(starList)>0:
                         self.loadStars()
                 base.camLens.setNear(0.01)
@@ -101,7 +102,7 @@ class Universe(DirectObject):
          	#render.setShaderAuto()
 		self.loadLights()
 		taskMgr.add(self.move,"move")
-		
+
 
         def loadLights(self):
                 plight = PointLight('plight')
@@ -112,15 +113,15 @@ class Universe(DirectObject):
 
                 self.ambientLight = AmbientLight( 'ambientLight' )
                 self.ambientLight.setColor( Vec4( 0.1, 0.1, 0.1, 1 ) )
-                
+
                 self.ambientLightNP = render.attachNewNode( self.ambientLight.upcastToPandaNode() )
                 render.setLight(self.ambientLightNP)
 
-       
+
         def loadStars(self):
                 print "loading stars"
                 for star in self.stars:
-                                               
+
                         star.body.node = render.attachNewNode(star.body.name)
                         star.body.sphere = loader.loadModelCopy("models/dodecahedron")
                         sunMaterial =Material()
@@ -131,7 +132,7 @@ class Universe(DirectObject):
                         star.body.sphere.setScale(self.starScale * star.radius)
                         star.body.node.setPos(star.body.position.x,star.body.position.y,star.body.position.z)
         def setTexture(self, body, i):
-                if body.mass< 0.001:                       
+                if body.mass< 0.001:
                         body.texture = loader.loadTexture("models/earthmoon.jpg")
                 elif body.mass >= 0.001 and body.mass < .002:
                         body.texture = loader.loadTexture("models/mars.jpg")
@@ -158,21 +159,21 @@ class Universe(DirectObject):
                         body.name = "star"
                         #body.setColor(VBase4(1,1,1,1))
                         #self.p.start(parent = body.node, renderParent = body.node)
-                        if body.mass >=.7 and body.mass < 1.0:    #M type                            
-                                body.texture = loader.loadTexture("models/Mstar.jpg")                                
-                                sunMaterial.setEmission(VBase4(1,.6,.6,1))                                            
+                        if body.mass >=.7 and body.mass < 1.0:    #M type
+                                body.texture = loader.loadTexture("models/Mstar.jpg")
+                                sunMaterial.setEmission(VBase4(1,.6,.6,1))
                         elif body.mass >= 1.0 and body.mass < 1.5:  #K type
-                                body.texture = loader.loadTexture("models/Kstar.jpg")                                
+                                body.texture = loader.loadTexture("models/Kstar.jpg")
                                 sunMaterial.setEmission(VBase4(1,.6,.6,1))
                         elif body.mass >= 1.0 and body.mass < 1.5:  #G type
-                                body.texture = loader.loadTexture("models/GMstar.jpg")                                
+                                body.texture = loader.loadTexture("models/GMstar.jpg")
                                 sunMaterial.setEmission(VBase4(1,.6,.6,1))
 
                         #elif body.mass >= 1.5 and body.mass < 1.5:  #G type
-                                #body.texture = loader.loadTexture("models/Mstar.jpg")                                
+                                #body.texture = loader.loadTexture("models/Mstar.jpg")
                                 #sunMaterial.setEmission(VBase4(1,.6,.6,1))
                         else:
-                                body.texture = loader.loadTexture("models/Ostar.jpg")                                
+                                body.texture = loader.loadTexture("models/Ostar.jpg")
                                 sunMaterial.setEmission(VBase4(.8,.8,1,1))
                         body.node.setShaderAuto()
                         body.node.setMaterial(sunMaterial)
@@ -181,12 +182,12 @@ class Universe(DirectObject):
         def loadSinglePlanet(self, body,i):
                 body.node = render.attachNewNode(body.name)
                 if self.evaluator.gridSystem.names[i]!="player" and body.name != "player":
-                        body.sphere = loader.loadModelCopy("models/planet_sphere")			
+                        body.sphere = loader.loadModelCopy("models/planet_sphere")
                         body.sphere.reparentTo(body.node)
                         self.scalebody( i)
 ##                        scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/100)+.01
 ##                        body.sphere.setScale(scaleRate)
-##                        self.evaluator.gridSystem.rad[i]=scaleRate                                
+##                        self.evaluator.gridSystem.rad[i]=scaleRate
 ##                        body.mass=self.evaluator.gridSystem.mass[i]
 ##                        self.setTexture(body, i)
                         body.node.setPos(self.evaluator.gridSystem.pos[i][0],
@@ -200,60 +201,60 @@ class Universe(DirectObject):
                 print "detaching node: ",i#count
                 self.evaluator.system.bodies[i].node.detachNode()
 	def loadPlanets(self):
-                
+
                 pval = self.evaluator.gridSystem.player
                 print "player: ",pval
                 print self.evaluator.gridSystem.getPlayerIndex()
                 i=0
                 for body in self.evaluator.system.bodies:
                         if i ==pval:
-                                print "player at: ",i 
+                                print "player at: ",i
                                 self.loadPlayer(self.player)
                         if i != pval:
                                 self.loadSinglePlanet(body,i)
                         i+=1
-                self.sky = loader.loadModel("models/solar_sky_sphere")                               
+                self.sky = loader.loadModel("models/solar_sky_sphere")
                 self.sky_tex = loader.loadTexture("models/startex.jpg")
                 self.sky.setTexture(self.sky_tex, 1)
                 self.sky.setScale(self.skyScale)
                 self.sky.reparentTo(render)
 
-                
+
         def scaleUp(self):
                 self.accRate*= 1.01
                 print "accRate increasing",self.accRate
 ##                print self.starScale
 ##                for star in self.stars:
 ##                        star.body.sphere.setScale(self.starScale)
-                        
+
         def scaleDown(self):
                 self.accRate*= .99
                 print "accRate decreasing",self.accRate
 ##                print self.starScale
 ##                for star in self.stars:
 ##                        star.body.sphere.setScale(self.starScale)
-                                                
+
 	def toggleConsole(self):
                 print "toggle console"
                 #self.console.toggle()
 
         def addPlanet(self):
-                self.loadSinglePlanet(self.evaluator.system.addSinglePlanet())                
+                self.loadSinglePlanet(self.evaluator.system.addSinglePlanet())
                 return
-        
+
 	def loadRoid(self, abody):
                 if(len(self.player.bodies)<10):
                         self.player.bodies.append(abody)
                         self.evaluator.system.bodies.append(abody)
                         self.evaluator.accelerateCuda()
                         abody.node = render.attachNewNode(abody.name)
-                        abody.model = loader.loadModelCopy("models/planet_sphere")			
+                        abody.model = loader.loadModelCopy("models/planet_sphere")
                         abody.model.reparentTo(abody.node)
                         abody.texture = loader.loadTexture("models/pluto.jpg")
                         abody.model.setScale(.01)
                         abody.node.setPos(abody.position.x ,abody.position.y ,abody.position.z)
                 return
-        
+
         def deloadRoid(self):
                 if(len(self.player.bodies) >0):
                         abody = self.player.bodies.pop()
@@ -263,7 +264,7 @@ class Universe(DirectObject):
 
 	def loadPlayer(self, abody):
                 abody.node = render.attachNewNode(abody.name)
-                abody.model = loader.loadModelCopy("models/fighter")			
+                abody.model = loader.loadModelCopy("models/fighter")
                 abody.model.reparentTo(abody.node)
                 if abody.name == "player":
                         abody.texture = loader.loadTexture("models/texturemap.png")
@@ -282,7 +283,7 @@ class Universe(DirectObject):
                 return
         def fullscreen(self):
                 print "doh"
-                             
+
 	def move(self,task):
 #                self.accept("p", self.addPlanet)
                 self.accept("`", self.toggleConsole)
@@ -310,15 +311,15 @@ class Universe(DirectObject):
 		if not self.mapMode:
                         self.evaluator.accelerateCuda()
 		self.updateMouse(self.player)
-		if self.starting: 
+		if self.starting:
 			dt=dt/2.0
 			self.starting=False
 		#self.reloadPlanets()
 		self.setAllPositions()
 		return Task.cont
-	
 
-                        
+
+
 	def tiltLeft(self):
                 print "left"
                 self.player.orientation.z-=10
@@ -340,17 +341,17 @@ class Universe(DirectObject):
                 else:
                         self.mapMode=True
                         self.zoom = 59000
-                        
-	def accelerate(self):                                  
+
+	def accelerate(self):
                 print "accelerating ship"
                 i = self.evaluator.gridSystem.getPlayerIndex()
-                
+
                 self.evaluator.gridSystem.acc[i][0]+=self.dX*8
                 self.evaluator.gridSystem.acc[i][1]+=self.dY*8
                 self.evaluator.gridSystem.acc[i][2]+=self.dZ*8
                 #self.evaluator.gridSystem.printBody(i)
                 return
-        
+
         def stop(self):
                 i = self.evaluator.gridSystem.player
                 print "stopping ship", i
@@ -359,7 +360,7 @@ class Universe(DirectObject):
                 self.evaluator.gridSystem.vel[i][1]=0.0
                 self.evaluator.gridSystem.vel[i][2]=0.0
                 return
-        
+
         def brake(self):
                 print "slowing ship"
                 i = self.evaluator.gridSystem.player
@@ -367,7 +368,7 @@ class Universe(DirectObject):
                 self.evaluator.gridSystem.acc[i][0]-=self.dX
                 self.evaluator.gridSystem.acc[i][1]-=self.dY
                 self.evaluator.gridSystem.acc[i][2]-=self.dZ
-                
+
 	def handleMouse2(self):
                 print "deccelerating ship"
                 self.player.acceleration.x-=self.dX/10
@@ -393,19 +394,19 @@ class Universe(DirectObject):
                 abody.acceleration.y += self.dY/15
                 abody.acceleration.z += self.dZ/15
                 abody.mass =0.00000001
-                self.loadRoid(abody)                                  
+                self.loadRoid(abody)
                 return
-        
+
         def handleRightMouseClick(self):
                 print "removing impactor"
                 self.deloadRoid()
-                
+
 	def zoomIn(self):
                 self.zoom*=0.9
                 print self.zoom
                 #self.scaleDown()
                 return
-        
+
         def zoomOut(self):
                 self.zoom*=1.1
                 print self.zoom
@@ -413,14 +414,14 @@ class Universe(DirectObject):
                 if self.zoom > 60000:
                         self.zoomIn()
                 return
-        
+
 	def updateMouse(self, abody):
                 if (True):
                         newX=self.mouseX
                         newY=self.mouseY
                         if self.mouselook and base.mouseWatcherNode.hasMouse():
                                 newX = base.mouseWatcherNode.getMouseX()
-                                newY = base.mouseWatcherNode.getMouseY()                        
+                                newY = base.mouseWatcherNode.getMouseY()
                         deltaX = self.mouseX - newX
                         deltaY = self.mouseY - newY
                         self.mouseX = newX
@@ -433,15 +434,15 @@ class Universe(DirectObject):
                                 abody.orientation.y += (360*deltaY)
                         else:
                                 abody.orientation.y -= (360*deltaY)
-                                
+
                         if abody.orientation.y > 180:
                                 abody.orientation.x -= (360*deltaX)
                         else:
                                 abody.orientation.x += (360*deltaX)
-                        
-                        self.dZ = self.zoom*math.sin((-abody.orientation.y+180)*(math.pi / 180.0)) 
+
+                        self.dZ = self.zoom*math.sin((-abody.orientation.y+180)*(math.pi / 180.0))
                         hyp = self.zoom*math.cos((-abody.orientation.y+180)*(math.pi / 180.0))
-                        self.dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0)) 
+                        self.dX = hyp * math.sin((-abody.orientation.x+180)*(math.pi / 180.0))
                         self.dY = hyp * math.cos((-abody.orientation.x+180)*(math.pi / 180.0))
                 base.camera.setHpr(abody.orientation.x,
                                    abody.orientation.y,abody.orientation.z)
@@ -463,7 +464,7 @@ class Universe(DirectObject):
 ##                        self.loadSinglePlanet(abody, k)
                 self.evaluator.gridSystem.removed=[]
 
-                
+
                 i=0
                 for body in self.evaluator.system.bodies:
                         self.set_body_position(body,
@@ -479,13 +480,13 @@ class Universe(DirectObject):
                         raw_input()
                 scaleRate = ((math.sqrt(self.evaluator.gridSystem.mass[i]))/50)+.001
                 body.sphere.setScale(scaleRate)
-                self.evaluator.gridSystem.rad[i]=scaleRate                                
+                self.evaluator.gridSystem.rad[i]=scaleRate
                 body.mass=self.evaluator.gridSystem.mass[i]
                 self.setTexture(body, i)
 
 	def set_body_position(self,body,x,y,z):
                 if body.name == "star":
                         #print "moving light"
-                        self.plnp.setPos(x,y,z)                        
-                body.node.setPos(x,y,z) 
+                        self.plnp.setPos(x,y,z)
+                body.node.setPos(x,y,z)
                 body.node.setHpr(body.orientation.x, body.orientation.y, body.orientation.z)

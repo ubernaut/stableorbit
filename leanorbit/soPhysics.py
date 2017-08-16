@@ -1,12 +1,12 @@
 import orbitSystem
-import random
-import dircache
-import random
+#import random
+#import dircache
+#import random
 import math
-import sys
-import os
-import copy
-from ctypes import *
+#import sys
+#import os
+#import copy
+#from ctypes import *
 G=2.93558*10**-4
 epsilon = 0.01
 class soPhysics:
@@ -51,11 +51,11 @@ class soPhysics:
                 #print "combining bodies i: ",ith,"j: ",jth
                 #self.gridSystem.printBody(ith)
                 #self.gridSystem.printBody(jth)
-                
+
                 pos[jth][0] = (pos[ith][0]*mass[ith] + pos[jth][0]*mass[jth])/((mass[ith]+mass[jth]))
                 pos[jth][1] = (pos[ith][1]*mass[ith] + pos[jth][1]*mass[jth])/((mass[ith]+mass[jth]))
                 pos[jth][2] = (pos[ith][2]*mass[ith] + pos[jth][2]*mass[jth])/((mass[ith]+mass[jth]))
-                
+
                 vel[jth][0] = (((mass[ith]*vel[ith][0])+(mass[jth]*vel[jth][0])/((mass[ith]+mass[jth]))))
                 vel[jth][1] = (((mass[ith]*vel[ith][1])+(mass[jth]*vel[jth][1])/((mass[ith]+mass[jth]))))
                 vel[jth][2] = (((mass[ith]*vel[ith][2])+(mass[jth]*vel[jth][2])/((mass[ith]+mass[jth]))))
@@ -75,7 +75,7 @@ class soPhysics:
                 self.gridSystem.getPlayerIndex()
 
 	def evaluateStep(self):
-                self.accelerate()
+                self.accelerateCuda()
                 for body in self.system.bodies:
                         self.calculate_velocity(body,self.dt)
                         self.calculate_position(body,self.dt)
@@ -87,14 +87,14 @@ class soPhysics:
 	def evaluate(self):
 		self.t=0
 		self.count=1
-		self.accelerate()
+		self.accelerateCuda()
 		self.sumFit=0
 		while self.count<self.maxMark:
-                        self.evaluateStep()			
+                        self.evaluateStep()
 		self.fitness = self.system.evaluate()
 		self.avgStability = self.sumFit/self.count
 		return self.avgStability
-	
+
 	def accGravSingle(self, player, names, mass,
                           pos, vel, acc, rad, ith, jth):
                 d_x = pos[jth][0] - pos[ith][0]
@@ -105,31 +105,31 @@ class soPhysics:
                 radius = d_x**2 + d_y**2 + d_z**2
                 rad2 = math.sqrt(radius)
                 grav_mag = 0.0;
-                
+
                 if (rad2 > rad[ith]+rad[jth]):
                         grav_mag = G/((radius+epsilon)**(3.0/2.0))
                         grav_x=grav_mag*d_x
                         grav_y=grav_mag*d_y
                         grav_z=grav_mag*d_z
-                           
+
                         acc[ith][0] +=grav_x*mass[jth]
                         acc[ith][1] +=grav_y*mass[jth]
                         acc[ith][2] +=grav_z*mass[jth]
-                        
+
                         acc[jth][0] +=grav_x*mass[ith]
                         acc[jth][1] +=grav_y*mass[ith]
                         acc[jth][2] +=grav_z*mass[ith]
                 else:
-                        
+
                         #print "collision i ",ith," j ",jth
                         #print "rad ",rad2
                         grav_mag = 0
                         self.collisionDetected(player, names, mass, pos,
                                                vel, acc, rad, ith, jth)
 
-                              
-   
-                
+
+
+
 	def accelerateCuda(self):
                 G=2.93558*10**-4
 		epsilon = 0.01
@@ -144,14 +144,14 @@ class soPhysics:
                                                                    self.gridSystem.vel,
                                                                    self.gridSystem.acc,
                                                                    self.gridSystem.rad,
-                                                                   i, j) 
+                                                                   i, j)
                 self.calVelPosCuda()
                 self.gridSystem.resetAcc()
                 for i in range(0,self.gridSystem.count):
                         if self.gridSystem.names[i]=="DELETED":
                                 self.gridSystem.removeBody(i)
                 self.gridSystem.collisions = []
-                
+
         def calVelPosCuda(self):
                 for i in range(0,self.gridSystem.count):
                         self.gridSystem.vel[i][0]+=self.dt*self.gridSystem.acc[i][0]

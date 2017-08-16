@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import xmlrpclib
 import orbitSystem
-import Eval
 import cPickle
-
 from orbitSystem import Body
 from orbitSystem import System
 from orbitSystem import Galaxy
-from Eval import soPhysics
+from orbitSystem import soPhysics
 
 class solarClient(object):
     def __init__(self, xString='http://bamdastard.kicks-ass.net:8000',
@@ -32,7 +30,7 @@ class solarClient(object):
             self.launchSystem()
         except:
             self.runLocal()
-            
+
     def logIn(self):
         print"Please type your username and password"
         print "user: "
@@ -50,7 +48,7 @@ class solarClient(object):
             self.connectToServer()
         self.sysName = self.server.insertSystem(self.xfile)
         print self.sysName
-        
+
     def getMyStars(self):
         print "getting all star names"
         allStars = self.server.getAllStars()
@@ -62,8 +60,8 @@ class solarClient(object):
         print "connecting to server ",self.xString
         self.server = xmlrpclib.Server(self.xString)
         self.connected=True
-        
-        
+
+
     def retrieveGalaxy(self):
         if self.connected == False:
             self.connectToServer()
@@ -74,7 +72,7 @@ class solarClient(object):
 
     def retrieveSystem(self):
         if self.connected == False:
-            self.connectToServer()        
+            self.connectToServer()
         #self.getAllStars()
         print "attempting to retrieve and launch system: "
         print self.sysName
@@ -91,7 +89,7 @@ class solarClient(object):
         import planetarium
         self.planetWindow = planetarium.Universe(self.Evaluator)
         run()
-        
+
     def runSol(self):
         print "earthSun"
         sysCount = 0
@@ -109,38 +107,40 @@ class solarClient(object):
         self.mySystem = System(sysCount)
         self.scoreThreshold =1;
         self.score = 1000
-        starcount=1
-        
-       # bodycount = raw_input()
-
-        #if bodycount=="":
+        starcount=2
         bodycount = 32
         bodyDistance=.5
         bodySpeed=.03
+        # self.mySystem = System(1, 1,
+        #                        32, .5,
+        #                        .03)
         self.mySystem = System(sysCount, starcount,
                                bodycount, bodyDistance,
                                bodySpeed)
+
+
+
         #try:
   #          print "trying to get a star"
  #           self.connectToServer()
  #           self.mySystem.star = cPickle.loads(self.server.getNextStar())
  #           print "got one"
-            
+
         #except:
 #        print "couldn't get one"
-        self.galaxy.stars[4*len(self.galaxy.stars)/5] 
+        self.galaxy.stars[4*len(self.galaxy.stars)/5]
         self.Evaluator = soPhysics(self.mySystem, 10000, .02)
         print "number of bodies:"
         print len(self.mySystem.bodies)
-        
+
     def launchSystem(self):
         print "launching planetarium.. .  .    .        ."
-        import planetarium        
+        import planetarium
  #       import interactiveConsole.interactiveConsole
  #       from interactiveConsole.interactiveConsole import(
  #           pandaConsole, INPUT_CONSOLE, INPUT_GUI,
  #           OUTPUT_PYTHON, OUTPUT_IRC)
-        
+
  #       self.console = pandaConsole( INPUT_CONSOLE|INPUT_GUI
  #                                    |OUTPUT_PYTHON|OUTPUT_IRC,
  #                                    locals() )
@@ -148,7 +148,7 @@ class solarClient(object):
                                                  self.galaxy.stars)
  #                                                self.console)
         run()
-        
+
     def runLocal(self, sofigs=""):
         print "run sol? y/n"
         genvar = 'n'#raw_input()
@@ -156,7 +156,7 @@ class solarClient(object):
             self.runSol()
         else:
             self.generateSystem()
-        self.launchSystem() 
+        self.launchSystem()
 
 #Uncomment the following line to retrieve "system6" from the server
 #defaultClient = solarClient('http://bamdastard.kicks-ass.net:8000', 1, "system20.sys")
